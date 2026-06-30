@@ -1,13 +1,10 @@
 buildscript {
-    ext.kotlin_version = '1.7.10'
     repositories {
         google()
         mavenCentral()
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:9.2.1'
     }
 }
 
@@ -22,6 +19,29 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            if (project.android.namespace == null) {
+                project.android.namespace = project.group
+            }
+            project.android {
+                compileSdkVersion 36
+                compileSdk 36
+                compileOptions {
+                    sourceCompatibility = JavaVersion.VERSION_17
+                    targetCompatibility = JavaVersion.VERSION_17
+                }
+            }
+        }
+        
+        project.tasks.configureEach { task ->
+            if (task.class.name.contains("KotlinCompile")) {
+                task.kotlinOptions {
+                    jvmTarget = "17"
+                }
+            }
+        }
+    }
 }
 subprojects {
     project.evaluationDependsOn(':app')

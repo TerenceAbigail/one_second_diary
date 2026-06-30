@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
+import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:media_store_plus/media_store_plus.dart';
@@ -58,6 +58,7 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
   void _initVideoPlayerController() {
     _videoController = VideoPlayerController.file(File(widget.videoPath))
       ..initialize().then((_) {
+        if (!mounted) return;
         _videoController.setLooping(true);
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});

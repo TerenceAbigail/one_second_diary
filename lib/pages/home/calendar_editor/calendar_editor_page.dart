@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
+import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
@@ -129,13 +129,17 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
         currentVideo = allVideos!.firstWhere(
           (a) => a.contains(_currentDateStr),
         );
-        _controller = VideoPlayerController.file(File(currentVideo))
-          ..initialize().then((_) async {
-            await _controller?.setLooping(true);
-            await _controller?.setVolume(autoSound ? 1.0 : 0.0);
-            if (autoPlay) await _controller?.play();
-            setState(() {});
-          });
+        final controller = VideoPlayerController.file(File(currentVideo));
+        _controller = controller;
+        controller.initialize().then((_) async {
+          if (!mounted || _controller != controller) return;
+          try {
+            await controller.setLooping(true);
+            await controller.setVolume(autoSound ? 1.0 : 0.0);
+            if (autoPlay) await controller.play();
+            if (mounted && _controller == controller) setState(() {});
+          } catch (_) {}
+        });
       }
     });
     await getSubtitlesForSelectedDate();
@@ -144,23 +148,30 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
   /// Initializes the video playback for the selected date
   Future<void> initializeVideoPlayback(String video) async {
     if (lastSelectedDate != _selectedDate) {
+      lastSelectedDate = _selectedDate; // update immediately to prevent multiple triggers
       final autoPlay = SharedPrefsUtil.getBool('calendarAutoPlay') ?? true;
       final autoSound = SharedPrefsUtil.getBool('calendarAutoSound') ?? true;
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // Disposing old controller
-        await _controller?.dispose();
+        final oldController = _controller;
         _controller = null;
+        if (mounted) setState(() {}); // Remove old video player from UI
+        await oldController?.dispose();
 
         // Initing new controller
-        _controller = VideoPlayerController.file(File(video))
-          ..initialize().then((_) async {
-            await _controller?.setLooping(true);
-            await _controller?.setVolume(autoSound ? 1.0 : 0.0);
-            if (autoPlay) await _controller?.play();
-            setState(() {
-              lastSelectedDate = _selectedDate;
-            });
-          });
+        final controller = VideoPlayerController.file(File(video));
+        _controller = controller;
+        controller.initialize().then((_) async {
+          if (!mounted || _controller != controller) return;
+          try {
+            await controller.setLooping(true);
+            await controller.setVolume(autoSound ? 1.0 : 0.0);
+            if (autoPlay) await controller.play();
+            if (mounted && _controller == controller) {
+              setState(() {});
+            }
+          } catch (_) {}
+        });
       });
     }
   }
@@ -196,30 +207,57 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
         ],
       );
 
-      final List<AssetEntity>? result = await AssetPicker.pickAssets(
-        context,
-        pickerConfig: AssetPickerConfig(
-          maxAssets: 1,
-          requestType: RequestType.video,
-          filterOptions: shouldIgnoreFilter ? null : filterOptionGroup,
-          sortPathsByModifiedDate: true,
-          specialItemPosition: SpecialItemPosition.prepend,
-          specialItemBuilder: (context, path, length) {
-            return Center(
-              child: Text(
-                shouldIgnoreFilter
-                    ? 'Latest\nvideos'
-                    : 'From\n${_selectedDate.toString().substring(0, 10).split('-').reversed.join('-')}\nonwards',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            );
-          },
+      final permissionRequestOption = PermissionRequestOption(
+        androidPermission: const AndroidPermission(
+          type: RequestType.video,
+          mediaLocation: false,
         ),
+      );
+      final PermissionState ps = await AssetPicker.permissionCheck(
+        requestOption: permissionRequestOption,
+      );
+
+      final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
+        maxAssets: 1,
+        requestType: RequestType.video,
+        filterOptions: shouldIgnoreFilter ? null : filterOptionGroup,
+        sortPathsByModifiedDate: true,
+      );
+
+      final delegate = _AutoSelectAssetPickerBuilderDelegate(
+        provider: provider,
+        initialPermission: ps,
+        locale: Localizations.maybeLocaleOf(context),
+        specialItems: [
+          SpecialItem<AssetPathEntity>(
+            position: SpecialItemPosition.prepend,
+            builder: (context, path, length) {
+             return Center(
+               child: Text(
+                 shouldIgnoreFilter
+                     ? 'Latest\nvideos'
+                     : 'From\n${_selectedDate.toString().substring(0, 10).split('-').reversed.join('-')}\nonwards',
+                 textAlign: TextAlign.center,
+                 style: const TextStyle(
+                   color: Colors.white,
+                   fontSize: 14.0,
+                   fontWeight: FontWeight.bold,
+                 ),
+               ),
+             );
+            },
+          ),
+        ],
+      );
+
+      final List<AssetEntity>? result = await AssetPicker.pickAssetsWithDelegate<
+        AssetEntity,
+        AssetPathEntity,
+        DefaultAssetPickerProvider,
+        _AutoSelectAssetPickerBuilderDelegate
+      >(
+        context,
+        delegate: delegate,
       );
 
       if (result?.isEmpty == false) {
@@ -789,5 +827,92 @@ class _ControlsState extends State<Controls> {
         ],
       ),
     );
+  }
+}
+
+class _AutoSelectAssetPickerBuilderDelegate extends DefaultAssetPickerBuilderDelegate<DefaultAssetPickerProvider> {
+  _AutoSelectAssetPickerBuilderDelegate({
+    required super.provider,
+    required super.initialPermission,
+    super.specialItems,
+    super.locale,
+  });
+
+  @override
+  Future<void> viewAsset(
+    BuildContext context,
+    int? index,
+    AssetEntity currentAsset,
+  ) async {
+    final List<AssetEntity> current;
+    final int effectiveIndex;
+    
+    if (index == null) {
+      current = provider.selectedAssets;
+      effectiveIndex = current.indexOf(currentAsset);
+    } else {
+      current = provider.currentAssets;
+      effectiveIndex = index;
+    }
+    
+    if (current.isEmpty) {
+      return;
+    }
+
+    // Perform initial auto-selection BEFORE creating the viewerDelegate
+    // so that its internal `selectedAssets` list captures the selected state,
+    // which enables the Confirm button.
+    if (!provider.selectedAssets.contains(currentAsset)) {
+      final selected = List.of(provider.selectedAssets);
+      for (final s in selected) {
+        provider.unSelectAsset(s);
+      }
+      provider.selectAsset(currentAsset);
+    }
+
+    final viewerDelegate = DefaultAssetPickerViewerBuilderDelegate<
+        AssetPickerViewerProvider<AssetEntity>, DefaultAssetPickerProvider>(
+      currentIndex: effectiveIndex,
+      previewAssets: current,
+      provider: AssetPickerViewerProvider<AssetEntity>(
+        provider.selectedAssets,
+        maxAssets: provider.maxAssets,
+      ),
+      themeData: theme,
+      selectedAssets: provider.selectedAssets,
+      selectorProvider: provider,
+      maxAssets: provider.maxAssets,
+    );
+
+    // Swipe auto-selection
+    viewerDelegate.pageStreamController.stream.listen((pageIndex) {
+      final asset = current[pageIndex];
+      if (!provider.selectedAssets.contains(asset)) {
+        final selected = List.of(provider.selectedAssets);
+        for (final s in selected) {
+          viewerDelegate.unSelectAsset(s);
+        }
+        viewerDelegate.selectAsset(asset);
+      }
+    });
+
+    final result = await AssetPickerViewer.pushToViewerWithDelegate<
+        AssetEntity,
+        AssetPathEntity,
+        AssetPickerViewerProvider<AssetEntity>,
+        DefaultAssetPickerViewerBuilderDelegate<AssetPickerViewerProvider<AssetEntity>, DefaultAssetPickerProvider>
+    >(
+      context,
+      delegate: viewerDelegate,
+    );
+    
+    if (result != null) {
+      Navigator.maybeOf(context)?.maybePop(result);
+    } else {
+      final selected = List.of(provider.selectedAssets);
+      for (final s in selected) {
+        provider.unSelectAsset(s);
+      }
+    }
   }
 }

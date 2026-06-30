@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide RadioGroup;
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -175,8 +175,10 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
       _isLocationProcessing = true;
     });
     await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.medium,
-      timeLimit: const Duration(seconds: 20),
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.medium,
+        timeLimit: Duration(seconds: 20),
+      ),
     ).then((Position position) async {
       setState(() => _currentPosition = position);
       await _getAddressFromLatLng(_currentPosition!);
@@ -205,10 +207,10 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
 
     while (attempts < maxAttempts) {
       try {
+        await setLocaleIdentifier(Get.locale!.languageCode);
         await placemarkFromCoordinates(
           _currentPosition!.latitude,
           _currentPosition!.longitude,
-          localeIdentifier: Get.locale!.languageCode,
         ).then((List<Placemark> placemarks) {
           final Placemark place = placemarks[0];
           String city = '';
@@ -557,9 +559,6 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
                         circlePaintColor: isDarkTheme ? Colors.white : AppColors.mainColor,
                         borderPaintColor:
                             isDarkTheme ? AppColors.light : AppColors.mainColor.withOpacity(0.75),
-                        quickCutBackgroundColor: isDarkTheme
-                            ? AppColors.light.withOpacity(0.15)
-                            : AppColors.dark.withOpacity(0.40),
                       ),
                       durationStyle: DurationStyle.FORMAT_SS_MS,
                       durationTextStyle: isDarkTheme
