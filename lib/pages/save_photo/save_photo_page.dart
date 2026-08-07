@@ -6,34 +6,27 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:group_radio_button/group_radio_button.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:video_trimmer/video_trimmer.dart';
-
 import '../../controllers/recording_settings_controller.dart';
-import '../../routes/app_pages.dart';
 import '../../utils/constants.dart';
 import '../../utils/custom_checkbox_list_tile.dart';
-import '../../utils/custom_dialog.dart';
 import '../../utils/date_format_utils.dart';
 import '../../utils/shared_preferences_util.dart';
-import '../../utils/storage_utils.dart';
 import '../../utils/theme.dart';
 import '../../utils/utils.dart';
 import '../home/profiles/profiles_page.dart';
-import 'widgets/save_button.dart';
+import 'widgets/save_photo_button.dart';
 import 'widgets/tab_item.dart';
 
-class SaveVideoPage extends StatefulWidget {
+class SavePhotoPage extends StatefulWidget {
   @override
-  _SaveVideoPageState createState() => _SaveVideoPageState();
+  _SavePhotoPageState createState() => _SavePhotoPageState();
 }
 
-class _SaveVideoPageState extends State<SaveVideoPage> {
+class _SavePhotoPageState extends State<SavePhotoPage> {
   final Map<String, dynamic> routeArguments = Get.arguments;
   final RecordingSettingsController _recordingSettingsController = Get.find();
 
-  late String _tempVideoPath;
-  final Trimmer _trimmer = Trimmer();
+  late String _tempPhotoPath;
 
   final TextEditingController customLocationTextController = TextEditingController();
   final TextEditingController subtitlesTextController = TextEditingController();
@@ -60,9 +53,7 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
   Position? _currentPosition;
   bool isGeotaggingEnabled = SharedPrefsUtil.getBool('enableGeotagging') ?? false;
   String? _subtitles;
-  double _videoStartValue = 0.0;
-  double _videoEndValue = 0.0;
-  bool _isVideoPlaying = false;
+  int photoDurationInSeconds = 1;
   bool _isLocationProcessing = false;
 
   late final bool isDarkTheme = ThemeService().isDarkTheme();
@@ -295,10 +286,9 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
   void initState() {
     pickerColor = parseColorString(_recordingSettingsController.dateColor.value);
     currentColor = pickerColor;
-    _tempVideoPath = routeArguments['videoPath'];
+    _tempPhotoPath = routeArguments['photoPath'];
     isTextDate = _recordingSettingsController.dateFormatId.value == 1;
     _initCorrectDates();
-    _initVideoPlayerController();
     if (isGeotaggingEnabled) {
       setGeotagging();
     }
@@ -307,57 +297,12 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
 
   @override
   void dispose() {
-    _trimmer.videoPlayerController?.dispose();
-    customLocationTextController.dispose();
-    subtitlesTextController.dispose();
+     customLocationTextController.dispose();
+     subtitlesTextController.dispose();
     super.dispose();
   }
 
-  void _initVideoPlayerController() {
-    _trimmer
-        .loadVideo(
-      videoFile: File(routeArguments['videoPath']),
-    )
-        .then((_) {
-      // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-      setState(() {});
-    });
-  }
 
-  void videoPlay() async {
-    final bool playbackState = await _trimmer.videoPlaybackControl(
-      startValue: _videoStartValue,
-      endValue: _videoEndValue,
-    );
-    setState(() {
-      _isVideoPlaying = playbackState;
-    });
-  }
-
-  Future<void> closePopupAndPushToRecording(String cacheVideoPath) async {
-    // Deleting video from cache
-    StorageUtils.deleteFile(cacheVideoPath);
-    _trimmer.videoPlayerController?.dispose();
-    Get.back();
-    final sdkVersion = SharedPrefsUtil.getInt('sdkVersion');
-    final forceNativeCamera = SharedPrefsUtil.getBool('forceNativeCamera') ?? false;
-    if ((sdkVersion != null && sdkVersion < 29) || forceNativeCamera) {
-      Get.offNamed(Routes.HOME);
-      final videoFile = await ImagePicker().pickVideo(source: ImageSource.camera);
-      if (videoFile != null) {
-        Get.offNamed(
-          Routes.SAVE_VIDEO,
-          arguments: {
-            'videoPath': videoFile.path,
-            'currentDate': DateTime.now(),
-            'isFromRecordingPage': true,
-          },
-        );
-      }
-    } else {
-      Get.offNamed(Routes.RECORDING);
-    }
-  }
 
   Color invert(Color color) {
     final r = 255 - (color.r * 255.0).round().clamp(0, 255);
@@ -367,48 +312,61 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
     return Color.fromARGB((color.a * 255.0).round().clamp(0, 255), r, g, b);
   }
 
-  Widget _dailyVideoPlayer() {
+  Widget _dailyPhotoViewer() {
     return ColoredBox(
       color: AppColors.dark,
-      child: GestureDetector(
-        onTap: () => videoPlay(),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Stack(
-            children: [
-              VideoViewer(
-                trimmer: _trimmer,
-              ),
-              Center(
-                child: Opacity(
-                  opacity: _isVideoPlaying ? 0.0 : 1.0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    height: MediaQuery.of(context).size.width * 0.25,
-                    decoration: const BoxDecoration(
-                      color: Colors.black45,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.play_arrow,
-                        size: 72.0,
-                        color: Colors.white,
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Stack(
+          children: [
+            Image.file(
+              File(routeArguments['photoPath']),
+              fit: BoxFit.contain,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+
+            Align(
+              alignment: isTextDate ? Alignment.bottomLeft : Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Stack(
+                  children: [
+                    Text(
+                      isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.03,
+                        foreground: Paint()
+                          ..style = PaintingStyle.stroke
+                          ..strokeWidth = textOutlineStrokeWidth
+                          ..color = invert(currentColor),
                       ),
                     ),
-                  ),
+                    Text(
+                      isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.03,
+                        color: currentColor,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Align(
-                alignment: isTextDate ? Alignment.bottomLeft : Alignment.topRight,
+            ),
+            Visibility(
+              visible: isGeotaggingEnabled,
+              child: Align(
+                alignment: Alignment.bottomRight,
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Stack(
                     children: [
                       Text(
-                        isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                        customLocationTextController.text.isEmpty
+                            ? _currentAddress ?? customLocationTextController.text
+                            : customLocationTextController.text,
                         style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                          fontSize: MediaQuery.of(context).size.width * 0.032,
                           foreground: Paint()
                             ..style = PaintingStyle.stroke
                             ..strokeWidth = textOutlineStrokeWidth
@@ -416,9 +374,11 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
                         ),
                       ),
                       Text(
-                        isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                        customLocationTextController.text.isEmpty
+                            ? _currentAddress ?? customLocationTextController.text
+                            : customLocationTextController.text,
                         style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                          fontSize: MediaQuery.of(context).size.width * 0.032,
                           color: currentColor,
                         ),
                       ),
@@ -426,162 +386,127 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
                   ),
                 ),
               ),
-              Visibility(
-                visible: isGeotaggingEnabled,
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Stack(
-                      children: [
-                        Text(
-                          customLocationTextController.text.isEmpty
-                              ? _currentAddress ?? customLocationTextController.text
-                              : customLocationTextController.text,
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.032,
-                            foreground: Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = textOutlineStrokeWidth
-                              ..color = invert(currentColor),
-                          ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _durationSelectionButtons() {
+    final List<int> options = [1, 2, 3, 4, 5, 10];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'seconds'.tr,
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.height * 0.018,
+            ),
+          ),
+          const SizedBox(width: 8.0),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: options.map((sec) {
+                final bool isSelected = photoDurationInSeconds == sec;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        photoDurationInSeconds = sec;
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppColors.green
+                            : (isDarkTheme ? AppColors.dark : Colors.grey[300]),
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(
+                          color: isSelected ? AppColors.green : Colors.transparent,
                         ),
-                        Text(
-                          customLocationTextController.text.isEmpty
-                              ? _currentAddress ?? customLocationTextController.text
-                              : customLocationTextController.text,
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.032,
-                            color: currentColor,
-                          ),
+                      ),
+                      child: Text(
+                        '${sec}s',
+                        style: TextStyle(
+                          color: isSelected
+                              ? Colors.white
+                              : (isDarkTheme ? Colors.white : Colors.black),
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          fontSize: 13.0,
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ],
+                );
+              }).toList(),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (_, __) async {
-        // Prevent showing the option to re-record video if not coming from the recording page
-        final isFromRecordingPage = routeArguments['isFromRecordingPage'];
-        if (!isFromRecordingPage) {
-          final isExperimentalPicker = SharedPrefsUtil.getBool('useExperimentalPicker') ?? true;
-          if (!isExperimentalPicker) {
-            // Deleting video from cache
-            StorageUtils.deleteFile(_tempVideoPath);
-          }
-          Get.back();
-        } else {
-          await showDialog(
-            barrierDismissible: false,
-            context: Get.context!,
-            builder: (context) => CustomDialog(
-              isDoubleAction: true,
-              title: 'discardVideoTitle'.tr,
-              content: 'discardVideoDesc'.tr,
-              actionText: 'yes'.tr,
-              actionColor: AppColors.green,
-              action: () async => await closePopupAndPushToRecording(_tempVideoPath),
-              action2Text: 'no'.tr,
-              action2Color: Colors.red,
-              action2: () => Get.back(),
-            ),
-          );
-        }
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          iconTheme: const IconThemeData(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        title: Text(
+          'savePhoto'.tr,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+      floatingActionButton: Visibility(
+        visible: !_isLocationProcessing,
+        replacement: const FloatingActionButton(
+          onPressed: null,
+          child: CircularProgressIndicator(
             color: Colors.white,
           ),
-          title: Text(
-            'saveVideo'.tr,
-            style: const TextStyle(color: Colors.white),
-          ),
+          backgroundColor: AppColors.green,
         ),
-        floatingActionButton: Visibility(
-          visible: !_isLocationProcessing,
-          replacement: const FloatingActionButton(
-            onPressed: null,
-            child: CircularProgressIndicator(
-              color: Colors.white,
-            ),
-            backgroundColor: AppColors.green,
-          ),
-          child: SaveButton(
-            videoPath: _tempVideoPath,
-            videoController: _trimmer.videoPlayerController!,
-            dateColor: currentColor,
-            dateFormat: _dateFinalFormatValueForVideoEdit,
-            isTextDate: isTextDate,
-            userPosition: _currentPosition,
-            userLocation: customLocationTextController.text.isEmpty
-                ? _currentAddress ?? ''
-                : customLocationTextController.text,
-            subtitles: _subtitles,
-            videoStartInMilliseconds: _videoStartValue,
-            videoEndInMilliseconds: getVideoEndInMilliseconds(),
-            videoDuration: _trimmer.videoPlayerController!.value.duration.inSeconds,
-            isGeotaggingEnabled: isGeotaggingEnabled,
-            textOutlineColor: invert(currentColor),
-            textOutlineWidth: textOutlineStrokeWidth,
-            determinedDate: routeArguments['currentDate'],
-            isFromRecordingPage: routeArguments['isFromRecordingPage'],
-          ),
+        child: SavePhotoButton(
+          photoPath: _tempPhotoPath,
+          photoDurationInSeconds: photoDurationInSeconds,
+          dateColor: currentColor,
+          dateFormat: _dateFinalFormatValueForVideoEdit,
+          isTextDate: isTextDate,
+          userPosition: _currentPosition,
+          userLocation: customLocationTextController.text.isEmpty
+              ? _currentAddress ?? ''
+              : customLocationTextController.text,
+          subtitles: _subtitles,
+          isGeotaggingEnabled: isGeotaggingEnabled,
+          textOutlineColor: invert(currentColor),
+          textOutlineWidth: textOutlineStrokeWidth,
+          determinedDate: routeArguments['currentDate'],
         ),
-        body: Column(
-          children: [
-            ListView(
-              physics: const ClampingScrollPhysics(),
-              shrinkWrap: true,
-              children: [
-                _dailyVideoPlayer(),
-                const SizedBox(height: 8),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                    child: TrimViewer(
-                      trimmer: _trimmer,
-                      viewerHeight: 50.0,
-                      type: ViewerType.fixed,
-                      editorProperties: TrimEditorProperties(
-                        borderWidth: 2.5,
-                        circleSize: 6.0,
-                        circleSizeOnDrag: 9.0,
-                        circlePaintColor: isDarkTheme ? Colors.white : AppColors.mainColor,
-                        borderPaintColor:
-                            isDarkTheme ? AppColors.light : AppColors.mainColor.withValues(alpha: 0.75),
-                      ),
-                      durationStyle: DurationStyle.FORMAT_SS_MS,
-                      durationTextStyle: isDarkTheme
-                          ? const TextStyle(color: Colors.white)
-                          : const TextStyle(color: Colors.black),
-                      maxVideoLength: const Duration(milliseconds: 10000),
-                      viewerWidth: MediaQuery.of(context).size.width,
-                      onChangeStart: (value) => _videoStartValue = value,
-                      onChangeEnd: (value) => _videoEndValue = value,
-                      onChangePlaybackState: (value) => setState(() => _isVideoPlaying = value),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Expanded(
-              child: videoProperties(),
-            ),
-          ],
-        ),
+      ),
+      body: Column(
+        children: [
+          ListView(
+            physics: const ClampingScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              _dailyPhotoViewer(),
+              const SizedBox(height: 8),
+              _durationSelectionButtons(),
+            ],
+          ),
+          Expanded(
+            child: videoProperties(),
+          ),
+        ],
       ),
     );
   }
@@ -911,6 +836,9 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
               ),
               TextButton(
                 onPressed: () {
+                  // _subtitles is saved in onTapOutside whenever user taps out dialog, this
+                  // include when the user taps the save button, so we don't need to
+                  // explictly save the text here.
                   Navigator.pop(context);
                 },
                 style: TextButton.styleFrom(
@@ -1033,14 +961,5 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
         ],
       ),
     );
-  }
-
-  double getVideoEndInMilliseconds() {
-    final double defaultEnd = _videoEndValue + 500;
-    final int videoDuration = _trimmer.videoPlayerController!.value.duration.inMilliseconds;
-    if (defaultEnd > videoDuration) {
-      return videoDuration.toDouble();
-    }
-    return defaultEnd;
   }
 }
