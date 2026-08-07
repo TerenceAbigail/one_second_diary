@@ -52,3 +52,9 @@ app.*.symbols
 /android/app/profile
 /android/app/release
 /android/build
+
+# Personal agent tooling config — not meant for the upstream repo
+.agents/
+.antigravitycli/
+AGENTS.md
+docs/agents/
