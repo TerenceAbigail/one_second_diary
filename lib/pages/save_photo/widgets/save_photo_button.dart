@@ -3,12 +3,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/daily_entry_controller.dart';
+import '../../../enums/video_orientation.dart';
 import '../../../routes/app_pages.dart';
 import '../../../utils/app_paths.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/custom_dialog.dart';
 import '../../../utils/date_format_utils.dart';
 import '../../../utils/ffmpeg_api_wrapper.dart';
+import '../../../utils/orientation_filter.dart';
 import '../../../utils/shared_preferences_util.dart';
 import '../../../utils/storage_utils.dart';
 import '../../../utils/utils.dart';
@@ -277,9 +279,9 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
 
     final metadata = baseMetadata + locationMetadata;
 
-    // Scale video to 1920x1080 and add black padding if needed
-    const scale =
-        'scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black';
+    // Fit the video into the profile's output canvas.
+    // TODO(TerenceAbigail): read this from the active profile once Profile.orientation exists.
+    final String scale = OrientationFilter.scaleFilter(VideoOrientation.landscape);
 
     // Add date to the video
     final date =
