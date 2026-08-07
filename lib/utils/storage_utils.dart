@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../enums/video_orientation.dart';
 import '../routes/app_pages.dart';
 import 'app_paths.dart';
 import 'constants.dart';
@@ -338,6 +339,56 @@ class StorageUtils {
     }
   }
 
+  /// The SharedPreferences key [profileName]'s orientation is stored under.
+  /// Uses the same "empty string means the Default profile" convention as
+  /// [AppPaths.profileVideos] and `Utils.getCurrentProfile`.
+  static String _orientationKey(String profileName) => 'orientation_$profileName';
+
+  /// The orientation [profileName] was created with, defaulting to landscape
+  /// for a profile that predates this field (see [VideoOrientation.parse]).
+  static VideoOrientation getOrientation(String profileName) =>
+      VideoOrientation.parse(SharedPrefsUtil.getString(_orientationKey(profileName)));
+
+  /// Persists [orientation] for [profileName].
+  ///
+  /// Call this only when a profile is first created — nothing else in the
+  /// app calls it for an existing profile, because orientation is meant to
+  /// stay fixed for a profile's whole lifetime. Every legitimate caller
+  /// (profile creation, first-launch onboarding's Default profile — see
+  /// [createDefaultProfile] — and "convert to the other orientation",
+  /// which always creates a brand-new destination profile rather than
+  /// mutating the source) only ever writes this once, to a profile name
+  /// that has never had an orientation stored before.
+  ///
+  /// Throws a [StateError] instead of overwriting if [profileName] already
+  /// has a stored orientation — that can only mean a bug elsewhere is
+  /// calling this for a second time, and silently letting it through would
+  /// mean a profile's clips get encoded to two different canvases without
+  /// any error to explain why.
+  static Future<void> setOrientation(String profileName, VideoOrientation orientation) {
+    final String key = _orientationKey(profileName);
+    if (SharedPrefsUtil.containsKey(key)) {
+      final String message =
+          '[StorageUtils] - Orientation already set for profile "$profileName" — refusing to overwrite.';
+      Utils.logError(message);
+      throw StateError(message);
+    }
+    return SharedPrefsUtil.putString(key, orientation.name);
+  }
+
+  /// Creates the Default profile — its 'profiles' entry plus explicit
+  /// [orientation] — for a fresh install. Called once, from onboarding.
+  ///
+  /// ProfilesPage.validateProfileList() has its own fallback that also
+  /// writes a bare `['Default']` list if 'profiles' is still missing by
+  /// the time a user opens Profiles — but never calls [setOrientation]
+  /// there, since that path has no explicit choice behind it and should
+  /// grandfather to landscape.
+  static Future<void> createDefaultProfile(VideoOrientation orientation) async {
+    await SharedPrefsUtil.putStringList('profiles', ['Default']);
+    await setOrientation('', orientation);
+  }
+
   // Create specific profile folder
   static Future<void> createSpecificProfileFolder(String profileName) async {
     try {
@@ -360,6 +411,12 @@ class StorageUtils {
     } catch (e) {
       Utils.logError('[StorageUtils] - $e');
     }
+
+    // Outside the try above on purpose: this must still run even if deleting
+    // the folder itself failed, otherwise the name is stuck with a stale
+    // orientation if it's ever reused, and setOrientation would wrongly
+    // refuse it as a duplicate.
+    await SharedPrefsUtil.removeKey(_orientationKey(profileName));
   }
 
   static void renameFile(String oldPath, String newPath) {

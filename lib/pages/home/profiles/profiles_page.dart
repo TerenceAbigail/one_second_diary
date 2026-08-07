@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/daily_entry_controller.dart';
+import '../../../enums/video_orientation.dart';
 import '../../../models/profile.dart';
 import '../../../utils/app_paths.dart';
 import '../../../utils/constants.dart';
@@ -11,6 +12,7 @@ import '../../../utils/shared_preferences_util.dart';
 import '../../../utils/storage_utils.dart';
 import '../../../utils/theme.dart';
 import '../../../utils/utils.dart';
+import 'widgets/orientation_picker.dart';
 
 class ProfilesPage extends StatefulWidget {
   const ProfilesPage({super.key});
@@ -53,13 +55,24 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (!storedProfiles.contains('Default')) {
       profiles.insert(
         0,
-        const Profile(label: 'Default', isDefault: true),
+        Profile(
+          label: 'Default',
+          isDefault: true,
+          orientation: StorageUtils.getOrientation(''),
+        ),
       );
     } else {
       profiles = storedProfiles.map(
         (e) {
-          if (e == 'Default') return Profile(label: e, isDefault: true);
-          return Profile(label: e);
+          // The Default profile's storage key is '' everywhere else in the
+          // app (AppPaths.profileVideos, Utils.getCurrentProfile) — match it
+          // here so its orientation is looked up under the same key.
+          final String orientationKey = e == 'Default' ? '' : e;
+          final VideoOrientation orientation = StorageUtils.getOrientation(orientationKey);
+          if (e == 'Default') {
+            return Profile(label: e, isDefault: true, orientation: orientation);
+          }
+          return Profile(label: e, orientation: orientation);
         },
       ).toList();
     }
@@ -72,6 +85,12 @@ class _ProfilesPageState extends State<ProfilesPage> {
   }
 
   Future<void> _addNewProfileDialog() async {
+    // Local to this dialog invocation — resets to "nothing chosen" every
+    // time the dialog opens, so a previous creation's pick never carries
+    // over as a silent default for the next one.
+    VideoOrientation? selectedOrientation;
+    bool showOrientationError = false;
+
     return await showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -138,7 +157,20 @@ class _ProfilesPageState extends State<ProfilesPage> {
                       borderSide: BorderSide(color: AppColors.mainColor),
                     ),
                   ),
-                )
+                ),
+                const SizedBox(height: 12),
+                // No option starts selected — creating a profile always
+                // requires an explicit choice, never a silent default.
+                OrientationPicker(
+                  selectedOrientation: selectedOrientation,
+                  showError: showOrientationError,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedOrientation = value;
+                      showOrientationError = false;
+                    });
+                  },
+                ),
               ],
             ),
             actions: [
@@ -146,22 +178,28 @@ class _ProfilesPageState extends State<ProfilesPage> {
                 onPressed: () async {
                   // Checks if the textfield is valid based on if the text passes all the validations we set
                   final bool isTextValid = _profileNameFormKey.currentState?.validate() ?? false;
+                  final VideoOrientation? orientation = selectedOrientation;
 
-                  if (isTextValid) {
+                  if (orientation == null) {
+                    setState(() => showOrientationError = true);
+                  }
+
+                  if (isTextValid && orientation != null) {
+                    final String name = _profileNameController.text.trim();
+
                     // Create the profile directory for the new profile
-                    await StorageUtils.createSpecificProfileFolder(
-                      _profileNameController.text.trim(),
-                    );
+                    await StorageUtils.createSpecificProfileFolder(name);
+                    await StorageUtils.setOrientation(name, orientation);
 
                     Utils.logInfo(
-                      '${logTag}Profile ${_profileNameController.text} created!',
+                      '${logTag}Profile $name created as ${orientation.name}!',
                     );
 
                     // Add the new profile to the end of the list
                     setState(() {
                       profiles.insert(
                         profiles.length,
-                        Profile(label: _profileNameController.text.trim()),
+                        Profile(label: name, orientation: orientation),
                       );
                       _profileNameController.clear();
                     });
@@ -348,6 +386,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
               TextButton.icon(
                 onPressed: () async {
                   await _addNewProfileDialog();
+                  setState(() {});
                 },
                 icon: const Icon(Icons.add),
                 style: TextButton.styleFrom(

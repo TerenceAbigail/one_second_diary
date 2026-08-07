@@ -2,6 +2,7 @@ part of 'app_pages.dart';
 
 abstract class Routes {
   static const INTRO = '/intro';
+  static const ONBOARDING_ORIENTATION = '/intro/onboarding_orientation';
   static const HOME = '/home';
   static const NOTIFICATION = '/home/notification';
   static const RECORDING = '/recording';

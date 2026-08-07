@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsUtil {
@@ -53,5 +54,23 @@ class SharedPrefsUtil {
 
   static Future<bool> putStringList(String key, List<String> value) {
     return _preferences!.setStringList(key, value);
+  }
+
+  static bool containsKey(String key) {
+    if (_preferences == null) return false;
+    return _preferences!.containsKey(key);
+  }
+
+  static Future<bool> removeKey(String key) {
+    return _preferences!.remove(key);
+  }
+
+  /// Test-only: drops the cached instance so the next [getInstance] picks up
+  /// a freshly mocked [SharedPreferences] backing store instead of reusing
+  /// whatever the first test in the suite initialized.
+  @visibleForTesting
+  static void debugReset() {
+    _storageUtil = null;
+    _preferences = null;
   }
 }

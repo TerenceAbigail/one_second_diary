@@ -14,10 +14,15 @@ class IntroPage extends StatelessWidget {
   Future<void> _onIntroEnd() async {
     await SharedPrefsUtil.putString('appPath', '');
     await SharedPrefsUtil.putString('moviesPath', '');
-    await SharedPrefsUtil.putBool('showIntro', false);
     await SharedPrefsUtil.putInt('videoCount', 0);
     await SharedPrefsUtil.putInt('movieCount', 1);
-    Get.offNamed(Routes.NEW_FEATURES_V152);
+    // showIntro deliberately isn't set here — OnboardingOrientationPage
+    // sets it, only once the Default profile actually exists. If the app
+    // is killed before that finishes, showIntro is still unset next
+    // launch, so getInitialRoute (main.dart) sends the user back through
+    // the intro carousel and this page again instead of leaving them with
+    // no profile and no way to ever be re-prompted.
+    Get.offNamed(Routes.ONBOARDING_ORIENTATION);
   }
 
   Widget _buildImage(String assetName) {
