@@ -8,12 +8,14 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../../../controllers/video_count_controller.dart';
 import '../../../../enums/export_date_range.dart';
+import '../../../../enums/video_orientation.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../../utils/app_paths.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/custom_dialog.dart';
 import '../../../../utils/date_format_utils.dart';
 import '../../../../utils/ffmpeg_api_wrapper.dart';
+import '../../../../utils/orientation_filter.dart';
 import '../../../../utils/storage_utils.dart';
 import '../../../../utils/utils.dart';
 import '../../../../utils/video_encoder.dart';
@@ -156,10 +158,15 @@ class _CreateMovieButtonState extends State<CreateMovieButton> {
             selectedVideos[selectedVideos.indexOf(video)] = copyVideoName;
             copiesToDelete.add(tempVideo1);
 
-            // Make sure it is 1080p, h264
+            // Make sure it is 1080p, h264, and fit into the profile's output
+            // canvas the same way save_button.dart/save_photo_button.dart do
+            // (previously a bare "scale=1920:1080", which stretched and
+            // distorted any legacy clip that wasn't already exactly 16:9).
+            // TODO(TerenceAbigail): read this from the active profile once Profile.orientation exists.
+            final String scale = OrientationFilter.scaleFilter(VideoOrientation.landscape);
             // Also set the framerate to 30 and copy all the streams
             await executeFFmpeg(
-                    '-i "$currentVideo" -vf "scale=1920:1080" -r 30 -map 0 ${VideoEncoder.arguments} -c:a copy -c:s copy "$tempVideo1" -y')
+                    '-i "$currentVideo" -vf "$scale" -r 30 -map 0 ${VideoEncoder.arguments} -c:a copy -c:s copy "$tempVideo1" -y')
                 .then((session) async {
               final returnCode = await session.getReturnCode();
               if (ReturnCode.isSuccess(returnCode)) {
