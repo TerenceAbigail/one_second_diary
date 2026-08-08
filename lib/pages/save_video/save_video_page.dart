@@ -371,105 +371,116 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
   Widget _dailyVideoPlayer() {
     return ColoredBox(
       color: AppColors.dark,
-      child: GestureDetector(
-        onTap: () => videoPlay(),
-        child: AspectRatio(
-          // Derived from the selected profile's orientation, not the
-          // trimmer/video controller's own reported aspect ratio, so the
-          // preview is already the right shape before the video finishes
-          // loading — matches selectedProfileName, which is also what
-          // "Current profile" above shows and what save_button.dart will
-          // actually encode into.
-          aspectRatio: OrientationFilter.aspectRatioFor(
-            StorageUtils.getOrientation(selectedProfileName),
+      // Capped so a portrait profile's taller-than-wide preview can't push
+      // the trim viewer and settings below it off-screen — see
+      // Constants.previewMaxHeightFraction. Center lets it pillarbox
+      // (narrower, not full-width) instead of overflowing.
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * Constants.previewMaxHeightFraction,
           ),
-          child: Stack(
-            children: [
-              VideoViewer(
-                trimmer: _trimmer,
+          child: GestureDetector(
+            onTap: () => videoPlay(),
+            child: AspectRatio(
+              // Derived from the selected profile's orientation, not the
+              // trimmer/video controller's own reported aspect ratio, so the
+              // preview is already the right shape before the video finishes
+              // loading — matches selectedProfileName, which is also what
+              // "Current profile" above shows and what save_button.dart will
+              // actually encode into.
+              aspectRatio: OrientationFilter.aspectRatioFor(
+                StorageUtils.getOrientation(selectedProfileName),
               ),
-              Center(
-                child: Opacity(
-                  opacity: _isVideoPlaying ? 0.0 : 1.0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    height: MediaQuery.of(context).size.width * 0.25,
-                    decoration: const BoxDecoration(
-                      color: Colors.black45,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.play_arrow,
-                        size: 72.0,
-                        color: Colors.white,
-                      ),
-                    ),
+              child: Stack(
+                children: [
+                  VideoViewer(
+                    trimmer: _trimmer,
                   ),
-                ),
-              ),
-              Align(
-                alignment: isTextDate ? Alignment.bottomLeft : Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Stack(
-                    children: [
-                      Text(
-                        isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.03,
-                          foreground: Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = textOutlineStrokeWidth
-                            ..color = invert(currentColor),
+                  Center(
+                    child: Opacity(
+                      opacity: _isVideoPlaying ? 0.0 : 1.0,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.width * 0.25,
+                        decoration: const BoxDecoration(
+                          color: Colors.black45,
+                          shape: BoxShape.circle,
                         ),
-                      ),
-                      Text(
-                        isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.03,
-                          color: currentColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Visibility(
-                visible: isGeotaggingEnabled,
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Stack(
-                      children: [
-                        Text(
-                          customLocationTextController.text.isEmpty
-                              ? _currentAddress ?? customLocationTextController.text
-                              : customLocationTextController.text,
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.032,
-                            foreground: Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = textOutlineStrokeWidth
-                              ..color = invert(currentColor),
+                        child: const Center(
+                          child: Icon(
+                            Icons.play_arrow,
+                            size: 72.0,
+                            color: Colors.white,
                           ),
                         ),
-                        Text(
-                          customLocationTextController.text.isEmpty
-                              ? _currentAddress ?? customLocationTextController.text
-                              : customLocationTextController.text,
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.032,
-                            color: currentColor,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  Align(
+                    alignment: isTextDate ? Alignment.bottomLeft : Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Stack(
+                        children: [
+                          Text(
+                            isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width * 0.03,
+                              foreground: Paint()
+                                ..style = PaintingStyle.stroke
+                                ..strokeWidth = textOutlineStrokeWidth
+                                ..color = invert(currentColor),
+                            ),
+                          ),
+                          Text(
+                            isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width * 0.03,
+                              color: currentColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: isGeotaggingEnabled,
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Stack(
+                          children: [
+                            Text(
+                              customLocationTextController.text.isEmpty
+                                  ? _currentAddress ?? customLocationTextController.text
+                                  : customLocationTextController.text,
+                              style: TextStyle(
+                                fontSize: MediaQuery.of(context).size.width * 0.032,
+                                foreground: Paint()
+                                  ..style = PaintingStyle.stroke
+                                  ..strokeWidth = textOutlineStrokeWidth
+                                  ..color = invert(currentColor),
+                              ),
+                            ),
+                            Text(
+                              customLocationTextController.text.isEmpty
+                                  ? _currentAddress ?? customLocationTextController.text
+                                  : customLocationTextController.text,
+                              style: TextStyle(
+                                fontSize: MediaQuery.of(context).size.width * 0.032,
+                                color: currentColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

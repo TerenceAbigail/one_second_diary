@@ -317,83 +317,94 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
   Widget _dailyPhotoViewer() {
     return ColoredBox(
       color: AppColors.dark,
-      child: AspectRatio(
-        // Derived from the selected profile's orientation — same reasoning
-        // as save_video_page.dart's _dailyVideoPlayer.
-        aspectRatio: OrientationFilter.aspectRatioFor(
-          StorageUtils.getOrientation(selectedProfileName),
-        ),
-        child: Stack(
-          children: [
-            Image.file(
-              File(routeArguments['photoPath']),
-              fit: BoxFit.contain,
-              width: double.infinity,
-              height: double.infinity,
+      // Capped so a portrait profile's taller-than-wide preview can't push
+      // the duration buttons and settings below it off-screen — see
+      // Constants.previewMaxHeightFraction. Center lets it pillarbox
+      // (narrower, not full-width) instead of overflowing.
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * Constants.previewMaxHeightFraction,
+          ),
+          child: AspectRatio(
+            // Derived from the selected profile's orientation — same reasoning
+            // as save_video_page.dart's _dailyVideoPlayer.
+            aspectRatio: OrientationFilter.aspectRatioFor(
+              StorageUtils.getOrientation(selectedProfileName),
             ),
-
-            Align(
-              alignment: isTextDate ? Alignment.bottomLeft : Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Stack(
-                  children: [
-                    Text(
-                      isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.03,
-                        foreground: Paint()
-                          ..style = PaintingStyle.stroke
-                          ..strokeWidth = textOutlineStrokeWidth
-                          ..color = invert(currentColor),
-                      ),
-                    ),
-                    Text(
-                      isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.03,
-                        color: currentColor,
-                      ),
-                    ),
-                  ],
+            child: Stack(
+              children: [
+                Image.file(
+                  File(routeArguments['photoPath']),
+                  fit: BoxFit.contain,
+                  width: double.infinity,
+                  height: double.infinity,
                 ),
-              ),
-            ),
-            Visibility(
-              visible: isGeotaggingEnabled,
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Stack(
-                    children: [
-                      Text(
-                        customLocationTextController.text.isEmpty
-                            ? _currentAddress ?? customLocationTextController.text
-                            : customLocationTextController.text,
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.032,
-                          foreground: Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = textOutlineStrokeWidth
-                            ..color = invert(currentColor),
+
+                Align(
+                  alignment: isTextDate ? Alignment.bottomLeft : Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Stack(
+                      children: [
+                        Text(
+                          isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.03,
+                            foreground: Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = textOutlineStrokeWidth
+                              ..color = invert(currentColor),
+                          ),
                         ),
-                      ),
-                      Text(
-                        customLocationTextController.text.isEmpty
-                            ? _currentAddress ?? customLocationTextController.text
-                            : customLocationTextController.text,
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.032,
-                          color: currentColor,
+                        Text(
+                          isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.03,
+                            color: currentColor,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
+                Visibility(
+                  visible: isGeotaggingEnabled,
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Stack(
+                        children: [
+                          Text(
+                            customLocationTextController.text.isEmpty
+                                ? _currentAddress ?? customLocationTextController.text
+                                : customLocationTextController.text,
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width * 0.032,
+                              foreground: Paint()
+                                ..style = PaintingStyle.stroke
+                                ..strokeWidth = textOutlineStrokeWidth
+                                ..color = invert(currentColor),
+                            ),
+                          ),
+                          Text(
+                            customLocationTextController.text.isEmpty
+                                ? _currentAddress ?? customLocationTextController.text
+                                : customLocationTextController.text,
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width * 0.032,
+                              color: currentColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

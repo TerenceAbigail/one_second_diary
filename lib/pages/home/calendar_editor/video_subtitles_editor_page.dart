@@ -161,40 +161,53 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
         children: [
           Column(
             children: [
-              GestureDetector(
-                onTap: () => videoPlay(),
-                child: AspectRatio(
-                  // Derived from the active profile's orientation, not
-                  // _videoController's own aspect ratio, so there's no
-                  // layout shift while it's still initializing.
-                  aspectRatio: OrientationFilter.aspectRatioFor(_previewOrientation),
-                  child: Stack(
-                    children: [
-                      VideoPlayer(
-                        key: UniqueKey(),
-                        _videoController,
-                      ),
-                      Center(
-                        child: Opacity(
-                          opacity: _opacity,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            height: MediaQuery.of(context).size.width * 0.25,
-                            decoration: const BoxDecoration(
-                              color: Colors.black45,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.play_arrow,
-                                size: 72.0,
-                                color: Colors.white,
+              // Capped so a portrait profile's taller-than-wide preview
+              // can't push the subtitles text field below it off-screen —
+              // see Constants.previewMaxHeightFraction. Center lets it
+              // pillarbox (narrower, not full-width) instead of
+              // overflowing.
+              Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight:
+                        MediaQuery.of(context).size.height * Constants.previewMaxHeightFraction,
+                  ),
+                  child: GestureDetector(
+                    onTap: () => videoPlay(),
+                    child: AspectRatio(
+                      // Derived from the active profile's orientation, not
+                      // _videoController's own aspect ratio, so there's no
+                      // layout shift while it's still initializing.
+                      aspectRatio: OrientationFilter.aspectRatioFor(_previewOrientation),
+                      child: Stack(
+                        children: [
+                          VideoPlayer(
+                            key: UniqueKey(),
+                            _videoController,
+                          ),
+                          Center(
+                            child: Opacity(
+                              opacity: _opacity,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height: MediaQuery.of(context).size.width * 0.25,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black45,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.play_arrow,
+                                    size: 72.0,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),

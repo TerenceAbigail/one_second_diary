@@ -8,6 +8,16 @@ class Constants {
   static const String email = 'mailto:kylekundev@gmail.com';
   static const String githubUrl = 'https://github.com/KyleKun/one_second_diary';
 
+  /// Caps how tall a preview `AspectRatio` box (save-video, save-photo,
+  /// calendar-editor, subtitle-editor) is allowed to grow relative to the
+  /// screen height. Sized to full available width with no ceiling, a
+  /// portrait (9:16) preview wants roughly 1.78x the screen width in
+  /// height — comfortably taller than the screen — and pushes whatever
+  /// else is on the page off-screen. A landscape (16:9) preview never
+  /// comes close to this fraction at any reasonable screen width, so
+  /// capping it has no visible effect there.
+  static const double previewMaxHeightFraction = 0.4;
+
   static const enMonths = [
     'January',
     'February',
