@@ -389,13 +389,24 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
       );
     }
     final Size videoSize = controller.value.size;
-    return FittedBox(
-      fit: BoxFit.cover,
-      clipBehavior: Clip.hardEdge,
-      child: SizedBox(
-        width: videoSize.width,
-        height: videoSize.height,
-        child: VideoPlayer(controller),
+    // FittedBox on its own would size *itself* to fit-contain within
+    // whatever space it's given, preserving the child's aspect ratio —
+    // `fit` only controls how the child is painted inside that box, not
+    // how big the box itself is (see RenderFittedBox.performLayout). Left
+    // unconstrained, a wide source video would make FittedBox shrink down
+    // to a small landscape-shaped box instead of filling the tall preview
+    // — exactly the letterboxing this is meant to avoid. Positioned.fill
+    // forces it to actually fill the stack first, so BoxFit.cover has the
+    // full area to scale into and crop.
+    return Positioned.fill(
+      child: FittedBox(
+        fit: BoxFit.cover,
+        clipBehavior: Clip.hardEdge,
+        child: SizedBox(
+          width: videoSize.width,
+          height: videoSize.height,
+          child: VideoPlayer(controller),
+        ),
       ),
     );
   }
