@@ -114,6 +114,7 @@ const Map<String, String> ca = {
       'Tots els vídeos associats amb aquest perfil també se suprimiran permanentment. Esteu segur que voleu continuar?',
   'profileNameCannotBeEmpty': 'El nom del perfil no pot estar buit',
   'reservedProfileName': 'Aquest és un nom de perfil reservat',
+  'profileOrientationRequired': 'Selecciona una orientació de vídeo per a aquest perfil',
   'creatingMovie': 'S’està processant... Espereu.\nPot trigar uns quants minuts',
   'doNotCloseTheApp': 'No tanqueu l’aplicació',
   'cancelMovieCreation': 'Cancel·la la creació de la pel·lícula',

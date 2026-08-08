@@ -113,6 +113,7 @@ const Map<String, String> fr = {
       'Toutes les vidéos associées à ce profil seront également supprimées en permanence. Êtes-vous sûr de continuer?',
   'profileNameCannotBeEmpty': 'Le nom du profil ne peut pas être vide',
   'reservedProfileName': 'Ceci est un nom de profil réservé',
+  'profileOrientationRequired': 'Sélectionnez une orientation vidéo pour ce profil',
   'creatingMovie': 'Traitement... Veuillez patienter.\nCela peut prendre quelques minutes.',
   'doNotCloseTheApp': 'Ne fermez pas l\'application',
   'cancelMovieCreation': 'Annuler la création du film',

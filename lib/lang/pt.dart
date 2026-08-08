@@ -111,6 +111,7 @@ const Map<String, String> pt = {
       'Todos os vídeos associados a este perfil também serão excluídos permanentemente. Você tem certeza que deseja continuar?',
   'profileNameCannotBeEmpty': 'O nome do perfil não pode estar vazio',
   'reservedProfileName': 'Este é um nome de perfil reservado',
+  'profileOrientationRequired': 'Selecione uma orientação de vídeo para este perfil',
   'creatingMovie': 'Processando... Por favor, aguarde.\nIsso pode levar alguns minutos.',
   'doNotCloseTheApp': 'Não feche o aplicativo',
   'cancelMovieCreation': 'Cancelar criação de filme',

@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/video_count_controller.dart';
 import '../enums/export_date_range.dart';
+import '../enums/video_orientation.dart';
 import 'app_paths.dart';
 import 'date_format_utils.dart';
 import 'shared_preferences_util.dart';
@@ -264,6 +265,13 @@ class Utils {
 
     return currentProfileName;
   }
+
+  /// The active profile's orientation — the canvas its saved clips and
+  /// compiled movie should target. Resolves "current profile" the same way
+  /// [getCurrentProfile] does, so this always reads the same profile that
+  /// videos are actually being saved into.
+  static VideoOrientation getCurrentOrientation() =>
+      StorageUtils.getOrientation(getCurrentProfile());
 
   /// Get all video files inside DCIM/OneSecondDiary/Movies folder
   static List<String> getAllMovies({bool fullPath = false}) {
