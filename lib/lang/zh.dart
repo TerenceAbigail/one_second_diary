@@ -107,6 +107,8 @@ const Map<String, String> zh = {
   'profileNameCannotBeEmpty': '配置文件名称不能为空',
   'reservedProfileName': '这是一个保留的个人资料名称',
   'profileOrientationRequired': '请为此配置文件选择视频方向',
+  'onboardingOrientationTitle': '选择您的视频方向',
+  'onboardingOrientationDesc': '这决定了您使用默认配置文件保存的视频形状——横向（16:9）或纵向（9:16）。您以后随时可以创建另一个使用不同方向的配置文件。',
   'creatingMovie': '正在处理...请稍候.\n这可能需要几分钟.',
   'doNotCloseTheApp': '请不要关闭应用程序',
   'cancelMovieCreation': '取消电影创建',

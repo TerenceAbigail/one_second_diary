@@ -115,6 +115,8 @@ const Map<String, String> id = {
   'profileNameCannotBeEmpty': 'Nama profil tidak bisa kosong',
   'reservedProfileName': 'Ini adalah nama profil yang dipesan',
   'profileOrientationRequired': 'Pilih orientasi video untuk profil ini',
+  'onboardingOrientationTitle': 'Pilih orientasi video Anda',
+  'onboardingOrientationDesc': 'Ini menentukan bentuk video yang Anda simpan dengan profil default Anda — lanskap (16:9) atau potret (9:16). Anda selalu bisa membuat profil lain dengan orientasi yang berbeda nanti.',
   'creatingMovie': 'Memproses ... tunggu sebentar.\nIni bisa memakan waktu beberapa menit.',
   'doNotCloseTheApp': 'Jangan tutup aplikasi ini',
   'cancelMovieCreation': 'Batalkan pembuatan video',

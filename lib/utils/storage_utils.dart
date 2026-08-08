@@ -354,11 +354,11 @@ class StorageUtils {
   /// Call this only when a profile is first created — nothing else in the
   /// app calls it for an existing profile, because orientation is meant to
   /// stay fixed for a profile's whole lifetime. Every legitimate caller
-  /// (profile creation in issue #4, "convert to the other orientation" in
-  /// issue #7 — which always creates a brand-new destination profile rather
-  /// than mutating the source) only ever writes this once, to a profile name
-  /// that has never had an orientation stored before. Not yet called
-  /// anywhere; wiring it into profile creation is issue #4.
+  /// (profile creation, first-launch onboarding's Default profile — see
+  /// [createDefaultProfile] — and "convert to the other orientation",
+  /// which always creates a brand-new destination profile rather than
+  /// mutating the source) only ever writes this once, to a profile name
+  /// that has never had an orientation stored before.
   ///
   /// Throws a [StateError] instead of overwriting if [profileName] already
   /// has a stored orientation — that can only mean a bug elsewhere is
@@ -374,6 +374,19 @@ class StorageUtils {
       throw StateError(message);
     }
     return SharedPrefsUtil.putString(key, orientation.name);
+  }
+
+  /// Creates the Default profile — its 'profiles' entry plus explicit
+  /// [orientation] — for a fresh install. Called once, from onboarding.
+  ///
+  /// ProfilesPage.validateProfileList() has its own fallback that also
+  /// writes a bare `['Default']` list if 'profiles' is still missing by
+  /// the time a user opens Profiles — but never calls [setOrientation]
+  /// there, since that path has no explicit choice behind it and should
+  /// grandfather to landscape.
+  static Future<void> createDefaultProfile(VideoOrientation orientation) async {
+    await SharedPrefsUtil.putStringList('profiles', ['Default']);
+    await setOrientation('', orientation);
   }
 
   // Create specific profile folder

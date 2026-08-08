@@ -112,6 +112,8 @@ const Map<String, String> cs = {
   'profileNameCannotBeEmpty': ' Název profilu nemůže být prázdný',
   'reservedProfileName': 'Toto je vyhrazený název profilu',
   'profileOrientationRequired': 'Vyberte orientaci videa pro tento profil',
+  'onboardingOrientationTitle': 'Vyberte orientaci videa',
+  'onboardingOrientationDesc': 'Toto určuje tvar videí uložených ve vašem výchozím profilu — na šířku (16:9) nebo na výšku (9:16). Později můžete vždy vytvořit další profil s opačnou orientací.',
   'creatingMovie': 'Zpracování... Počkejte prosím.\nTo může trvat několik minut.',
   'doNotCloseTheApp': 'Nezavírejte aplikaci.',
   'cancelMovieCreation': 'Zrušit vytvoření filmu',

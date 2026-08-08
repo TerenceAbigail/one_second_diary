@@ -114,6 +114,9 @@ const Map<String, String> fr = {
   'profileNameCannotBeEmpty': 'Le nom du profil ne peut pas être vide',
   'reservedProfileName': 'Ceci est un nom de profil réservé',
   'profileOrientationRequired': 'Sélectionnez une orientation vidéo pour ce profil',
+  'onboardingOrientationTitle': 'Choisissez votre orientation vidéo',
+  'onboardingOrientationDesc':
+      "Cela détermine la forme des vidéos enregistrées avec votre profil par défaut — paysage (16:9) ou portrait (9:16). Vous pourrez toujours créer un autre profil avec l'autre orientation plus tard.",
   'creatingMovie': 'Traitement... Veuillez patienter.\nCela peut prendre quelques minutes.',
   'doNotCloseTheApp': 'Ne fermez pas l\'application',
   'cancelMovieCreation': 'Annuler la création du film',

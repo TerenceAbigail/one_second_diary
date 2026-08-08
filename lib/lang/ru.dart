@@ -112,6 +112,8 @@ const Map<String, String> ru = {
   'profileNameCannotBeEmpty': 'Графа имени пользователя не может быть пустой',
   'reservedProfileName': 'Это имя уже занято',
   'profileOrientationRequired': 'Выберите ориентацию видео для этого профиля',
+  'onboardingOrientationTitle': 'Выберите ориентацию видео',
+  'onboardingOrientationDesc': 'Это определяет форму видео, сохраняемых в вашем профиле по умолчанию — альбомная (16:9) или портретная (9:16). Позже вы всегда сможете создать другой профиль с другой ориентацией.',
   'creatingMovie': 'Обработка... Подожди, пожалуйста.\nЭто может занять несколько минут.',
   'doNotCloseTheApp': 'Не закрывай приложение.',
   'cancelMovieCreation': 'Отменить создание фильма',
