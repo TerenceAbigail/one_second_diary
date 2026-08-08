@@ -157,10 +157,12 @@ class _CreateMovieButtonState extends State<CreateMovieButton> {
             selectedVideos[selectedVideos.indexOf(video)] = copyVideoName;
             copiesToDelete.add(tempVideo1);
 
-            // Make sure it is 1080p, h264, and fit into the active profile's
-            // output canvas the same way save_button.dart/save_photo_button.dart
-            // do (previously a bare "scale=1920:1080", which stretched and
-            // distorted any legacy clip that wasn't already exactly 16:9).
+            // Make sure it's h264 and fit into the active profile's output
+            // canvas the same way save_button.dart/save_photo_button.dart do
+            // — 1920x1080 for a landscape profile, 1080x1920 for a portrait
+            // one (previously a bare "scale=1920:1080", which stretched and
+            // distorted any legacy clip that wasn't already exactly 16:9,
+            // and had no portrait case at all).
             final String scale = OrientationFilter.scaleFilter(Utils.getCurrentOrientation());
             // Also set the framerate to 30 and copy all the streams
             await executeFFmpeg(
