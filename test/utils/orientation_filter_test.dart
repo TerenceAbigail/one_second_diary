@@ -39,4 +39,22 @@ void main() {
       expect(OrientationFilter.heightFor(VideoOrientation.portrait), 1920);
     });
   });
+
+  group('aspectRatioFor', () {
+    test('landscape is 16:9', () {
+      expect(OrientationFilter.aspectRatioFor(VideoOrientation.landscape), 16 / 9);
+    });
+
+    test('portrait is 9:16', () {
+      expect(OrientationFilter.aspectRatioFor(VideoOrientation.portrait), 9 / 16);
+    });
+
+    test('landscape and portrait are reciprocals of each other', () {
+      // Same canvas, just rotated — this should hold for any future
+      // orientation added the same way, not just these two literal values.
+      final double landscape = OrientationFilter.aspectRatioFor(VideoOrientation.landscape);
+      final double portrait = OrientationFilter.aspectRatioFor(VideoOrientation.portrait);
+      expect(landscape * portrait, closeTo(1.0, 1e-9));
+    });
+  });
 }
