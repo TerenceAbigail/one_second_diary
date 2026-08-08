@@ -84,6 +84,12 @@ class _ProfilesPageState extends State<ProfilesPage> {
   }
 
   Future<void> _addNewProfileDialog() async {
+    // Local to this dialog invocation — resets to "nothing chosen" every
+    // time the dialog opens, so a previous creation's pick never carries
+    // over as a silent default for the next one.
+    VideoOrientation? selectedOrientation;
+    bool showOrientationError = false;
+
     return await showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -150,7 +156,60 @@ class _ProfilesPageState extends State<ProfilesPage> {
                       borderSide: BorderSide(color: AppColors.mainColor),
                     ),
                   ),
-                )
+                ),
+                const SizedBox(height: 12),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'orientation'.tr,
+                    style: TextStyle(
+                      color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+                // No option starts selected — creating a profile always
+                // requires an explicit choice, never a silent default.
+                RadioGroup<VideoOrientation>(
+                  groupValue: selectedOrientation,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedOrientation = value;
+                      showOrientationError = false;
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      RadioListTile<VideoOrientation>(
+                        activeColor: AppColors.green,
+                        value: VideoOrientation.landscape,
+                        title: Text(
+                          'landscape'.tr,
+                          style: TextStyle(
+                            color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
+                      RadioListTile<VideoOrientation>(
+                        activeColor: AppColors.green,
+                        value: VideoOrientation.portrait,
+                        title: Text(
+                          'portrait'.tr,
+                          style: TextStyle(
+                            color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (showOrientationError)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'profileOrientationRequired'.tr,
+                      style: const TextStyle(color: AppColors.mainColor, fontSize: 12),
+                    ),
+                  ),
               ],
             ),
             actions: [
@@ -158,22 +217,28 @@ class _ProfilesPageState extends State<ProfilesPage> {
                 onPressed: () async {
                   // Checks if the textfield is valid based on if the text passes all the validations we set
                   final bool isTextValid = _profileNameFormKey.currentState?.validate() ?? false;
+                  final VideoOrientation? orientation = selectedOrientation;
 
-                  if (isTextValid) {
+                  if (orientation == null) {
+                    setState(() => showOrientationError = true);
+                  }
+
+                  if (isTextValid && orientation != null) {
+                    final String name = _profileNameController.text.trim();
+
                     // Create the profile directory for the new profile
-                    await StorageUtils.createSpecificProfileFolder(
-                      _profileNameController.text.trim(),
-                    );
+                    await StorageUtils.createSpecificProfileFolder(name);
+                    await StorageUtils.setOrientation(name, orientation);
 
                     Utils.logInfo(
-                      '${logTag}Profile ${_profileNameController.text} created!',
+                      '${logTag}Profile $name created as ${orientation.name}!',
                     );
 
                     // Add the new profile to the end of the list
                     setState(() {
                       profiles.insert(
                         profiles.length,
-                        Profile(label: _profileNameController.text.trim()),
+                        Profile(label: name, orientation: orientation),
                       );
                       _profileNameController.clear();
                     });
@@ -360,6 +425,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
               TextButton.icon(
                 onPressed: () async {
                   await _addNewProfileDialog();
+                  setState(() {});
                 },
                 icon: const Icon(Icons.add),
                 style: TextButton.styleFrom(

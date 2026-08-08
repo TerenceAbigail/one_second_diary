@@ -113,6 +113,7 @@ const Map<String, String> en = {
       'All videos associated with this profile will also be permanently deleted. Are you sure to continue?',
   'profileNameCannotBeEmpty': 'Profile name cannot be empty',
   'reservedProfileName': 'This is a reserved profile name',
+  'profileOrientationRequired': 'Select a video orientation for this profile',
   'creatingMovie': 'Processing... Please wait.\nThis can take several minutes.',
   'doNotCloseTheApp': 'Do not close the app',
   'cancelMovieCreation': 'Cancel movie creation',

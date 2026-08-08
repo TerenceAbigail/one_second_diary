@@ -111,6 +111,7 @@ const Map<String, String> cs = {
       'Všechna videa spojená s tímto profilem budou také trvale smazána. Jste si jisti, že budete pokračovat??',
   'profileNameCannotBeEmpty': ' Název profilu nemůže být prázdný',
   'reservedProfileName': 'Toto je vyhrazený název profilu',
+  'profileOrientationRequired': 'Vyberte orientaci videa pro tento profil',
   'creatingMovie': 'Zpracování... Počkejte prosím.\nTo může trvat několik minut.',
   'doNotCloseTheApp': 'Nezavírejte aplikaci.',
   'cancelMovieCreation': 'Zrušit vytvoření filmu',

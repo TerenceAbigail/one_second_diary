@@ -3,7 +3,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/daily_entry_controller.dart';
-import '../../../enums/video_orientation.dart';
 import '../../../routes/app_pages.dart';
 import '../../../utils/app_paths.dart';
 import '../../../utils/constants.dart';
@@ -279,9 +278,8 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
 
     final metadata = baseMetadata + locationMetadata;
 
-    // Fit the video into the profile's output canvas.
-    // TODO(TerenceAbigail): read this from the active profile once Profile.orientation exists.
-    final String scale = OrientationFilter.scaleFilter(VideoOrientation.landscape);
+    // Fit the video into the active profile's output canvas.
+    final String scale = OrientationFilter.scaleFilter(Utils.getCurrentOrientation());
 
     // Add date to the video
     final date =
