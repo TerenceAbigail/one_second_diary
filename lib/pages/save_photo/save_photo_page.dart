@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import '../../controllers/recording_settings_controller.dart';
+import '../../enums/video_orientation.dart';
 import '../../utils/constants.dart';
 import '../../utils/custom_checkbox_list_tile.dart';
 import '../../utils/date_format_utils.dart';
@@ -315,6 +316,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
   }
 
   Widget _dailyPhotoViewer() {
+    final VideoOrientation orientation = StorageUtils.getOrientation(selectedProfileName);
     return ColoredBox(
       color: AppColors.dark,
       // Capped so a portrait profile's taller-than-wide preview can't push
@@ -327,16 +329,21 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
             maxHeight: MediaQuery.of(context).size.height * Constants.previewMaxHeightFraction,
           ),
           child: AspectRatio(
-            // Derived from the selected profile's orientation — same reasoning
-            // as save_video_page.dart's _dailyVideoPlayer.
-            aspectRatio: OrientationFilter.aspectRatioFor(
-              StorageUtils.getOrientation(selectedProfileName),
-            ),
+            // Derived from the selected profile's orientation — same
+            // reasoning as save_video_page.dart's _dailyVideoPlayer.
+            aspectRatio: OrientationFilter.aspectRatioFor(orientation),
             child: Stack(
               children: [
                 Image.file(
                   File(routeArguments['photoPath']),
-                  fit: BoxFit.contain,
+                  // Cover (crop to fill), not contain, for a portrait
+                  // profile — save_photo_button.dart's
+                  // OrientationFilter.scaleFilter crops a mismatched photo
+                  // to fill the 9:16 canvas the same way it does for
+                  // video, so the preview should show the same framing
+                  // rather than letterboxing it. Landscape still pads
+                  // (contain), matching that encode path.
+                  fit: orientation == VideoOrientation.portrait ? BoxFit.cover : BoxFit.contain,
                   width: double.infinity,
                   height: double.infinity,
                 ),

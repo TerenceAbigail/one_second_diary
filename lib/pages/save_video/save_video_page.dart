@@ -7,9 +7,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 import '../../controllers/recording_settings_controller.dart';
+import '../../enums/video_orientation.dart';
 import '../../routes/app_pages.dart';
 import '../../utils/constants.dart';
 import '../../utils/custom_checkbox_list_tile.dart';
@@ -368,7 +370,38 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
     return Color.fromARGB((color.a * 255.0).round().clamp(0, 255), r, g, b);
   }
 
+  /// Mirrors what OrientationFilter.scaleFilter's crop actually does to a
+  /// mismatched clip saved into a portrait profile, so the preview shows
+  /// the same framing the saved video will have. VideoViewer (from
+  /// video_trimmer) always contain-fits to the source clip's own aspect
+  /// ratio regardless of the target canvas — correct for a landscape
+  /// profile (which pads, not crops, so nothing is hidden) but wrong for
+  /// portrait: a horizontal clip would show letterboxed inside the tall
+  /// preview instead of cropped to fill it, the opposite of what actually
+  /// gets saved. Used only when [selectedProfileName]'s orientation is
+  /// portrait — see _dailyVideoPlayer below.
+  Widget _croppedVideoPreview(VideoPlayerController controller) {
+    if (!controller.value.isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.white,
+        ),
+      );
+    }
+    final Size videoSize = controller.value.size;
+    return FittedBox(
+      fit: BoxFit.cover,
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: videoSize.width,
+        height: videoSize.height,
+        child: VideoPlayer(controller),
+      ),
+    );
+  }
+
   Widget _dailyVideoPlayer() {
+    final VideoOrientation orientation = StorageUtils.getOrientation(selectedProfileName);
     return ColoredBox(
       color: AppColors.dark,
       // Capped so a portrait profile's taller-than-wide preview can't push
@@ -389,14 +422,15 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
               // loading — matches selectedProfileName, which is also what
               // "Current profile" above shows and what save_button.dart will
               // actually encode into.
-              aspectRatio: OrientationFilter.aspectRatioFor(
-                StorageUtils.getOrientation(selectedProfileName),
-              ),
+              aspectRatio: OrientationFilter.aspectRatioFor(orientation),
               child: Stack(
                 children: [
-                  VideoViewer(
-                    trimmer: _trimmer,
-                  ),
+                  if (orientation == VideoOrientation.portrait)
+                    _croppedVideoPreview(_trimmer.videoPlayerController!)
+                  else
+                    VideoViewer(
+                      trimmer: _trimmer,
+                    ),
                   Center(
                     child: Opacity(
                       opacity: _isVideoPlaying ? 0.0 : 1.0,
