@@ -13,12 +13,14 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../../controllers/daily_entry_controller.dart';
 import '../../../controllers/lang_controller.dart';
 import '../../../controllers/video_count_controller.dart';
+import '../../../enums/video_orientation.dart';
 import '../../../routes/app_pages.dart';
 import '../../../utils/app_paths.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/date_format_utils.dart';
 import '../../../utils/ffmpeg_api_wrapper.dart';
 import '../../../utils/media_gallery.dart';
+import '../../../utils/orientation_filter.dart';
 import '../../../utils/shared_preferences_util.dart';
 import '../../../utils/storage_utils.dart';
 import '../../../utils/theme.dart';
@@ -52,6 +54,13 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
   final UniqueKey _videoPlayerKey = UniqueKey();
   late final bool useCalendarAlternativeColors =
       SharedPrefsUtil.getBool('useAlternativeCalendarColors') ?? false;
+
+  // Read once rather than inline in build(): Utils.getCurrentOrientation()
+  // chains through Utils.getCurrentProfile(), which unconditionally logs
+  // (including an async disk write) on every call, and build() reruns
+  // often here (video playback, calendar taps, etc). There's no in-page
+  // profile switcher, so it can't go stale while this page is open.
+  final VideoOrientation _previewOrientation = Utils.getCurrentOrientation();
 
   @override
   void initState() {
@@ -565,7 +574,11 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
                             child: AspectRatio(
-                              aspectRatio: 16 / 9,
+                              // Derived from the active profile's
+                              // orientation, not the loaded video's own
+                              // aspect ratio, so there's no layout shift
+                              // while it's still initializing.
+                              aspectRatio: OrientationFilter.aspectRatioFor(_previewOrientation),
                               child: Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(color: mainColor),

@@ -44,6 +44,14 @@ class OrientationFilter {
     }
   }
 
+  /// The width/height ratio of [orientation]'s canvas — 16/9 for landscape,
+  /// 9/16 for portrait. What every hardcoded-16:9 preview surface
+  /// (`AspectRatio` widgets in the save-video/save-photo/calendar-editor/
+  /// subtitle-editor pages) should use instead, so a portrait profile's
+  /// preview matches the canvas its clips actually get saved into.
+  static double aspectRatioFor(VideoOrientation orientation) =>
+      widthFor(orientation) / heightFor(orientation);
+
   /// The ffmpeg `-vf` filter fragment that fits a clip into [orientation]'s
   /// canvas.
   static String scaleFilter(VideoOrientation orientation) {

@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../enums/video_orientation.dart';
 import '../../../utils/app_paths.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/ffmpeg_api_wrapper.dart';
 import '../../../utils/media_gallery.dart';
+import '../../../utils/orientation_filter.dart';
 import '../../../utils/storage_utils.dart';
 import '../../../utils/theme.dart';
 import '../../../utils/utils.dart';
@@ -34,6 +36,14 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
   bool isEdit = false;
   late VideoPlayerController _videoController;
   final TextEditingController subtitlesController = TextEditingController();
+
+  // Read once rather than inline in build(): Utils.getCurrentOrientation()
+  // chains through Utils.getCurrentProfile(), which unconditionally logs
+  // (including an async disk write) on every call — and build() reruns on
+  // every subtitle keystroke via the TextField's onChanged below. There's
+  // no in-page profile switcher here, so it can't go stale while this page
+  // is open.
+  final VideoOrientation _previewOrientation = Utils.getCurrentOrientation();
 
   @override
   void initState() {
@@ -154,7 +164,10 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
               GestureDetector(
                 onTap: () => videoPlay(),
                 child: AspectRatio(
-                  aspectRatio: 16 / 9,
+                  // Derived from the active profile's orientation, not
+                  // _videoController's own aspect ratio, so there's no
+                  // layout shift while it's still initializing.
+                  aspectRatio: OrientationFilter.aspectRatioFor(_previewOrientation),
                   child: Stack(
                     children: [
                       VideoPlayer(

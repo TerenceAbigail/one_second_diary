@@ -15,6 +15,7 @@ import '../../utils/constants.dart';
 import '../../utils/custom_checkbox_list_tile.dart';
 import '../../utils/custom_dialog.dart';
 import '../../utils/date_format_utils.dart';
+import '../../utils/orientation_filter.dart';
 import '../../utils/shared_preferences_util.dart';
 import '../../utils/storage_utils.dart';
 import '../../utils/theme.dart';
@@ -373,7 +374,15 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
       child: GestureDetector(
         onTap: () => videoPlay(),
         child: AspectRatio(
-          aspectRatio: 16 / 9,
+          // Derived from the selected profile's orientation, not the
+          // trimmer/video controller's own reported aspect ratio, so the
+          // preview is already the right shape before the video finishes
+          // loading — matches selectedProfileName, which is also what
+          // "Current profile" above shows and what save_button.dart will
+          // actually encode into.
+          aspectRatio: OrientationFilter.aspectRatioFor(
+            StorageUtils.getOrientation(selectedProfileName),
+          ),
           child: Stack(
             children: [
               VideoViewer(

@@ -10,7 +10,9 @@ import '../../controllers/recording_settings_controller.dart';
 import '../../utils/constants.dart';
 import '../../utils/custom_checkbox_list_tile.dart';
 import '../../utils/date_format_utils.dart';
+import '../../utils/orientation_filter.dart';
 import '../../utils/shared_preferences_util.dart';
+import '../../utils/storage_utils.dart';
 import '../../utils/theme.dart';
 import '../../utils/utils.dart';
 import '../home/profiles/profiles_page.dart';
@@ -316,7 +318,11 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
     return ColoredBox(
       color: AppColors.dark,
       child: AspectRatio(
-        aspectRatio: 16 / 9,
+        // Derived from the selected profile's orientation — same reasoning
+        // as save_video_page.dart's _dailyVideoPlayer.
+        aspectRatio: OrientationFilter.aspectRatioFor(
+          StorageUtils.getOrientation(selectedProfileName),
+        ),
         child: Stack(
           children: [
             Image.file(
