@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/daily_entry_controller.dart';
+import '../../../enums/video_orientation.dart';
 import '../../../models/profile.dart';
 import '../../../utils/app_paths.dart';
 import '../../../utils/constants.dart';
@@ -53,13 +54,24 @@ class _ProfilesPageState extends State<ProfilesPage> {
     if (!storedProfiles.contains('Default')) {
       profiles.insert(
         0,
-        const Profile(label: 'Default', isDefault: true),
+        Profile(
+          label: 'Default',
+          isDefault: true,
+          orientation: StorageUtils.getOrientation(''),
+        ),
       );
     } else {
       profiles = storedProfiles.map(
         (e) {
-          if (e == 'Default') return Profile(label: e, isDefault: true);
-          return Profile(label: e);
+          // The Default profile's storage key is '' everywhere else in the
+          // app (AppPaths.profileVideos, Utils.getCurrentProfile) — match it
+          // here so its orientation is looked up under the same key.
+          final String orientationKey = e == 'Default' ? '' : e;
+          final VideoOrientation orientation = StorageUtils.getOrientation(orientationKey);
+          if (e == 'Default') {
+            return Profile(label: e, isDefault: true, orientation: orientation);
+          }
+          return Profile(label: e, orientation: orientation);
         },
       ).toList();
     }

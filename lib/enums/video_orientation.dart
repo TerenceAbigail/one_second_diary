@@ -6,4 +6,10 @@
 enum VideoOrientation {
   landscape,
   portrait;
+
+  /// Parses a persisted orientation string, defaulting to landscape for
+  /// anything unrecognized — the grandfathering path every profile that
+  /// predates this field (or has no stored value yet) falls through.
+  static VideoOrientation parse(String stored) =>
+      values.asNameMap()[stored] ?? VideoOrientation.landscape;
 }
