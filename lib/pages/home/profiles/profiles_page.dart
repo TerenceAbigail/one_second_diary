@@ -12,6 +12,7 @@ import '../../../utils/shared_preferences_util.dart';
 import '../../../utils/storage_utils.dart';
 import '../../../utils/theme.dart';
 import '../../../utils/utils.dart';
+import 'widgets/orientation_picker.dart';
 
 class ProfilesPage extends StatefulWidget {
   const ProfilesPage({super.key});
@@ -158,58 +159,18 @@ class _ProfilesPageState extends State<ProfilesPage> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'orientation'.tr,
-                    style: TextStyle(
-                      color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
-                    ),
-                  ),
-                ),
                 // No option starts selected — creating a profile always
                 // requires an explicit choice, never a silent default.
-                RadioGroup<VideoOrientation>(
-                  groupValue: selectedOrientation,
+                OrientationPicker(
+                  selectedOrientation: selectedOrientation,
+                  showError: showOrientationError,
                   onChanged: (value) {
                     setState(() {
                       selectedOrientation = value;
                       showOrientationError = false;
                     });
                   },
-                  child: Column(
-                    children: [
-                      RadioListTile<VideoOrientation>(
-                        activeColor: AppColors.green,
-                        value: VideoOrientation.landscape,
-                        title: Text(
-                          'landscape'.tr,
-                          style: TextStyle(
-                            color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
-                          ),
-                        ),
-                      ),
-                      RadioListTile<VideoOrientation>(
-                        activeColor: AppColors.green,
-                        value: VideoOrientation.portrait,
-                        title: Text(
-                          'portrait'.tr,
-                          style: TextStyle(
-                            color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-                if (showOrientationError)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'profileOrientationRequired'.tr,
-                      style: const TextStyle(color: AppColors.mainColor, fontSize: 12),
-                    ),
-                  ),
               ],
             ),
             actions: [

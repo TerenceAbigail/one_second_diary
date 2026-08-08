@@ -112,6 +112,8 @@ const Map<String, String> pt = {
   'profileNameCannotBeEmpty': 'O nome do perfil não pode estar vazio',
   'reservedProfileName': 'Este é um nome de perfil reservado',
   'profileOrientationRequired': 'Selecione uma orientação de vídeo para este perfil',
+  'onboardingOrientationTitle': 'Selecione sua orientação de vídeo',
+  'onboardingOrientationDesc': 'Isso define o formato dos vídeos salvos com seu perfil padrão — paisagem (16:9) ou retrato (9:16). Você sempre pode criar outro perfil com a outra orientação mais tarde.',
   'creatingMovie': 'Processando... Por favor, aguarde.\nIsso pode levar alguns minutos.',
   'doNotCloseTheApp': 'Não feche o aplicativo',
   'cancelMovieCreation': 'Cancelar criação de filme',
