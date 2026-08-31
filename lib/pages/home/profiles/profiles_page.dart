@@ -8,6 +8,7 @@ import '../../../models/profile.dart';
 import '../../../utils/app_paths.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/date_format_utils.dart';
+import '../../../utils/profile_name_validator.dart';
 import '../../../utils/shared_preferences_util.dart';
 import '../../../utils/storage_utils.dart';
 import '../../../utils/theme.dart';
@@ -114,24 +115,23 @@ class _ProfilesPageState extends State<ProfilesPage> {
                     LengthLimitingTextInputFormatter(45),
                   ],
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'profileNameCannotBeEmpty'.tr;
+                    final ProfileNameError? error = ProfileNameValidator.validate(
+                      value ?? '',
+                      existingLabels: profiles.map((profile) => profile.label).toList(),
+                      localizedDefaultLabel: 'default'.tr,
+                    );
+                    switch (error) {
+                      case ProfileNameError.empty:
+                        return 'profileNameCannotBeEmpty'.tr;
+                      case ProfileNameError.invalidCharacters:
+                        return 'profileNameCannotContainSpecialChars'.tr;
+                      case ProfileNameError.reserved:
+                        return 'reservedProfileName'.tr;
+                      case ProfileNameError.duplicate:
+                        return 'profileNameAlreadyExists'.tr;
+                      case null:
+                        return null;
                     }
-                    if (!value.contains(RegExp(r'^[\w\d _-]+$'))) {
-                      return 'profileNameCannotContainSpecialChars'.tr;
-                    }
-
-                    if (value.toLowerCase().trim() == 'default' ||
-                        value.toLowerCase().trim() == 'default'.tr.toLowerCase()) {
-                      return 'reservedProfileName'.tr;
-                    }
-
-                    if (profiles.any(
-                        (profile) => profile.label.toLowerCase() == value.toLowerCase().trim())) {
-                      return 'profileNameAlreadyExists'.tr;
-                    }
-
-                    return null;
                   },
                   decoration: InputDecoration(
                     hintText: 'enterProfileName'.tr,
