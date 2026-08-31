@@ -13,12 +13,14 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../../controllers/daily_entry_controller.dart';
 import '../../../controllers/lang_controller.dart';
 import '../../../controllers/video_count_controller.dart';
+import '../../../enums/video_orientation.dart';
 import '../../../routes/app_pages.dart';
 import '../../../utils/app_paths.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/date_format_utils.dart';
 import '../../../utils/ffmpeg_api_wrapper.dart';
 import '../../../utils/media_gallery.dart';
+import '../../../utils/orientation_filter.dart';
 import '../../../utils/shared_preferences_util.dart';
 import '../../../utils/storage_utils.dart';
 import '../../../utils/theme.dart';
@@ -52,6 +54,13 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
   final UniqueKey _videoPlayerKey = UniqueKey();
   late final bool useCalendarAlternativeColors =
       SharedPrefsUtil.getBool('useAlternativeCalendarColors') ?? false;
+
+  // Read once rather than inline in build(): Utils.getCurrentOrientation()
+  // chains through Utils.getCurrentProfile(), which unconditionally logs
+  // (including an async disk write) on every call, and build() reruns
+  // often here (video playback, calendar taps, etc). There's no in-page
+  // profile switcher, so it can't go stale while this page is open.
+  final VideoOrientation _previewOrientation = Utils.getCurrentOrientation();
 
   @override
   void initState() {
@@ -562,77 +571,112 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                 child: wasDateRecorded
                     ? Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: AspectRatio(
-                              aspectRatio: 16 / 9,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: mainColor),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Center(
-                                      child: SizedBox(
-                                        height: 30,
-                                        width: 30,
-                                        child: Icon(
-                                          Icons.hourglass_bottom,
-                                          color: mainColor,
-                                        ),
+                          // Flexible, not a plain child: this Column's own
+                          // height is already bounded by the Expanded
+                          // above, and unlike save_video_page.dart/
+                          // save_photo_page.dart (where the preview is
+                          // followed by the page's own Expanded, so it can
+                          // never be squeezed), here it sits next to the
+                          // Flexible delete/subtitle button row below. A
+                          // plain non-flex child would claim space before
+                          // that row regardless of what's actually left —
+                          // Flexible makes the two share the real bounded
+                          // height, so previewMaxHeightFraction below is a
+                          // ceiling, not a guarantee, and can never push
+                          // the buttons off-screen.
+                          Flexible(
+                            flex: 5,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                              // Capped so a portrait profile's taller-than-wide
+                              // preview can't push the delete/subtitle buttons
+                              // below it off-screen — see
+                              // Constants.previewMaxHeightFraction. Center lets
+                              // it pillarbox (narrower, not full-width) instead
+                              // of overflowing.
+                              child: Center(
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxHeight:
+                                        MediaQuery.of(context).size.height *
+                                        Constants.previewMaxHeightFraction,
+                                  ),
+                                  child: AspectRatio(
+                                    // Derived from the active profile's
+                                    // orientation, not the loaded video's own
+                                    // aspect ratio, so there's no layout shift
+                                    // while it's still initializing.
+                                    aspectRatio: OrientationFilter.aspectRatioFor(_previewOrientation),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: mainColor),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Center(
+                                            child: SizedBox(
+                                              height: 30,
+                                              width: 30,
+                                              child: Icon(
+                                                Icons.hourglass_bottom,
+                                                color: mainColor,
+                                              ),
+                                            ),
+                                          ),
+                                          FutureBuilder(
+                                            future: initializeVideoPlayback(currentVideo),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return const SizedBox.shrink();
+                                              }
+
+                                              if (snapshot.hasError) {
+                                                return Text(
+                                                  '"Error loading video: " + ${snapshot.error}',
+                                                );
+                                              }
+
+                                              // Not sure if it works but if the videoController fails we try to restart the page
+                                              if (_controller?.value.hasError == true) {
+                                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                  _controller?.dispose();
+                                                });
+                                                Get.offAllNamed(Routes.HOME)
+                                                    ?.then((_) => setState(() {}));
+                                              }
+
+                                              // VideoPlayer
+                                              if (_controller != null &&
+                                                  _controller!.value.isInitialized) {
+                                                return Align(
+                                                  alignment: Alignment.center,
+                                                  child: Stack(
+                                                    fit: StackFit.passthrough,
+                                                    children: [
+                                                      Align(
+                                                        alignment: Alignment.center,
+                                                        child: ClipRect(
+                                                          child: VideoPlayer(
+                                                            key: _videoPlayerKey,
+                                                            _controller!,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Controls(
+                                                        controller: _controller,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              } else {
+                                                return const SizedBox.shrink();
+                                              }
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    FutureBuilder(
-                                      future: initializeVideoPlayback(currentVideo),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                          return const SizedBox.shrink();
-                                        }
-
-                                        if (snapshot.hasError) {
-                                          return Text(
-                                            '"Error loading video: " + ${snapshot.error}',
-                                          );
-                                        }
-
-                                        // Not sure if it works but if the videoController fails we try to restart the page
-                                        if (_controller?.value.hasError == true) {
-                                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                                            _controller?.dispose();
-                                          });
-                                          Get.offAllNamed(Routes.HOME)
-                                              ?.then((_) => setState(() {}));
-                                        }
-
-                                        // VideoPlayer
-                                        if (_controller != null &&
-                                            _controller!.value.isInitialized) {
-                                          return Align(
-                                            alignment: Alignment.center,
-                                            child: Stack(
-                                              fit: StackFit.passthrough,
-                                              children: [
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: ClipRect(
-                                                    child: VideoPlayer(
-                                                      key: _videoPlayerKey,
-                                                      _controller!,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Controls(
-                                                  controller: _controller,
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        } else {
-                                          return const SizedBox.shrink();
-                                        }
-                                      },
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),

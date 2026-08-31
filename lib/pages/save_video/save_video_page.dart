@@ -7,14 +7,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 import '../../controllers/recording_settings_controller.dart';
+import '../../enums/video_orientation.dart';
 import '../../routes/app_pages.dart';
 import '../../utils/constants.dart';
 import '../../utils/custom_checkbox_list_tile.dart';
 import '../../utils/custom_dialog.dart';
 import '../../utils/date_format_utils.dart';
+import '../../utils/orientation_filter.dart';
 import '../../utils/shared_preferences_util.dart';
 import '../../utils/storage_utils.dart';
 import '../../utils/theme.dart';
@@ -367,100 +370,162 @@ class _SaveVideoPageState extends State<SaveVideoPage> {
     return Color.fromARGB((color.a * 255.0).round().clamp(0, 255), r, g, b);
   }
 
+  /// Mirrors what OrientationFilter.scaleFilter's crop actually does to a
+  /// mismatched clip saved into a portrait profile, so the preview shows
+  /// the same framing the saved video will have. VideoViewer (from
+  /// video_trimmer) always contain-fits to the source clip's own aspect
+  /// ratio regardless of the target canvas — correct for a landscape
+  /// profile (which pads, not crops, so nothing is hidden) but wrong for
+  /// portrait: a horizontal clip would show letterboxed inside the tall
+  /// preview instead of cropped to fill it, the opposite of what actually
+  /// gets saved. Used only when [selectedProfileName]'s orientation is
+  /// portrait — see _dailyVideoPlayer below.
+  Widget _croppedVideoPreview(VideoPlayerController controller) {
+    if (!controller.value.isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.white,
+        ),
+      );
+    }
+    final Size videoSize = controller.value.size;
+    // FittedBox on its own would size *itself* to fit-contain within
+    // whatever space it's given, preserving the child's aspect ratio —
+    // `fit` only controls how the child is painted inside that box, not
+    // how big the box itself is (see RenderFittedBox.performLayout). Left
+    // unconstrained, a wide source video would make FittedBox shrink down
+    // to a small landscape-shaped box instead of filling the tall preview
+    // — exactly the letterboxing this is meant to avoid. Positioned.fill
+    // forces it to actually fill the stack first, so BoxFit.cover has the
+    // full area to scale into and crop.
+    return Positioned.fill(
+      child: FittedBox(
+        fit: BoxFit.cover,
+        clipBehavior: Clip.hardEdge,
+        child: SizedBox(
+          width: videoSize.width,
+          height: videoSize.height,
+          child: VideoPlayer(controller),
+        ),
+      ),
+    );
+  }
+
   Widget _dailyVideoPlayer() {
+    final VideoOrientation orientation = StorageUtils.getOrientation(selectedProfileName);
     return ColoredBox(
       color: AppColors.dark,
-      child: GestureDetector(
-        onTap: () => videoPlay(),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Stack(
-            children: [
-              VideoViewer(
-                trimmer: _trimmer,
-              ),
-              Center(
-                child: Opacity(
-                  opacity: _isVideoPlaying ? 0.0 : 1.0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    height: MediaQuery.of(context).size.width * 0.25,
-                    decoration: const BoxDecoration(
-                      color: Colors.black45,
-                      shape: BoxShape.circle,
+      // Capped so a portrait profile's taller-than-wide preview can't push
+      // the trim viewer and settings below it off-screen — see
+      // Constants.previewMaxHeightFraction. Center lets it pillarbox
+      // (narrower, not full-width) instead of overflowing.
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * Constants.previewMaxHeightFraction,
+          ),
+          child: GestureDetector(
+            onTap: () => videoPlay(),
+            child: AspectRatio(
+              // Derived from the selected profile's orientation, not the
+              // trimmer/video controller's own reported aspect ratio, so the
+              // preview is already the right shape before the video finishes
+              // loading — matches selectedProfileName, which is also what
+              // "Current profile" above shows and what save_button.dart will
+              // actually encode into.
+              aspectRatio: OrientationFilter.aspectRatioFor(orientation),
+              child: Stack(
+                children: [
+                  if (orientation == VideoOrientation.portrait)
+                    _croppedVideoPreview(_trimmer.videoPlayerController!)
+                  else
+                    VideoViewer(
+                      trimmer: _trimmer,
                     ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.play_arrow,
-                        size: 72.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: isTextDate ? Alignment.bottomLeft : Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Stack(
-                    children: [
-                      Text(
-                        isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.03,
-                          foreground: Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = textOutlineStrokeWidth
-                            ..color = invert(currentColor),
+                  Center(
+                    child: Opacity(
+                      opacity: _isVideoPlaying ? 0.0 : 1.0,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.width * 0.25,
+                        decoration: const BoxDecoration(
+                          color: Colors.black45,
+                          shape: BoxShape.circle,
                         ),
-                      ),
-                      Text(
-                        isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.03,
-                          color: currentColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Visibility(
-                visible: isGeotaggingEnabled,
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Stack(
-                      children: [
-                        Text(
-                          customLocationTextController.text.isEmpty
-                              ? _currentAddress ?? customLocationTextController.text
-                              : customLocationTextController.text,
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.032,
-                            foreground: Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = textOutlineStrokeWidth
-                              ..color = invert(currentColor),
+                        child: const Center(
+                          child: Icon(
+                            Icons.play_arrow,
+                            size: 72.0,
+                            color: Colors.white,
                           ),
                         ),
-                        Text(
-                          customLocationTextController.text.isEmpty
-                              ? _currentAddress ?? customLocationTextController.text
-                              : customLocationTextController.text,
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.032,
-                            color: currentColor,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  Align(
+                    alignment: isTextDate ? Alignment.bottomLeft : Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Stack(
+                        children: [
+                          Text(
+                            isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width * 0.03,
+                              foreground: Paint()
+                                ..style = PaintingStyle.stroke
+                                ..strokeWidth = textOutlineStrokeWidth
+                                ..color = invert(currentColor),
+                            ),
+                          ),
+                          Text(
+                            isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width * 0.03,
+                              color: currentColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: isGeotaggingEnabled,
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Stack(
+                          children: [
+                            Text(
+                              customLocationTextController.text.isEmpty
+                                  ? _currentAddress ?? customLocationTextController.text
+                                  : customLocationTextController.text,
+                              style: TextStyle(
+                                fontSize: MediaQuery.of(context).size.width * 0.032,
+                                foreground: Paint()
+                                  ..style = PaintingStyle.stroke
+                                  ..strokeWidth = textOutlineStrokeWidth
+                                  ..color = invert(currentColor),
+                              ),
+                            ),
+                            Text(
+                              customLocationTextController.text.isEmpty
+                                  ? _currentAddress ?? customLocationTextController.text
+                                  : customLocationTextController.text,
+                              style: TextStyle(
+                                fontSize: MediaQuery.of(context).size.width * 0.032,
+                                color: currentColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

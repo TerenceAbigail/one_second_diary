@@ -102,8 +102,28 @@ class _ViewMoviesState extends State<ViewMovies> {
                                       children: [
                                         Align(
                                           alignment: Alignment.center,
-                                          child: Image.memory(
-                                            snapshot.data![index] as Uint8List,
+                                          // Uncapped, this thumbnail's height
+                                          // is unbounded (it sits under a
+                                          // non-flex Column child, same as
+                                          // every other unbounded-preview bug
+                                          // this session), and it always
+                                          // fit only because every movie was
+                                          // landscape (wide, short) until
+                                          // portrait profiles existed — a
+                                          // portrait movie's thumbnail is
+                                          // tall and pushes the play/share
+                                          // row below it past this grid
+                                          // cell's fixed (square) height.
+                                          // Capping lets it pillarbox
+                                          // (narrower, centered) instead.
+                                          child: ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxHeight:
+                                                  MediaQuery.of(context).size.width - 100,
+                                            ),
+                                            child: Image.memory(
+                                              snapshot.data![index] as Uint8List,
+                                            ),
                                           ),
                                         ),
                                         Align(

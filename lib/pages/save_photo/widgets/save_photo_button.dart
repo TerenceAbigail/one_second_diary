@@ -9,6 +9,7 @@ import '../../../utils/constants.dart';
 import '../../../utils/custom_dialog.dart';
 import '../../../utils/date_format_utils.dart';
 import '../../../utils/ffmpeg_api_wrapper.dart';
+import '../../../utils/orientation_filter.dart';
 import '../../../utils/shared_preferences_util.dart';
 import '../../../utils/storage_utils.dart';
 import '../../../utils/utils.dart';
@@ -277,9 +278,8 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
 
     final metadata = baseMetadata + locationMetadata;
 
-    // Scale video to 1920x1080 and add black padding if needed
-    const scale =
-        'scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black';
+    // Fit the video into the active profile's output canvas.
+    final String scale = OrientationFilter.scaleFilter(Utils.getCurrentOrientation());
 
     // Add date to the video
     final date =

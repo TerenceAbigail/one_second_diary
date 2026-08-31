@@ -11,6 +11,7 @@ import '../pages/home/profiles/profiles_page.dart';
 import '../pages/home/settings/widgets/preferences_page.dart';
 import '../pages/intro/intro_page.dart';
 import '../pages/intro/new_features_v152.dart';
+import '../pages/intro/onboarding_orientation_page.dart';
 import '../pages/recording/recording_page.dart';
 import '../pages/save_photo/save_photo_page.dart';
 import '../pages/save_video/save_video_page.dart';
@@ -22,6 +23,10 @@ class AppPages {
     GetPage(name: Routes.HOME, page: () => HomePage(), binding: HomeBinding()),
     GetPage(name: Routes.NOTIFICATION, page: () => const NotificationPage()),
     GetPage(name: Routes.INTRO, page: () => IntroPage()),
+    GetPage(
+      name: Routes.ONBOARDING_ORIENTATION,
+      page: () => const OnboardingOrientationPage(),
+    ),
     GetPage(name: Routes.RECORDING, page: () => RecordingPage()),
     GetPage(name: Routes.DONATION, page: () => DonationPage()),
     GetPage(name: Routes.SAVE_VIDEO, page: () => SaveVideoPage()),
