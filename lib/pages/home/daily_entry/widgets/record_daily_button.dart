@@ -27,8 +27,9 @@ class RecordDailyButton extends StatelessWidget {
             final forceNativeCamera =
                 SharedPrefsUtil.getBool('forceNativeCamera') ?? false;
             if ((sdkVersion != null && sdkVersion < 29) || forceNativeCamera) {
-              final videoFile =
-                  await ImagePicker().pickVideo(source: ImageSource.camera);
+              final videoFile = await ImagePicker().pickVideo(
+                source: ImageSource.camera,
+              );
               if (videoFile != null) {
                 Get.toNamed(
                   Routes.SAVE_VIDEO,

@@ -67,7 +67,8 @@ class _RecordingPageState extends State<RecordingPage>
     // shortcut is Android only.
     if (PlatformUtils.isAndroid) {
       volumeButtonStream = FlutterAndroidVolumeKeydown.stream.listen((event) {
-        if (event == HardwareButton.volume_down || event == HardwareButton.volume_up) {
+        if (event == HardwareButton.volume_down ||
+            event == HardwareButton.volume_up) {
           if (!_isRecording) {
             volumeButtonStream?.cancel();
             setState(() => _isRecording = true);
@@ -99,25 +100,22 @@ class _RecordingPageState extends State<RecordingPage>
   /// Start countdown timer if it is actived
   void startTimer() {
     const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_timerSeconds == 0) {
-          setState(() {
-            // Remove  countdown from screen
-            _isTimerEnable = false;
-            timer.cancel();
-          });
-          Future.delayed(const Duration(milliseconds: 500), () {
-            startVideoRecording();
-          });
-        } else {
-          setState(() {
-            _timerSeconds--;
-          });
-        }
-      },
-    );
+    _timer = Timer.periodic(oneSec, (Timer timer) {
+      if (_timerSeconds == 0) {
+        setState(() {
+          // Remove  countdown from screen
+          _isTimerEnable = false;
+          timer.cancel();
+        });
+        Future.delayed(const Duration(milliseconds: 500), () {
+          startVideoRecording();
+        });
+      } else {
+        setState(() {
+          _timerSeconds--;
+        });
+      }
+    });
   }
 
   @override
@@ -125,7 +123,8 @@ class _RecordingPageState extends State<RecordingPage>
     if (!_cameraController.value.isInitialized) {
       return;
     }
-    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
       _cameraController.dispose();
     } else if (state == AppLifecycleState.resumed) {
       if (_cameraController.value.isInitialized) {
@@ -144,7 +143,10 @@ class _RecordingPageState extends State<RecordingPage>
       return;
     }
 
-    _currentScale = (_baseScale * details.scale).clamp(_minAvailableZoom, _maxAvailableZoom);
+    _currentScale = (_baseScale * details.scale).clamp(
+      _minAvailableZoom,
+      _maxAvailableZoom,
+    );
 
     await _cameraController.setZoomLevel(_currentScale);
   }
@@ -154,16 +156,18 @@ class _RecordingPageState extends State<RecordingPage>
       details.localPosition.dx / constraints.maxWidth,
       details.localPosition.dy / constraints.maxHeight,
     );
-    final _overlayEntry = OverlayEntry(builder: (context) {
-      return Positioned(
-        left: details.globalPosition.dx,
-        top: details.globalPosition.dy,
-        child: const Material(
-          color: Colors.transparent,
-          child: Icon(Icons.brightness_7_rounded),
-        ),
-      );
-    });
+    final _overlayEntry = OverlayEntry(
+      builder: (context) {
+        return Positioned(
+          left: details.globalPosition.dx,
+          top: details.globalPosition.dy,
+          child: const Material(
+            color: Colors.transparent,
+            child: Icon(Icons.brightness_7_rounded),
+          ),
+        );
+      },
+    );
     Overlay.of(context).insert(_overlayEntry);
     Future.delayed(const Duration(seconds: 1), _overlayEntry.remove);
 
@@ -175,12 +179,15 @@ class _RecordingPageState extends State<RecordingPage>
     WidgetsFlutterBinding.ensureInitialized();
     await Utils.requestPermission(Permission.microphone);
     await Utils.requestPermission(Permission.camera);
-    final recordWithFrontCamera = SharedPrefsUtil.getBool('recordWithFrontCamera') ?? false;
+    final recordWithFrontCamera =
+        SharedPrefsUtil.getBool('recordWithFrontCamera') ?? false;
     _availableCameras = await availableCameras();
-    _frontCamera = _availableCameras
-        .firstWhere((description) => description.lensDirection == CameraLensDirection.front);
-    _backCamera = _availableCameras
-        .firstWhere((description) => description.lensDirection == CameraLensDirection.back);
+    _frontCamera = _availableCameras.firstWhere(
+      (description) => description.lensDirection == CameraLensDirection.front,
+    );
+    _backCamera = _availableCameras.firstWhere(
+      (description) => description.lensDirection == CameraLensDirection.back,
+    );
     _initCamera(recordWithFrontCamera ? _frontCamera : _backCamera);
   }
 
@@ -199,11 +206,17 @@ class _RecordingPageState extends State<RecordingPage>
     try {
       await _cameraController.initialize();
       await Future.wait([
-        _cameraController.getMaxZoomLevel().then((value) => _maxAvailableZoom = value),
-        _cameraController.getMinZoomLevel().then((value) => _minAvailableZoom = value),
+        _cameraController.getMaxZoomLevel().then(
+          (value) => _maxAvailableZoom = value,
+        ),
+        _cameraController.getMinZoomLevel().then(
+          (value) => _minAvailableZoom = value,
+        ),
       ]);
 
-      await _cameraController.lockCaptureOrientation(DeviceOrientation.portraitUp);
+      await _cameraController.lockCaptureOrientation(
+        DeviceOrientation.portraitUp,
+      );
     } catch (e) {
       Utils.logError('${logTag}failed to initialize camera: ${e.toString()}');
       showDialog(
@@ -291,16 +304,25 @@ class _RecordingPageState extends State<RecordingPage>
                         () => SizedBox(
                           width: 150,
                           child: Slider(
-                            value: _recordingSettingsController.recordingSeconds.value.toDouble(),
+                            value: _recordingSettingsController
+                                .recordingSeconds
+                                .value
+                                .toDouble(),
                             min: 2,
                             max: 10,
-                            activeColor: AppColors.mainColor.withValues(alpha: 0.9),
-                            inactiveColor: AppColors.mainColor.withValues(alpha: 0.2),
+                            activeColor: AppColors.mainColor.withValues(
+                              alpha: 0.9,
+                            ),
+                            inactiveColor: AppColors.mainColor.withValues(
+                              alpha: 0.2,
+                            ),
                             onChanged: (double value) {
                               _recordingSeconds = value.round();
 
                               /// Save on SharedPrefs
-                              _recordingSettingsController.setRecordingSeconds(value.round());
+                              _recordingSettingsController.setRecordingSeconds(
+                                value.round(),
+                              );
                             },
                           ),
                         ),
@@ -313,8 +335,11 @@ class _RecordingPageState extends State<RecordingPage>
                       Obx(
                         () => Switch(
                           activeThumbColor: AppColors.mainColor,
-                          activeTrackColor: AppColors.mainColor.withValues(alpha: 0.5),
-                          value: _recordingSettingsController.isTimerEnable.value,
+                          activeTrackColor: AppColors.mainColor.withValues(
+                            alpha: 0.5,
+                          ),
+                          value:
+                              _recordingSettingsController.isTimerEnable.value,
                           onChanged: (value) {
                             _recordingSettingsController.isTimerEnable.value
                                 ? _disableTimer()
@@ -323,7 +348,7 @@ class _RecordingPageState extends State<RecordingPage>
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               );
             },
@@ -336,9 +361,7 @@ class _RecordingPageState extends State<RecordingPage>
               },
               child: const Text(
                 'OK',
-                style: TextStyle(
-                  color: AppColors.mainColor,
-                ),
+                style: TextStyle(color: AppColors.mainColor),
               ),
             ),
           ],
@@ -378,11 +401,12 @@ class _RecordingPageState extends State<RecordingPage>
         if (mounted)
           setState(() {
             elapsedSeconds =
-                stopwatch.elapsed.inMilliseconds >= milliseconds && milliseconds < 10000
-                    ? '0${milliseconds ~/ 1000}'
-                    : stopwatch.elapsed.inMilliseconds >= 10000
-                        ? '10'
-                        : '0${stopwatch.elapsed.inSeconds}';
+                stopwatch.elapsed.inMilliseconds >= milliseconds &&
+                    milliseconds < 10000
+                ? '0${milliseconds ~/ 1000}'
+                : stopwatch.elapsed.inMilliseconds >= 10000
+                ? '10'
+                : '0${stopwatch.elapsed.inSeconds}';
           });
         if (stopwatch.elapsed.inMilliseconds >= milliseconds + 1000) {
           final file = await _cameraController.stopVideoRecording();
@@ -505,8 +529,8 @@ class _RecordingPageState extends State<RecordingPage>
               child: Text(
                 !_isRecording
                     ? _recordingSeconds >= 10
-                        ? '00:10'
-                        : '00:0$_recordingSeconds'
+                          ? '00:10'
+                          : '00:0$_recordingSeconds'
                     : '00:$elapsedSeconds',
                 style: const TextStyle(
                   color: Colors.red,

@@ -26,10 +26,7 @@ final lock = Lock();
 
 class Utils {
   static void launchURL(String url) async {
-    await launchUrl(
-      Uri.parse(url),
-      mode: LaunchMode.externalApplication,
-    );
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 
   static Future<void> logInfo(info) async {
@@ -49,8 +46,11 @@ class Utils {
   static Future<void> logError(error) async {
     logger.e(error);
     final String now = DateTime.now().toString();
-    final String stacktrace = Trace.from(StackTrace.current).terse.frames.first.toString();
-    final line = '[ERROR] $now: ${error.toString()}' + '\nStacktrace: $stacktrace';
+    final String stacktrace = Trace.from(
+      StackTrace.current,
+    ).terse.frames.first.toString();
+    final line =
+        '[ERROR] $now: ${error.toString()}' + '\nStacktrace: $stacktrace';
     await lock.synchronized(() => appendLineToLogFile(line));
   }
 
@@ -79,33 +79,36 @@ class Utils {
   static Future<bool> requestPermission(Permission permission) async {
     if (await permission.isGranted) {
       logInfo(
-          '[Utils.requestPermission()] - Permission ${permission.toString()} was already granted');
+        '[Utils.requestPermission()] - Permission ${permission.toString()} was already granted',
+      );
       return true;
     } else {
       final result = await permission.request();
       if (result == PermissionStatus.granted) {
-        logInfo('[Utils.requestPermission()] - Permission ${permission.toString()} granted!');
+        logInfo(
+          '[Utils.requestPermission()] - Permission ${permission.toString()} granted!',
+        );
         return true;
       } else {
-        logInfo('[Utils.requestPermission()] - Permission ${permission.toString()} denied!');
+        logInfo(
+          '[Utils.requestPermission()] - Permission ${permission.toString()} denied!',
+        );
         return false;
       }
     }
   }
 
   /// Used to request storage-specific Android permissions due to Android 13 breaking changes
-  static Future<bool> requestStoragePermissions({required int sdkVersion}) async {
+  static Future<bool> requestStoragePermissions({
+    required int sdkVersion,
+  }) async {
     late final Map<Permission, PermissionStatus> permissionStatuses;
 
     if (sdkVersion <= 32) {
       // For android 12 and below devices
-      permissionStatuses = await [
-        Permission.storage,
-      ].request();
+      permissionStatuses = await [Permission.storage].request();
     } else {
-      permissionStatuses = await [
-        Permission.videos,
-      ].request();
+      permissionStatuses = await [Permission.videos].request();
     }
 
     bool allAccepted = true;
@@ -127,7 +130,9 @@ class Utils {
   static Future<String> writeLocationTxt(String? location) async {
     final String txtPath = '${AppPaths.internal}/location.txt';
 
-    logInfo('[Utils.writeLocationTxt()] - Writing location txt file to $txtPath');
+    logInfo(
+      '[Utils.writeLocationTxt()] - Writing location txt file to $txtPath',
+    );
 
     // Delete old txt files
     StorageUtils.deleteFile(txtPath);
@@ -214,13 +219,21 @@ class Utils {
     }
 
     // Calculate subtitles duration and format it
-    final String secondsAndMillisecondsStart =
-        millisecondsToSRTFormat(videoStartMilliseconds, videoStartMilliseconds);
-    logInfo('[Utils.writeSrt()] - Subtitles start duration $secondsAndMillisecondsStart');
+    final String secondsAndMillisecondsStart = millisecondsToSRTFormat(
+      videoStartMilliseconds,
+      videoStartMilliseconds,
+    );
+    logInfo(
+      '[Utils.writeSrt()] - Subtitles start duration $secondsAndMillisecondsStart',
+    );
 
-    final String secondsAndMillisecondsEnd =
-        millisecondsToSRTFormat(videoEndMilliseconds, videoStartMilliseconds);
-    logInfo('[Utils.writeSrt()] - Subtitles end duration $secondsAndMillisecondsEnd');
+    final String secondsAndMillisecondsEnd = millisecondsToSRTFormat(
+      videoEndMilliseconds,
+      videoStartMilliseconds,
+    );
+    logInfo(
+      '[Utils.writeSrt()] - Subtitles end duration $secondsAndMillisecondsEnd',
+    );
 
     final String subtitles =
         '1\r\n$secondsAndMillisecondsStart --> $secondsAndMillisecondsEnd\r\n$subsContent\r\n';
@@ -233,7 +246,10 @@ class Utils {
   }
 
   /// Convert milliseconds to time format used in srt files
-  static String millisecondsToSRTFormat(int milliseconds, int videoStartMilliseconds) {
+  static String millisecondsToSRTFormat(
+    int milliseconds,
+    int videoStartMilliseconds,
+  ) {
     final int adjustedMilliseconds = milliseconds - videoStartMilliseconds;
     final Duration duration = Duration(milliseconds: adjustedMilliseconds);
     final int seconds = duration.inSeconds % 60;
@@ -252,7 +268,8 @@ class Utils {
     // Get current profile
     String currentProfileName = '';
 
-    final selectedProfileIndex = SharedPrefsUtil.getInt('selectedProfileIndex') ?? 0;
+    final selectedProfileIndex =
+        SharedPrefsUtil.getInt('selectedProfileIndex') ?? 0;
     if (selectedProfileIndex != 0) {
       final allProfiles = SharedPrefsUtil.getStringList('profiles');
       if (allProfiles != null) {
@@ -260,7 +277,9 @@ class Utils {
       }
     }
 
-    final profileLog = currentProfileName == '' ? 'Default' : currentProfileName;
+    final profileLog = currentProfileName == ''
+        ? 'Default'
+        : currentProfileName;
     logInfo('[Utils.getCurrentProfile()] - Selected profile: $profileLog');
 
     return currentProfileName;
@@ -280,7 +299,10 @@ class Utils {
     final io.Directory directory = io.Directory(AppPaths.movies);
     if (!directory.existsSync()) return [];
 
-    final List<io.FileSystemEntity> files = directory.listSync(recursive: true, followLinks: false);
+    final List<io.FileSystemEntity> files = directory.listSync(
+      recursive: true,
+      followLinks: false,
+    );
     final List<String> mp4Files = [];
 
     // Get all mp4 files
@@ -305,14 +327,21 @@ class Utils {
     // Get current profile
     final currentProfileName = getCurrentProfile();
 
-    final io.Directory directory = io.Directory(AppPaths.profileVideos(currentProfileName));
+    final io.Directory directory = io.Directory(
+      AppPaths.profileVideos(currentProfileName),
+    );
     if (!directory.existsSync()) return [];
 
-    final List<io.FileSystemEntity> files = directory.listSync(recursive: true, followLinks: false);
+    final List<io.FileSystemEntity> files = directory.listSync(
+      recursive: true,
+      followLinks: false,
+    );
     final List<String> mp4Files = [];
 
     // Getting video names
-    logInfo('[Utils.getAllVideos()] - Getting all videos inside ${directory.path}');
+    logInfo(
+      '[Utils.getAllVideos()] - Getting all videos inside ${directory.path}',
+    );
     for (int i = 0; i < files.length; i++) {
       // Full path of the file
       final String filePath = files[i].path;
@@ -321,7 +350,8 @@ class Utils {
       final String fileNameCheck = filePath.split('/').last.split('.').first;
 
       // Check if file is a video and if it is in the right format
-      final bool isProperVideoFile = RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(fileNameCheck) &&
+      final bool isProperVideoFile =
+          RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(fileNameCheck) &&
           filePath.endsWith('.mp4') &&
           !filePath.contains('Movies');
 
@@ -360,9 +390,7 @@ class Utils {
         backgroundColor: Colors.black54,
         duration: const Duration(seconds: 3),
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(25),
-          ),
+          borderRadius: BorderRadius.all(Radius.circular(25)),
         ),
         content: Text(
           (numberOfVideos != 1)
@@ -377,12 +405,16 @@ class Utils {
 
     // Setting videoCount number
     _videoCountController.setVideoCount(numberOfVideos);
-    logInfo('[Utils.updateVideoCount()] - Video count updated to $numberOfVideos');
+    logInfo(
+      '[Utils.updateVideoCount()] - Video count updated to $numberOfVideos',
+    );
   }
 
   /// Get a filtered list of mp4 files names ordered by date to be written on a txt file
   /// To get all videos, use `ExportDateRange.allTime`
-  static List<String> getSelectedVideosFromStorage(ExportDateRange exportDateRange) {
+  static List<String> getSelectedVideosFromStorage(
+    ExportDateRange exportDateRange,
+  ) {
     final now = DateTime.now();
     final List<String> allVideos = [];
 
@@ -428,7 +460,9 @@ class Utils {
           for (int i = 0; i < allDates.length; i++) {
             // Retains all the dates from the beginning of the month until the current date
             allDates.retainWhere(
-              (e) => e.compareTo(DateTime(now.year, now.month)) >= 0 && e.compareTo(now) <= 0,
+              (e) =>
+                  e.compareTo(DateTime(now.year, now.month)) >= 0 &&
+                  e.compareTo(now) <= 0,
             );
           }
           break;
@@ -436,7 +470,8 @@ class Utils {
           for (int i = 0; i < allDates.length; i++) {
             // Retains all the dates from the start of the year until the current date within the year
             allDates.retainWhere(
-              (e) => e.compareTo(DateTime(now.year)) >= 0 && e.compareTo(now) <= 0,
+              (e) =>
+                  e.compareTo(DateTime(now.year)) >= 0 && e.compareTo(now) <= 0,
             );
           }
           break;
@@ -445,7 +480,8 @@ class Utils {
             // Retains all the dates from the start to the end of the previous year
             allDates.retainWhere(
               (e) =>
-                  e.compareTo(DateTime(now.year - 1)) >= 0 && e.compareTo(DateTime(now.year)) < 0,
+                  e.compareTo(DateTime(now.year - 1)) >= 0 &&
+                  e.compareTo(DateTime(now.year)) < 0,
             );
           }
           break;
@@ -459,10 +495,12 @@ class Utils {
       // Converting back to string
       for (int i = 0; i < orderedDates.length; i++) {
         // Adding a leading zero on Days and Months <= 9
-        final String day =
-            orderedDates[i].day <= 9 ? '0${orderedDates[i].day}' : '${orderedDates[i].day}';
-        final String month =
-            orderedDates[i].month <= 9 ? '0${orderedDates[i].month}' : '${orderedDates[i].month}';
+        final String day = orderedDates[i].day <= 9
+            ? '0${orderedDates[i].day}'
+            : '${orderedDates[i].day}';
+        final String month = orderedDates[i].month <= 9
+            ? '0${orderedDates[i].month}'
+            : '${orderedDates[i].month}';
         final String year = '${orderedDates[i].year}';
 
         allVideos.add('$year-$month-$day.mp4');
@@ -477,8 +515,13 @@ class Utils {
       if (StorageUtils.checkFileExists(fontPath)) {
         logInfo('Text font for ffmpeg already exists, not copying it.');
       } else {
-        final ByteData data = await rootBundle.load('assets/fonts/YuseiMagic-Regular.ttf');
-        final List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+        final ByteData data = await rootBundle.load(
+          'assets/fonts/YuseiMagic-Regular.ttf',
+        );
+        final List<int> bytes = data.buffer.asUint8List(
+          data.offsetInBytes,
+          data.lengthInBytes,
+        );
         await io.File(fontPath).writeAsBytes(bytes);
         logInfo('Text font for ffmpeg copied to $fontPath');
       }

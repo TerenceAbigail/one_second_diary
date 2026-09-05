@@ -15,16 +15,20 @@ const Map<String, String> en = {
   'movieInsufficientVideos':
       'You need to have 2 or more recorded videos in order to create a movie',
   'movieCreatedTitle': 'Movie created!',
-  'movieCreatedDesc': 'Movie saved to storage inside DCIM/OneSecondDiary/Movies folder',
+  'movieCreatedDesc':
+      'Movie saved to storage inside DCIM/OneSecondDiary/Movies folder',
   'movieError': 'Error saving the movie!',
-  'tryAgainMsg': 'Please try again. If the problem persists, contact the developer.',
+  'tryAgainMsg':
+      'Please try again. If the problem persists, contact the developer.',
   'create': 'Create',
   'days': 'days',
   'day': 'day',
   'totalRecordedTitle': 'You have recorded:',
-  'tapBelowToGenerate': 'Tap the button below to generate\na single video file:',
+  'tapBelowToGenerate':
+      'Tap the button below to generate\na single video file:',
   'editQuestionTitle': 'Edit video?',
-  'editQuestion': 'Your previous recording will be deleted, do you want to continue?',
+  'editQuestion':
+      'Your previous recording will be deleted, do you want to continue?',
   'yes': 'Yes',
   'no': 'No',
   'edit': 'Edit',
@@ -47,7 +51,8 @@ const Map<String, String> en = {
   'introTitle2': 'Create the movie of your life',
   'introDesc2': 'Generate a compilation of all your recorded videos.',
   'introTitle3': 'No ads and totally free',
-  'introDesc3': 'If you like the app, consider supporting the development with a donation.',
+  'introDesc3':
+      'If you like the app, consider supporting the development with a donation.',
   'skip': 'Skip',
   'done': 'Done',
   'futureUpdates': 'Future Updates',
@@ -115,7 +120,8 @@ const Map<String, String> en = {
   'reservedProfileName': 'This is a reserved profile name',
   'profileOrientationRequired': 'Select a video orientation for this profile',
   'onboardingOrientationTitle': 'Choose your video orientation',
-  'onboardingOrientationDesc': 'This sets the shape of the videos you save with your default profile — landscape (16:9) or portrait (9:16). You can always create another profile with the other orientation later.',
+  'onboardingOrientationDesc':
+      'This sets the shape of the videos you save with your default profile — landscape (16:9) or portrait (9:16). You can always create another profile with the other orientation later.',
   'creatingMovie': 'Processing... Please wait.\nThis can take several minutes.',
   'doNotCloseTheApp': 'Do not close the app',
   'cancelMovieCreation': 'Cancel movie creation',
@@ -130,7 +136,8 @@ const Map<String, String> en = {
   'unsupportedPortraitMode':
       'Portrait mode videos are not supported at this time. Please select another video',
   'processingVideo': 'Processing video',
-  'deleteVideoWarning': 'Are you sure you want to permanently delete this video?',
+  'deleteVideoWarning':
+      'Are you sure you want to permanently delete this video?',
   'deleteVideo': 'Delete video',
   'addSubtitles': 'Add subtitles',
   'dateColorAndFormat': 'Date Color & Format',
@@ -147,7 +154,8 @@ const Map<String, String> en = {
   'feat1v15': 'Gallery',
   'featDesc1v15': 'Easily add videos from the gallery to your collection 🤩',
   'feat2v15': 'Subtitles',
-  'featDesc2v15': 'Add or edit subtitles to include more details of your day 📝',
+  'featDesc2v15':
+      'Add or edit subtitles to include more details of your day 📝',
   'feat3v15': 'Geotagging',
   'featDesc3v15':
       'Add automatic or manual geotagging to your videos to help you remember where each moment took place 📍',
@@ -157,13 +165,15 @@ const Map<String, String> en = {
   'feat5v15': 'Calendar',
   'featDesc5v15': 'View and edit any of your recorded days in a calendar 📅',
   'feat6v15': 'Movies',
-  'featDesc6v15': 'Generate custom movies with select periods or specific videos 🎥',
+  'featDesc6v15':
+      'Generate custom movies with select periods or specific videos 🎥',
   'feat7v15': 'Notifications',
   'featDesc7v15':
       'Set up scheduled daily notifications to remind you to record your special moment 🔔',
   'default': 'Default',
   'profileNameAlreadyExists': 'Profile name already exists',
-  'profileNameCannotContainSpecialChars': 'Profile name cannot contain\nspecial characters',
+  'profileNameCannotContainSpecialChars':
+      'Profile name cannot contain\nspecial characters',
   'subtitlesSaved': 'Subtitles saved!',
   'error': 'Error',
   'migrationError':
@@ -171,7 +181,8 @@ const Map<String, String> en = {
   'success': 'Success',
   'migrationSuccess':
       'Migration successful! All videos and movies are now saved inside Internal Storage > DCIM > OneSecondDiary',
-  'migrationInProgress': 'Migrating all your videos to the new app folder, please wait...',
+  'migrationInProgress':
+      'Migrating all your videos to the new app folder, please wait...',
   'migrationFolderDeletionError':
       'Migration complete, but an error occurred while deleting the old folders. Please delete it manually.',
   'preferences': 'Preferences',
@@ -207,7 +218,8 @@ const Map<String, String> en = {
   'featDesc4v152':
       'When recording in the app, tap the new button after positioning your phone to lock the orientation and avoid unexpected results 📱',
   'feat5v152': 'And more...',
-  'featDesc5v152': 'You will also find some small visual improvements and bug fixes 🐛',
+  'featDesc5v152':
+      'You will also find some small visual improvements and bug fixes 🐛',
   'useFilterInExperimentalPicker': 'Use date filter to pick videos',
   'useFilterInExperimentalPickerDescription':
       'When enabled, selecting past dates will filter the videos by that date. When disabled, all videos will be shown. Works only with the experimental file picker.',

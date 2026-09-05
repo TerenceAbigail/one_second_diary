@@ -29,7 +29,9 @@ class _ProfilesPageState extends State<ProfilesPage> {
   final _profileNameController = TextEditingController();
   final _profileNameFormKey = GlobalKey<FormState>();
 
-  final mainColor = ThemeService().isDarkTheme() ? AppColors.dark : AppColors.light;
+  final mainColor = ThemeService().isDarkTheme()
+      ? AppColors.dark
+      : AppColors.light;
 
   List<Profile> profiles = [];
 
@@ -63,19 +65,19 @@ class _ProfilesPageState extends State<ProfilesPage> {
         ),
       );
     } else {
-      profiles = storedProfiles.map(
-        (e) {
-          // The Default profile's storage key is '' everywhere else in the
-          // app (AppPaths.profileVideos, Utils.getCurrentProfile) — match it
-          // here so its orientation is looked up under the same key.
-          final String orientationKey = e == 'Default' ? '' : e;
-          final VideoOrientation orientation = StorageUtils.getOrientation(orientationKey);
-          if (e == 'Default') {
-            return Profile(label: e, isDefault: true, orientation: orientation);
-          }
-          return Profile(label: e, orientation: orientation);
-        },
-      ).toList();
+      profiles = storedProfiles.map((e) {
+        // The Default profile's storage key is '' everywhere else in the
+        // app (AppPaths.profileVideos, Utils.getCurrentProfile) — match it
+        // here so its orientation is looked up under the same key.
+        final String orientationKey = e == 'Default' ? '' : e;
+        final VideoOrientation orientation = StorageUtils.getOrientation(
+          orientationKey,
+        );
+        if (e == 'Default') {
+          return Profile(label: e, isDefault: true, orientation: orientation);
+        }
+        return Profile(label: e, orientation: orientation);
+      }).toList();
     }
 
     Utils.logInfo('${logTag}Stored Profiles are: $storedProfiles');
@@ -105,21 +107,20 @@ class _ProfilesPageState extends State<ProfilesPage> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'newProfileTooltip'.tr,
-                ),
+                Text('newProfileTooltip'.tr),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _profileNameController,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(45),
-                  ],
+                  inputFormatters: [LengthLimitingTextInputFormatter(45)],
                   validator: (value) {
-                    final ProfileNameError? error = ProfileNameValidator.validate(
-                      value ?? '',
-                      existingLabels: profiles.map((profile) => profile.label).toList(),
-                      localizedDefaultLabel: 'default'.tr,
-                    );
+                    final ProfileNameError? error =
+                        ProfileNameValidator.validate(
+                          value ?? '',
+                          existingLabels: profiles
+                              .map((profile) => profile.label)
+                              .toList(),
+                          localizedDefaultLabel: 'default'.tr,
+                        );
                     switch (error) {
                       case ProfileNameError.empty:
                         return 'profileNameCannotBeEmpty'.tr;
@@ -136,11 +137,11 @@ class _ProfilesPageState extends State<ProfilesPage> {
                   decoration: InputDecoration(
                     hintText: 'enterProfileName'.tr,
                     hintStyle: TextStyle(
-                      color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                      color: ThemeService().isDarkTheme()
+                          ? Colors.white
+                          : Colors.black,
                     ),
-                    errorStyle: const TextStyle(
-                      color: AppColors.mainColor,
-                    ),
+                    errorStyle: const TextStyle(color: AppColors.mainColor),
                     border: const UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.green),
                     ),
@@ -177,7 +178,8 @@ class _ProfilesPageState extends State<ProfilesPage> {
               TextButton(
                 onPressed: () async {
                   // Checks if the textfield is valid based on if the text passes all the validations we set
-                  final bool isTextValid = _profileNameFormKey.currentState?.validate() ?? false;
+                  final bool isTextValid =
+                      _profileNameFormKey.currentState?.validate() ?? false;
                   final VideoOrientation? orientation = selectedOrientation;
 
                   if (orientation == null) {
@@ -205,17 +207,20 @@ class _ProfilesPageState extends State<ProfilesPage> {
                     });
 
                     // Add the modified profile list to persistence
-                    final profileNamesToStringList = profiles.map((e) => e.label).toList();
-                    SharedPrefsUtil.putStringList('profiles', profileNamesToStringList);
+                    final profileNamesToStringList = profiles
+                        .map((e) => e.label)
+                        .toList();
+                    SharedPrefsUtil.putStringList(
+                      'profiles',
+                      profileNamesToStringList,
+                    );
 
                     Navigator.pop(context);
                   }
                 },
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.green,
-                ),
+                style: TextButton.styleFrom(foregroundColor: AppColors.green),
                 child: Text('done'.tr),
-              )
+              ),
             ],
           ),
         ),
@@ -228,16 +233,10 @@ class _ProfilesPageState extends State<ProfilesPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('deleteProfile'.tr),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'deleteProfileTooltip'.tr,
-            ),
-          ],
+          children: [Text('deleteProfileTooltip'.tr)],
         ),
         actions: [
           TextButton(
@@ -245,12 +244,16 @@ class _ProfilesPageState extends State<ProfilesPage> {
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(
-              foregroundColor: ThemeService().isDarkTheme() ? AppColors.light : AppColors.dark,
+              foregroundColor: ThemeService().isDarkTheme()
+                  ? AppColors.light
+                  : AppColors.dark,
             ),
             child: Text(
               'no'.tr,
               style: TextStyle(
-                color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                color: ThemeService().isDarkTheme()
+                    ? Colors.white
+                    : Colors.black,
               ),
             ),
           ),
@@ -271,8 +274,13 @@ class _ProfilesPageState extends State<ProfilesPage> {
               });
 
               // Update the profile list in persistence
-              final profileNamesToStringList = profiles.map((e) => e.label).toList();
-              SharedPrefsUtil.putStringList('profiles', profileNamesToStringList);
+              final profileNamesToStringList = profiles
+                  .map((e) => e.label)
+                  .toList();
+              SharedPrefsUtil.putStringList(
+                'profiles',
+                profileNamesToStringList,
+              );
 
               // Select default if the deleted profile was selected
               if (index == groupValue) {
@@ -286,16 +294,16 @@ class _ProfilesPageState extends State<ProfilesPage> {
 
               Navigator.pop(context);
             },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-            ),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: Text(
               'yes'.tr,
               style: TextStyle(
-                color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                color: ThemeService().isDarkTheme()
+                    ? Colors.white
+                    : Colors.black,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -305,9 +313,7 @@ class _ProfilesPageState extends State<ProfilesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           'profiles'.tr,
           style: TextStyle(
@@ -361,9 +367,13 @@ class _ProfilesPageState extends State<ProfilesPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           title: Text(
-                            profiles[index].isDefault ? 'default'.tr : profiles[index].label,
+                            profiles[index].isDefault
+                                ? 'default'.tr
+                                : profiles[index].label,
                             style: TextStyle(
-                              color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                              color: ThemeService().isDarkTheme()
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ),
                           secondary: profiles[index].isDefault
@@ -389,11 +399,9 @@ class _ProfilesPageState extends State<ProfilesPage> {
                   setState(() {});
                 },
                 icon: const Icon(Icons.add),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.green,
-                ),
+                style: TextButton.styleFrom(foregroundColor: AppColors.green),
                 label: Text('createNewProfile'.tr),
-              )
+              ),
             ],
           ),
         ),
@@ -406,21 +414,23 @@ class _ProfilesPageState extends State<ProfilesPage> {
     // Update the video count card
     Utils.updateVideoCount();
 
-    Utils.logInfo(
-      '${logTag}Selected Profile changed!',
-    );
+    Utils.logInfo('${logTag}Selected Profile changed!');
 
     // Update daily entry
     final String today = DateFormatUtils.getToday();
     final String profile = Utils.getCurrentProfile();
-    final String todaysVideoPath = '${AppPaths.profileVideos(profile)}$today.mp4';
+    final String todaysVideoPath =
+        '${AppPaths.profileVideos(profile)}$today.mp4';
     final bool isTodayRecorded = StorageUtils.checkFileExists(todaysVideoPath);
     if (isTodayRecorded) {
-      Utils.logInfo('$logTag$todaysVideoPath exists, setting today status to recorded.');
+      Utils.logInfo(
+        '$logTag$todaysVideoPath exists, setting today status to recorded.',
+      );
       dailyEntryController.updateDaily();
     } else {
       Utils.logInfo(
-          '$logTag$todaysVideoPath does not exist, setting today status to not recorded.');
+        '$logTag$todaysVideoPath does not exist, setting today status to not recorded.',
+      );
       dailyEntryController.updateDaily(value: false);
     }
   }

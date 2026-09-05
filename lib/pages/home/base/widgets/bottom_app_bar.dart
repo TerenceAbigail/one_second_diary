@@ -13,12 +13,7 @@ SalomonBottomBarItem _bottomBarItem({
 }) {
   return SalomonBottomBarItem(
     icon: Icon(icon, size: MediaQuery.of(Get.context!).size.width * 0.08),
-    title: Text(
-      title,
-      style: const TextStyle(
-        fontFamily: 'Magic',
-      ),
-    ),
+    title: Text(title, style: const TextStyle(fontFamily: 'Magic')),
     selectedColor: color,
   );
 }
@@ -28,7 +23,9 @@ class CustomBottomAppBar extends GetView<BottomAppBarIndexController> {
   Widget build(BuildContext context) {
     return Obx(
       () => SalomonBottomBar(
-        backgroundColor: ThemeService().isDarkTheme() ? AppColors.dark : AppColors.light,
+        backgroundColor: ThemeService().isDarkTheme()
+            ? AppColors.dark
+            : AppColors.light,
         currentIndex: controller.activeIndex.value,
         onTap: controller.setBottomAppBarIndex,
         items: [

@@ -27,7 +27,8 @@ class OnboardingOrientationPage extends StatefulWidget {
   const OnboardingOrientationPage({super.key});
 
   @override
-  State<OnboardingOrientationPage> createState() => _OnboardingOrientationPageState();
+  State<OnboardingOrientationPage> createState() =>
+      _OnboardingOrientationPageState();
 }
 
 class _OnboardingOrientationPageState extends State<OnboardingOrientationPage> {
@@ -62,7 +63,9 @@ class _OnboardingOrientationPageState extends State<OnboardingOrientationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Color textColor = ThemeService().isDarkTheme() ? Colors.white : Colors.black;
+    final Color textColor = ThemeService().isDarkTheme()
+        ? Colors.white
+        : Colors.black;
 
     return Scaffold(
       body: SafeArea(

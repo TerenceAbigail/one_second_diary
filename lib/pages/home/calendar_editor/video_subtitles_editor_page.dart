@@ -25,7 +25,8 @@ class VideoSubtitlesEditorPage extends StatefulWidget {
   final String subtitles;
 
   @override
-  State<VideoSubtitlesEditorPage> createState() => _VideoSubtitlesEditorPageState();
+  State<VideoSubtitlesEditorPage> createState() =>
+      _VideoSubtitlesEditorPageState();
 }
 
 class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
@@ -49,7 +50,10 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
   void initState() {
     _initVideoPlayerController();
     if (widget.subtitles.isNotEmpty) {
-      _subtitles = widget.subtitles.trim().replaceAll('\n', ' ').replaceAll(RegExp(r'\s+'), ' ');
+      _subtitles = widget.subtitles
+          .trim()
+          .replaceAll('\n', ' ')
+          .replaceAll(RegExp(r'\s+'), ' ');
       subtitlesController.text = _subtitles;
       isEdit = true;
     }
@@ -77,9 +81,7 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           'subtitles'.tr,
           style: const TextStyle(color: Colors.white),
@@ -88,14 +90,9 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.green,
         child: !isProcessing
-            ? const Icon(
-                Icons.save,
-                color: Colors.white,
-              )
+            ? const Icon(Icons.save, color: Colors.white)
             : const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.white,
-                ),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
         onPressed: () async {
           setState(() {
@@ -113,9 +110,13 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
           final String tempFilePath = '${AppPaths.internal}/$videoTempName';
 
           if (isEdit) {
-            Utils.logWarning('${logTag}Editing subtitles for ${widget.videoPath}');
+            Utils.logWarning(
+              '${logTag}Editing subtitles for ${widget.videoPath}',
+            );
           } else {
-            Utils.logWarning('${logTag}Adding brand new subtitles for ${widget.videoPath}');
+            Utils.logWarning(
+              '${logTag}Adding brand new subtitles for ${widget.videoPath}',
+            );
           }
 
           command =
@@ -133,13 +134,9 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
               );
 
               // Show snackbar
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'subtitlesSaved'.tr,
-                  ),
-                ),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('subtitlesSaved'.tr)));
             } else {
               Utils.logError('${logTag}Video subtitles update failed!');
               final sessionLog = await session.getLogsAsString();
@@ -170,7 +167,8 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     maxHeight:
-                        MediaQuery.of(context).size.height * Constants.previewMaxHeightFraction,
+                        MediaQuery.of(context).size.height *
+                        Constants.previewMaxHeightFraction,
                   ),
                   child: GestureDetector(
                     onTap: () => videoPlay(),
@@ -178,19 +176,19 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
                       // Derived from the active profile's orientation, not
                       // _videoController's own aspect ratio, so there's no
                       // layout shift while it's still initializing.
-                      aspectRatio: OrientationFilter.aspectRatioFor(_previewOrientation),
+                      aspectRatio: OrientationFilter.aspectRatioFor(
+                        _previewOrientation,
+                      ),
                       child: Stack(
                         children: [
-                          VideoPlayer(
-                            key: UniqueKey(),
-                            _videoController,
-                          ),
+                          VideoPlayer(key: UniqueKey(), _videoController),
                           Center(
                             child: Opacity(
                               opacity: _opacity,
                               child: Container(
                                 width: MediaQuery.of(context).size.width * 0.25,
-                                height: MediaQuery.of(context).size.width * 0.25,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.25,
                                 decoration: const BoxDecoration(
                                   color: Colors.black45,
                                   shape: BoxShape.circle,
@@ -217,7 +215,9 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
                   controller: subtitlesController,
                   style: TextStyle(
                     fontFamily: DefaultTextStyle.of(context).style.fontFamily,
-                    color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                    color: ThemeService().isDarkTheme()
+                        ? Colors.white
+                        : Colors.black,
                   ),
                   maxLines: null,
                   onChanged: (value) => setState(() {
@@ -225,9 +225,13 @@ class _VideoSubtitlesEditorPageState extends State<VideoSubtitlesEditorPage> {
                   }),
                   decoration: InputDecoration(
                     hintText: 'enterSubtitles'.tr.split('(').first,
-                    fillColor: ThemeService().isDarkTheme() ? Colors.black : Colors.white,
+                    fillColor: ThemeService().isDarkTheme()
+                        ? Colors.black
+                        : Colors.white,
                     hintStyle: TextStyle(
-                      color: ThemeService().isDarkTheme() ? Colors.black : Colors.white,
+                      color: ThemeService().isDarkTheme()
+                          ? Colors.black
+                          : Colors.white,
                     ),
                     filled: true,
                     border: const OutlineInputBorder(

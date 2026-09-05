@@ -20,19 +20,21 @@ class _PreferencesPageState extends State<PreferencesPage> {
   @override
   void initState() {
     super.initState();
-    isCameraSwitchToggled = SharedPrefsUtil.getBool('forceNativeCamera') ?? false;
-    isPickerSwitchToggled = SharedPrefsUtil.getBool('useExperimentalPicker') ?? true;
-    isPickerFilterSwitchToggled = SharedPrefsUtil.getBool('useFilterInExperimentalPicker') ?? false;
-    isColorsSwitchToggled = SharedPrefsUtil.getBool('useAlternativeCalendarColors') ?? false;
+    isCameraSwitchToggled =
+        SharedPrefsUtil.getBool('forceNativeCamera') ?? false;
+    isPickerSwitchToggled =
+        SharedPrefsUtil.getBool('useExperimentalPicker') ?? true;
+    isPickerFilterSwitchToggled =
+        SharedPrefsUtil.getBool('useFilterInExperimentalPicker') ?? false;
+    isColorsSwitchToggled =
+        SharedPrefsUtil.getBool('useAlternativeCalendarColors') ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           'preferences'.tr,
           style: TextStyle(
@@ -84,7 +86,9 @@ class _PreferencesPageState extends State<PreferencesPage> {
                             isCameraSwitchToggled = !isCameraSwitchToggled;
                           });
                         },
-                        activeTrackColor: AppColors.mainColor.withValues(alpha: 0.4),
+                        activeTrackColor: AppColors.mainColor.withValues(
+                          alpha: 0.4,
+                        ),
                         activeThumbColor: AppColors.mainColor,
                       ),
                     ],
@@ -114,13 +118,19 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               '[PREFERENCES] - Use experimental file picker was enabled',
                             );
 
-                            SharedPrefsUtil.putBool('useExperimentalPicker', true);
+                            SharedPrefsUtil.putBool(
+                              'useExperimentalPicker',
+                              true,
+                            );
                           } else {
                             Utils.logInfo(
                               '[PREFERENCES] - Use experimental file picker was disabled',
                             );
 
-                            SharedPrefsUtil.putBool('useExperimentalPicker', false);
+                            SharedPrefsUtil.putBool(
+                              'useExperimentalPicker',
+                              false,
+                            );
                           }
 
                           /// Update switch value
@@ -128,7 +138,9 @@ class _PreferencesPageState extends State<PreferencesPage> {
                             isPickerSwitchToggled = !isPickerSwitchToggled;
                           });
                         },
-                        activeTrackColor: AppColors.mainColor.withValues(alpha: 0.4),
+                        activeTrackColor: AppColors.mainColor.withValues(
+                          alpha: 0.4,
+                        ),
                         activeThumbColor: AppColors.mainColor,
                       ),
                     ],
@@ -149,7 +161,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               child: Text(
                                 'useFilterInExperimentalPicker'.tr,
                                 style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.width * 0.045,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.045,
                                 ),
                               ),
                             ),
@@ -161,21 +174,30 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                     '[PREFERENCES] - Use filter in experimental file picker was enabled',
                                   );
 
-                                  SharedPrefsUtil.putBool('useFilterInExperimentalPicker', true);
+                                  SharedPrefsUtil.putBool(
+                                    'useFilterInExperimentalPicker',
+                                    true,
+                                  );
                                 } else {
                                   Utils.logInfo(
                                     '[PREFERENCES] - Use filter in experimental file picker was disabled',
                                   );
 
-                                  SharedPrefsUtil.putBool('useFilterInExperimentalPicker', false);
+                                  SharedPrefsUtil.putBool(
+                                    'useFilterInExperimentalPicker',
+                                    false,
+                                  );
                                 }
 
                                 /// Update switch value
                                 setState(() {
-                                  isPickerFilterSwitchToggled = !isPickerFilterSwitchToggled;
+                                  isPickerFilterSwitchToggled =
+                                      !isPickerFilterSwitchToggled;
                                 });
                               },
-                              activeTrackColor: AppColors.mainColor.withValues(alpha: 0.4),
+                              activeTrackColor: AppColors.mainColor.withValues(
+                                alpha: 0.4,
+                              ),
                               activeThumbColor: AppColors.mainColor,
                             ),
                           ],
@@ -207,13 +229,19 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               '[PREFERENCES] - Use alternative calendar colors was enabled',
                             );
 
-                            SharedPrefsUtil.putBool('useAlternativeCalendarColors', true);
+                            SharedPrefsUtil.putBool(
+                              'useAlternativeCalendarColors',
+                              true,
+                            );
                           } else {
                             Utils.logInfo(
                               '[PREFERENCES] - Use alternative calendar colors was disabled',
                             );
 
-                            SharedPrefsUtil.putBool('useAlternativeCalendarColors', false);
+                            SharedPrefsUtil.putBool(
+                              'useAlternativeCalendarColors',
+                              false,
+                            );
                           }
 
                           /// Update switch value
@@ -221,7 +249,9 @@ class _PreferencesPageState extends State<PreferencesPage> {
                             isColorsSwitchToggled = !isColorsSwitchToggled;
                           });
                         },
-                        activeTrackColor: AppColors.mainColor.withValues(alpha: 0.4),
+                        activeTrackColor: AppColors.mainColor.withValues(
+                          alpha: 0.4,
+                        ),
                         activeThumbColor: AppColors.mainColor,
                       ),
                     ],

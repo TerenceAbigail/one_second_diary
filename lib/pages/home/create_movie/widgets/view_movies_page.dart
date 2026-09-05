@@ -36,166 +36,150 @@ class _ViewMoviesState extends State<ViewMovies> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          'myMovies'.tr,
-          style: const TextStyle(color: Colors.white),
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text('myMovies'.tr, style: const TextStyle(color: Colors.white)),
       ),
       body: allMovies == null
-          ? const Center(
-              child: Icon(
-                Icons.hourglass_bottom,
-                size: 32.0,
-              ),
-            )
+          ? const Center(child: Icon(Icons.hourglass_bottom, size: 32.0))
           : allMovies!.isEmpty
-              ? Center(
-                  child: Text(
-                    'noMoviesFound'.tr,
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              : Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    Expanded(
-                      child: FutureBuilder(
-                        future: getThumbnails(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Center(
-                              child: SizedBox(
-                                height: 30,
-                                width: 30,
-                                child: Padding(
-                                  padding: EdgeInsets.all(4.0),
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                            );
-                          }
+          ? Center(child: Text('noMoviesFound'.tr, textAlign: TextAlign.center))
+          : Column(
+              children: [
+                const SizedBox(height: 10),
+                Expanded(
+                  child: FutureBuilder(
+                    future: getThumbnails(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        );
+                      }
 
-                          if (snapshot.hasError) {
-                            return Text(
-                              '${snapshot.error}',
-                            );
-                          }
-                          return GridView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            addAutomaticKeepAlives: true,
-                            scrollCacheExtent: const ScrollCacheExtent.pixels(99999),
-                            shrinkWrap: true,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      if (snapshot.hasError) {
+                        return Text('${snapshot.error}');
+                      }
+                      return GridView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        addAutomaticKeepAlives: true,
+                        scrollCacheExtent: const ScrollCacheExtent.pixels(
+                          99999,
+                        ),
+                        shrinkWrap: true,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 1,
                             ),
-                            itemCount: allMovies!.length,
-                            itemBuilder: (context, index) {
-                              final movie = allMovies![index];
-                              return Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Column(
+                        itemCount: allMovies!.length,
+                        itemBuilder: (context, index) {
+                          final movie = allMovies![index];
+                          return Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              children: [
+                                Stack(
                                   children: [
-                                    Stack(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.center,
-                                          // Uncapped, this thumbnail's height
-                                          // is unbounded (it sits under a
-                                          // non-flex Column child, same as
-                                          // every other unbounded-preview bug
-                                          // this session), and it always
-                                          // fit only because every movie was
-                                          // landscape (wide, short) until
-                                          // portrait profiles existed — a
-                                          // portrait movie's thumbnail is
-                                          // tall and pushes the play/share
-                                          // row below it past this grid
-                                          // cell's fixed (square) height.
-                                          // Capping lets it pillarbox
-                                          // (narrower, centered) instead.
-                                          child: ConstrainedBox(
-                                            constraints: BoxConstraints(
-                                              maxHeight:
-                                                  MediaQuery.of(context).size.width - 100,
-                                            ),
-                                            child: Image.memory(
-                                              snapshot.data![index] as Uint8List,
-                                            ),
-                                          ),
+                                    Align(
+                                      alignment: Alignment.center,
+                                      // Uncapped, this thumbnail's height
+                                      // is unbounded (it sits under a
+                                      // non-flex Column child, same as
+                                      // every other unbounded-preview bug
+                                      // this session), and it always
+                                      // fit only because every movie was
+                                      // landscape (wide, short) until
+                                      // portrait profiles existed — a
+                                      // portrait movie's thumbnail is
+                                      // tall and pushes the play/share
+                                      // row below it past this grid
+                                      // cell's fixed (square) height.
+                                      // Capping lets it pillarbox
+                                      // (narrower, centered) instead.
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxHeight:
+                                              MediaQuery.of(
+                                                context,
+                                              ).size.width -
+                                              100,
                                         ),
-                                        Align(
-                                          alignment: Alignment.topCenter,
-                                          child: Container(
-                                            height: 200,
-                                            width: double.infinity,
-                                            decoration: const BoxDecoration(
-                                              gradient: LinearGradient(
-                                                end: Alignment(0.0, 0.6),
-                                                begin: Alignment(0.0, -1),
-                                                colors: <Color>[
-                                                  Colors.black87,
-                                                  Colors.transparent,
-                                                ],
-                                              ),
-                                            ),
-                                          ),
+                                        child: Image.memory(
+                                          snapshot.data![index] as Uint8List,
                                         ),
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              allMovies![index].split('/').last,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: IconButton(
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                              size: 22.0,
-                                            ),
-                                            onPressed: () {
-                                              deleteVideoDialog(
-                                                movie,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                    const SizedBox(height: 5.0),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: [
-                                        _ViewMoviesPlayButton(
-                                          filePath: movie,
+                                    Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Container(
+                                        height: 200,
+                                        width: double.infinity,
+                                        decoration: const BoxDecoration(
+                                          gradient: LinearGradient(
+                                            end: Alignment(0.0, 0.6),
+                                            begin: Alignment(0.0, -1),
+                                            colors: <Color>[
+                                              Colors.black87,
+                                              Colors.transparent,
+                                            ],
+                                          ),
                                         ),
-                                        _ViewMoviesShareButton(
-                                          filePath: movie,
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          allMovies![index].split('/').last,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 11.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ],
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                          size: 22.0,
+                                        ),
+                                        onPressed: () {
+                                          deleteVideoDialog(movie);
+                                        },
+                                      ),
                                     ),
                                   ],
                                 ),
-                              );
-                            },
+                                const SizedBox(height: 5.0),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    _ViewMoviesPlayButton(filePath: movie),
+                                    _ViewMoviesShareButton(filePath: movie),
+                                  ],
+                                ),
+                              ],
+                            ),
                           );
                         },
-                      ),
-                    ),
-                  ],
+                      );
+                    },
+                  ),
                 ),
+              ],
+            ),
     );
   }
 
@@ -204,27 +188,20 @@ class _ViewMoviesState extends State<ViewMovies> {
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        title: Text(
-          'discardVideoTitle'.tr,
-        ),
-        content: Text(
-          'deleteVideoWarning'.tr,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text('discardVideoTitle'.tr),
+        content: Text('deleteVideoWarning'.tr),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(
-              foregroundColor: ThemeService().isDarkTheme() ? AppColors.light : AppColors.dark,
+              foregroundColor: ThemeService().isDarkTheme()
+                  ? AppColors.light
+                  : AppColors.dark,
             ),
-            child: Text(
-              'no'.tr,
-              style: const TextStyle(color: Colors.white),
-            ),
+            child: Text('no'.tr, style: const TextStyle(color: Colors.white)),
           ),
           TextButton(
             onPressed: () async {
@@ -240,14 +217,9 @@ class _ViewMoviesState extends State<ViewMovies> {
 
               Navigator.pop(context);
             },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-            ),
-            child: Text(
-              'yes'.tr,
-              style: const TextStyle(color: Colors.white),
-            ),
-          )
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text('yes'.tr, style: const TextStyle(color: Colors.white)),
+          ),
         ],
       ),
     );
@@ -305,11 +277,8 @@ class _ViewMoviesShareButton extends StatelessWidget {
         const Positioned(
           top: 0.0,
           left: 0.0,
-          child: Icon(
-            Icons.share_rounded,
-            size: 20.0,
-          ),
-        )
+          child: Icon(Icons.share_rounded, size: 20.0),
+        ),
       ],
     );
   }
@@ -351,11 +320,8 @@ class _ViewMoviesPlayButton extends StatelessWidget {
         const Positioned(
           top: 0.0,
           left: 0.0,
-          child: Icon(
-            Icons.play_circle,
-            size: 20.0,
-          ),
-        )
+          child: Icon(Icons.play_circle, size: 20.0),
+        ),
       ],
     );
   }

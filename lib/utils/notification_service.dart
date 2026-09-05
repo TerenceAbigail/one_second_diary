@@ -19,27 +19,29 @@ class NotificationService {
   final _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   late NotificationDetails _platformNotificationDetails;
-  final NotificationDetails _platformNonPersistentNotificationDetails = const NotificationDetails(
-    android: AndroidNotificationDetails(
-        'channel id',
-        'channel name',
-        channelDescription: 'channel description',
-        ongoing: false,
-        autoCancel: true
-    ),
-  );
-  final NotificationDetails _platformPersistentNotificationDetails = const NotificationDetails(
-    android: AndroidNotificationDetails(
-        'channel id',
-        'channel name',
-        channelDescription: 'channel description',
-        ongoing: true,
-        autoCancel: false
-    ),
-  );
+  final NotificationDetails _platformNonPersistentNotificationDetails =
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'channel id',
+          'channel name',
+          channelDescription: 'channel description',
+          ongoing: false,
+          autoCancel: true,
+        ),
+      );
+  final NotificationDetails _platformPersistentNotificationDetails =
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'channel id',
+          'channel name',
+          channelDescription: 'channel description',
+          ongoing: true,
+          autoCancel: false,
+        ),
+      );
 
-  NotificationService(){
-    if(isPersistentNotificationActivated())
+  NotificationService() {
+    if (isPersistentNotificationActivated())
       _platformNotificationDetails = _platformPersistentNotificationDetails;
     else
       _platformNotificationDetails = _platformNonPersistentNotificationDetails;
@@ -48,23 +50,27 @@ class NotificationService {
     tz.initializeTimeZones();
 
     const AndroidInitializationSettings androidInitializationSettings =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const DarwinInitializationSettings iosInitializationSettings =
-    DarwinInitializationSettings();
+        DarwinInitializationSettings();
 
     const InitializationSettings initializationSettings =
-    InitializationSettings(
-      android: androidInitializationSettings,
-      iOS: iosInitializationSettings,
-    );
+        InitializationSettings(
+          android: androidInitializationSettings,
+          iOS: iosInitializationSettings,
+        );
 
-    _flutterLocalNotificationsPlugin.initialize(settings: initializationSettings);
+    _flutterLocalNotificationsPlugin.initialize(
+      settings: initializationSettings,
+    );
   }
 
   // Notification is deactivated by default
-  bool isNotificationActivated() => SharedPrefsUtil.getBool(_notificationKey) ?? false;
-  bool isPersistentNotificationActivated() => SharedPrefsUtil.getBool(_persistentKey) ?? false;
+  bool isNotificationActivated() =>
+      SharedPrefsUtil.getBool(_notificationKey) ?? false;
+  bool isPersistentNotificationActivated() =>
+      SharedPrefsUtil.getBool(_persistentKey) ?? false;
 
   // Checks for the scheduled time and sets it to a value in shared prefs
   TimeOfDay getScheduledTime() {
@@ -78,7 +84,10 @@ class NotificationService {
   }
 
   void _switchPersistentNotification() {
-    SharedPrefsUtil.putBool(_persistentKey, !isPersistentNotificationActivated());
+    SharedPrefsUtil.putBool(
+      _persistentKey,
+      !isPersistentNotificationActivated(),
+    );
   }
 
   void setScheduledTime(int hour, int minute) {
@@ -87,9 +96,7 @@ class NotificationService {
   }
 
   Future<void> turnOnNotifications() async {
-    Utils.logInfo(
-      '[NOTIFICATIONS] - Notifications were enabled',
-    );
+    Utils.logInfo('[NOTIFICATIONS] - Notifications were enabled');
 
     /// Schedule notification if switch in ON
     await Utils.requestPermission(Permission.notification);
@@ -99,9 +106,7 @@ class NotificationService {
   }
 
   Future<void> turnOffNotifications() async {
-    Utils.logInfo(
-      '[NOTIFICATIONS] - Notifications were disabled',
-    );
+    Utils.logInfo('[NOTIFICATIONS] - Notifications were disabled');
 
     /// Cancel notification if switch is OFF
     _flutterLocalNotificationsPlugin.cancelAll();
@@ -111,9 +116,7 @@ class NotificationService {
   }
 
   Future<void> activatePersistentNotifications() async {
-    Utils.logInfo(
-      '[NOTIFICATIONS] - Persistent notifications were enabled',
-    );
+    Utils.logInfo('[NOTIFICATIONS] - Persistent notifications were enabled');
     _platformNotificationDetails = _platformPersistentNotificationDetails;
 
     /// Save notification on SharedPrefs
@@ -121,9 +124,7 @@ class NotificationService {
   }
 
   Future<void> deactivatePersistentNotifications() async {
-    Utils.logInfo(
-      '[NOTIFICATIONS] - Persistent notifications were disabled',
-    );
+    Utils.logInfo('[NOTIFICATIONS] - Persistent notifications were disabled');
     _platformNotificationDetails = _platformNonPersistentNotificationDetails;
 
     /// Save notification on SharedPrefs

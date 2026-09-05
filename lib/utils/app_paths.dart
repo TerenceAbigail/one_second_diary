@@ -68,7 +68,9 @@ class AppPaths {
       _videos = withTrailingSlash('$documents/$folderName');
     } else {
       _internal = documents;
-      _videos = withTrailingSlash('${await _androidStorageRoot(documents)}/DCIM/$folderName');
+      _videos = withTrailingSlash(
+        '${await _androidStorageRoot(documents)}/DCIM/$folderName',
+      );
     }
     _movies = '${_videos}Movies/';
 
@@ -106,7 +108,8 @@ class AppPaths {
     return result.isEmpty ? fallback : result;
   }
 
-  static String withTrailingSlash(String path) => path.endsWith('/') ? path : '$path/';
+  static String withTrailingSlash(String path) =>
+      path.endsWith('/') ? path : '$path/';
 
   /// Visible for testing.
   static void debugSetPaths({

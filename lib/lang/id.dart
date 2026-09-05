@@ -18,7 +18,8 @@ const Map<String, String> id = {
   'movieCreatedDesc':
       'Video disimpan ke dalam penyimpanan di dalam folder DCIM/OneSecondDiary/Movies',
   'movieError': 'Gagal menyimpan video!',
-  'tryAgainMsg': 'Coba beberapa saaat lagi. Jika masalah masih tetap ada, hubungi pengembang.',
+  'tryAgainMsg':
+      'Coba beberapa saaat lagi. Jika masalah masih tetap ada, hubungi pengembang.',
   'create': 'Buat',
   'days': 'hari',
   'day': 'hari',
@@ -44,7 +45,8 @@ const Map<String, String> id = {
   'discardVideoTitle': 'Buang video ini?',
   'discardVideoDesc': 'Tekan "Ya" untuk merekam kembali',
   'introTitle1': 'Rekam 1 detik setiap hari',
-  'introDesc1': 'Pilih momen spesial di hari yang ingin Anda ingat di masa depan.',
+  'introDesc1':
+      'Pilih momen spesial di hari yang ingin Anda ingat di masa depan.',
   'introTitle2': 'Buat film hidup Anda',
   'introDesc2': 'Hasilkan kompilasi dari semua rekaman video Anda.',
   'introTitle3': 'Tanpa Iklan dan Gratis',
@@ -116,8 +118,10 @@ const Map<String, String> id = {
   'reservedProfileName': 'Ini adalah nama profil yang dipesan',
   'profileOrientationRequired': 'Pilih orientasi video untuk profil ini',
   'onboardingOrientationTitle': 'Pilih orientasi video Anda',
-  'onboardingOrientationDesc': 'Ini menentukan bentuk video yang Anda simpan dengan profil default Anda — lanskap (16:9) atau potret (9:16). Anda selalu bisa membuat profil lain dengan orientasi yang berbeda nanti.',
-  'creatingMovie': 'Memproses ... tunggu sebentar.\nIni bisa memakan waktu beberapa menit.',
+  'onboardingOrientationDesc':
+      'Ini menentukan bentuk video yang Anda simpan dengan profil default Anda — lanskap (16:9) atau potret (9:16). Anda selalu bisa membuat profil lain dengan orientasi yang berbeda nanti.',
+  'creatingMovie':
+      'Memproses ... tunggu sebentar.\nIni bisa memakan waktu beberapa menit.',
   'doNotCloseTheApp': 'Jangan tutup aplikasi ini',
   'cancelMovieCreation': 'Batalkan pembuatan video',
   'cancelMovieDesc': 'Apakah Anda yakin ingin membatalkan pembuatan video?',
@@ -125,9 +129,11 @@ const Map<String, String> id = {
   'oops': 'Ups!',
   'videoResolutionWarning':
       'Resolusi video ini tidak didukung saat ini. Pastikan itu dicatat dalam lanskap (rasio aspek 16:9)',
-  'unsupportedPortraitMode': 'Video mode potret tidak didukung saat ini. Pilih video lain',
+  'unsupportedPortraitMode':
+      'Video mode potret tidak didukung saat ini. Pilih video lain',
   'processingVideo': 'Memproses video',
-  'deleteVideoWarning': 'Apakah Anda yakin ingin menghapus video ini secara permanen?',
+  'deleteVideoWarning':
+      'Apakah Anda yakin ingin menghapus video ini secara permanen?',
   'deleteVideo': 'Hapus video',
   'addSubtitles': 'Tambahkan subjudul',
   'dateColorAndFormat': 'Warna dan format tanggal',
@@ -144,7 +150,8 @@ const Map<String, String> id = {
   'feat1v15': 'Galeri',
   'featDesc1v15': 'Tambahkan video dari galeri ke koleksimu dengan mudah 🤩',
   'feat2v15': 'Subtitle',
-  'featDesc2v15': 'Tambahkan atau sunting subtitle untuk memasukkan lebih banyak detail hari mu 📝',
+  'featDesc2v15':
+      'Tambahkan atau sunting subtitle untuk memasukkan lebih banyak detail hari mu 📝',
   'feat3v15': 'Geotagging',
   'featDesc3v15':
       'Tambahkan geotagging otomatis atau manual ke video-video mu untuk membantumu mengingat tempat di mana setiap saat terjadi 📍',
@@ -152,15 +159,18 @@ const Map<String, String> id = {
   'featDesc4v15':
       'Buat beberapa profil untuk menyimpan video-video mu secara terpisah dan mudah beralih antar profil 🤗',
   'feat5v15': 'Kalender',
-  'featDesc5v15': 'Lihat dan sunting hari-hari yang sudah direkam di kalender 📅',
+  'featDesc5v15':
+      'Lihat dan sunting hari-hari yang sudah direkam di kalender 📅',
   'feat6v15': 'Film',
-  'featDesc6v15': 'Buat film kustom dengan periode-periode terpilih atau video-video tertentu 🎥',
+  'featDesc6v15':
+      'Buat film kustom dengan periode-periode terpilih atau video-video tertentu 🎥',
   'feat7v15': 'Notifikasi',
   'featDesc7v15':
       'Atur notifikasi harian yang terjadwal untuk mengingatkanmu untuk merekam saat spesial mu 🔔',
   'default': 'Asali',
   'profileNameAlreadyExists': 'Nama profil sudah ada',
-  'profileNameCannotContainSpecialChars': 'Nama profil tidak boleh\nmengandung karakter khusus',
+  'profileNameCannotContainSpecialChars':
+      'Nama profil tidak boleh\nmengandung karakter khusus',
   'subtitlesSaved': 'Subjudul disimpan!',
   'error': 'Kesalahan',
   'migrationError':
@@ -168,7 +178,8 @@ const Map<String, String> id = {
   'success': 'Sukses',
   'migrationSuccess':
       'Migrasi berhasil! Semua video dan film sekarang disimpan di Internal Storage > DCIM > OneSecondDiary',
-  'migrationInProgress': 'Migrasi semua video Anda ke folder aplikasi baru, mohon tunggu ...',
+  'migrationInProgress':
+      'Migrasi semua video Anda ke folder aplikasi baru, mohon tunggu ...',
   'migrationFolderDeletionError':
       'Migrasi selesai, tetapi terjadi kesalahan saat menghapus folder lama. Mohon hapus secara manual.',
   'preferences': 'Preferensi',
@@ -204,11 +215,12 @@ const Map<String, String> id = {
   'featDesc4v152':
       'Saat merekam di aplikasi, ketuk tombol baru setelah menempatkan ponsel Anda untuk mengunci orientasi dan menghindari hasil yang tidak diinginkan 📱',
   'feat5v152': 'Dan lainnya...',
-  'featDesc5v152': 'Anda juga akan menemukan beberapa perbaikan visual kecil dan perbaikan bug 🐛',
+  'featDesc5v152':
+      'Anda juga akan menemukan beberapa perbaikan visual kecil dan perbaikan bug 🐛',
   'useFilterInExperimentalPicker': 'Gunakan filter tanggal untuk memilih video',
   'useFilterInExperimentalPickerDescription':
       'Ketika diaktifkan, memilih tanggal sebelumnya akan memfilter video berdasarkan tanggal tersebut. Ketika dinonaktifkan, semua video akan ditampilkan. Hanya bekerja dengan pemilih file eksperimental.',
   'useAlternativeCalendarColors': 'Gunakan warna kalender alternatif',
   'useAlternativeCalendarColorsDescription':
-      'Mengubah hijau dan merah di kalender menjadi biru dan kuning. Berguna untuk orang buta warna.'
+      'Mengubah hijau dan merah di kalender menjadi biru dan kuning. Berguna untuk orang buta warna.',
 };

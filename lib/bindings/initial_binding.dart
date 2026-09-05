@@ -7,9 +7,6 @@ class InitialBinding extends Bindings {
   @override
   void dependencies() {
     Get.put<LanguageController>(LanguageController());
-    Get.put<NotificationService>(
-      NotificationService(),
-      permanent: true,
-    );
+    Get.put<NotificationService>(NotificationService(), permanent: true);
   }
 }

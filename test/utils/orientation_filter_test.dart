@@ -4,27 +4,41 @@ import 'package:one_second_diary/utils/orientation_filter.dart';
 
 void main() {
   group('scaleFilter', () {
-    test('landscape pads mismatched clips into a 1920x1080 canvas with black bars', () {
-      // Byte-for-byte the filter save_button.dart and save_photo_button.dart
-      // have always used — this refactor must not change landscape output.
-      expect(
-        OrientationFilter.scaleFilter(VideoOrientation.landscape),
-        'scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black',
-      );
-    });
+    test(
+      'landscape pads mismatched clips into a 1920x1080 canvas with black bars',
+      () {
+        // Byte-for-byte the filter save_button.dart and save_photo_button.dart
+        // have always used — this refactor must not change landscape output.
+        expect(
+          OrientationFilter.scaleFilter(VideoOrientation.landscape),
+          'scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black',
+        );
+      },
+    );
 
-    test('portrait crops mismatched clips to fill a 1080x1920 canvas, never pads', () {
-      final String filter = OrientationFilter.scaleFilter(VideoOrientation.portrait);
+    test(
+      'portrait crops mismatched clips to fill a 1080x1920 canvas, never pads',
+      () {
+        final String filter = OrientationFilter.scaleFilter(
+          VideoOrientation.portrait,
+        );
 
-      expect(filter, contains('scale=1080:1920'));
-      expect(filter, contains('force_original_aspect_ratio=increase'));
-      expect(filter, contains('crop=1080:1920'));
-      expect(filter, isNot(contains('pad=')));
-    });
+        expect(filter, contains('scale=1080:1920'));
+        expect(filter, contains('force_original_aspect_ratio=increase'));
+        expect(filter, contains('crop=1080:1920'));
+        expect(filter, isNot(contains('pad=')));
+      },
+    );
 
     test('landscape and portrait never target each other\'s canvas', () {
-      expect(OrientationFilter.scaleFilter(VideoOrientation.landscape), isNot(contains('1080:1920')));
-      expect(OrientationFilter.scaleFilter(VideoOrientation.portrait), isNot(contains('1920:1080')));
+      expect(
+        OrientationFilter.scaleFilter(VideoOrientation.landscape),
+        isNot(contains('1080:1920')),
+      );
+      expect(
+        OrientationFilter.scaleFilter(VideoOrientation.portrait),
+        isNot(contains('1920:1080')),
+      );
     });
   });
 
@@ -42,18 +56,28 @@ void main() {
 
   group('aspectRatioFor', () {
     test('landscape is 16:9', () {
-      expect(OrientationFilter.aspectRatioFor(VideoOrientation.landscape), 16 / 9);
+      expect(
+        OrientationFilter.aspectRatioFor(VideoOrientation.landscape),
+        16 / 9,
+      );
     });
 
     test('portrait is 9:16', () {
-      expect(OrientationFilter.aspectRatioFor(VideoOrientation.portrait), 9 / 16);
+      expect(
+        OrientationFilter.aspectRatioFor(VideoOrientation.portrait),
+        9 / 16,
+      );
     });
 
     test('landscape and portrait are reciprocals of each other', () {
       // Same canvas, just rotated — this should hold for any future
       // orientation added the same way, not just these two literal values.
-      final double landscape = OrientationFilter.aspectRatioFor(VideoOrientation.landscape);
-      final double portrait = OrientationFilter.aspectRatioFor(VideoOrientation.portrait);
+      final double landscape = OrientationFilter.aspectRatioFor(
+        VideoOrientation.landscape,
+      );
+      final double portrait = OrientationFilter.aspectRatioFor(
+        VideoOrientation.portrait,
+      );
       expect(landscape * portrait, closeTo(1.0, 1e-9));
     });
   });

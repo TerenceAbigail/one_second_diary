@@ -56,7 +56,9 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
   final DailyEntryController _dayController = Get.find();
 
   void _savePhoto() async {
-    Utils.logInfo('${logTag}Starting to process ${widget.photoPath} with ffmpeg');
+    Utils.logInfo(
+      '${logTag}Starting to process ${widget.photoPath} with ffmpeg',
+    );
 
     try {
       await _editWithFFmpeg(widget.isGeotaggingEnabled, context);
@@ -87,10 +89,7 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
 
     return FloatingActionButton(
       backgroundColor: AppColors.green,
-      child: const Icon(
-        Icons.save,
-        color: Colors.white,
-      ),
+      child: const Icon(Icons.save, color: Colors.white),
       onPressed: () {
         // Prevents user from clicking it twice
         if (!_pressedSave) {
@@ -114,10 +113,7 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: Text(
-              'processingVideo'.tr,
-              textAlign: TextAlign.center,
-            ),
+            title: Text('processingVideo'.tr, textAlign: TextAlign.center),
             content: Padding(
               padding: const EdgeInsets.only(bottom: 21.0),
               child: Column(
@@ -150,7 +146,8 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
   String getVideoOutputPath() {
     final String videoName = DateFormatUtils.getDate(widget.determinedDate);
 
-    final selectedProfileIndex = SharedPrefsUtil.getInt('selectedProfileIndex') ?? 0;
+    final selectedProfileIndex =
+        SharedPrefsUtil.getInt('selectedProfileIndex') ?? 0;
     if (selectedProfileIndex == 0) {
       // Default profile, videos go straight into the app folder.
       return '${AppPaths.videos}$videoName.mp4';
@@ -158,7 +155,9 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
 
     final allProfiles = SharedPrefsUtil.getStringList('profiles');
     if (allProfiles == null || selectedProfileIndex >= allProfiles.length) {
-      Utils.logWarning('${logTag}Unknown profile index $selectedProfileIndex, using the default');
+      Utils.logWarning(
+        '${logTag}Unknown profile index $selectedProfileIndex, using the default',
+      );
       return '${AppPaths.videos}$videoName.mp4';
     }
 
@@ -168,7 +167,10 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
     return '${AppPaths.profileVideos(currentProfileName)}$videoName.mp4';
   }
 
-  Future<void> _editWithFFmpeg(bool isGeotaggingEnabled, BuildContext context) async {
+  Future<void> _editWithFFmpeg(
+    bool isGeotaggingEnabled,
+    BuildContext context,
+  ) async {
     // Positions to render texts for the (x, y co-ordinates)
     final String datePosY = widget.isTextDate ? 'h-th-40' : '40';
     final String datePosX = widget.isTextDate ? '40' : 'w-tw-40';
@@ -189,8 +191,10 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
     String parsedTextOutlineColor = '';
 
     try {
-      parsedDateColor = '0x${widget.dateColor.toARGB32().toRadixString(16).substring(2)}';
-      parsedTextOutlineColor = '0x${widget.textOutlineColor.toARGB32().toRadixString(16).substring(2)}';
+      parsedDateColor =
+          '0x${widget.dateColor.toARGB32().toRadixString(16).substring(2)}';
+      parsedTextOutlineColor =
+          '0x${widget.textOutlineColor.toARGB32().toRadixString(16).substring(2)}';
     } catch (e) {
       Utils.logError(logTag + e.toString());
       Utils.logInfo('Error parsing colors, applying default white.');
@@ -209,27 +213,30 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
         barrierDismissible: false,
         context: Get.context!,
         builder: (context) => CustomDialog(
-            isDoubleAction: true,
-            title: 'editQuestionTitle'.tr,
-            content: 'editQuestion'.tr,
-            actionText: 'yes'.tr,
-            actionColor: AppColors.green,
-            action: () async {
-              Utils.logInfo('${logTag}Video already exists, deleting it to perform edit.');
-              try {
-                await StorageUtils.deleteVideo(finalPath);
-              } finally {
-                Get.back();
-              }
-            },
-            action2Text: 'no'.tr,
-            action2Color: Colors.red,
-            action2: () {
-              Utils.logInfo('${logTag}User chose not to edit video.');
-              shouldContinue = false;
+          isDoubleAction: true,
+          title: 'editQuestionTitle'.tr,
+          content: 'editQuestion'.tr,
+          actionText: 'yes'.tr,
+          actionColor: AppColors.green,
+          action: () async {
+            Utils.logInfo(
+              '${logTag}Video already exists, deleting it to perform edit.',
+            );
+            try {
+              await StorageUtils.deleteVideo(finalPath);
+            } finally {
               Get.back();
-              Get.back();
-            }),
+            }
+          },
+          action2Text: 'no'.tr,
+          action2Color: Colors.red,
+          action2: () {
+            Utils.logInfo('${logTag}User chose not to edit video.');
+            shouldContinue = false;
+            Get.back();
+            Get.back();
+          },
+        ),
       );
     }
 
@@ -240,13 +247,16 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
     await FFmpegKitConfig.setFontDirectory(fontPath, {});
 
     if (isGeotaggingEnabled) {
-      final String locationTextFilePath = await Utils.writeLocationTxt(widget.userLocation);
+      final String locationTextFilePath = await Utils.writeLocationTxt(
+        widget.userLocation,
+      );
       locale =
           ', drawtext=textfile=$locationTextFilePath:fontfile=$fontPath:fontsize=$locTextSize:fontcolor=\'$parsedDateColor\':borderw=${widget.textOutlineWidth}:bordercolor=$parsedTextOutlineColor:x=$locPosX:y=$locPosY';
     }
 
     // We are generating a video from a photo, so we add a silent audio track
-    const String audioStream = '-f lavfi -i anullsrc=channel_layout=mono:sample_rate=48000';
+    const String audioStream =
+        '-f lavfi -i anullsrc=channel_layout=mono:sample_rate=48000';
     const String audioMap = '-map 2:a';
     const String origin = 'gallery_photo';
 
@@ -260,17 +270,24 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
         videoEndInMilliseconds,
       );
     } else {
-      Utils.logInfo('${logTag}Subtitles TextField was left empty. Adding empty subtitles...');
+      Utils.logInfo(
+        '${logTag}Subtitles TextField was left empty. Adding empty subtitles...',
+      );
       subtitlesPath = await Utils.writeSrt('', 0, videoEndInMilliseconds);
     }
     Utils.logInfo('${logTag}Subtitles file path: $subtitlesPath');
 
     String locationMetadata = '';
     if (isGeotaggingEnabled) {
-      final latitude = Utils.locationPositionToString(widget.userPosition?.latitude);
-      final longitude = Utils.locationPositionToString(widget.userPosition?.longitude);
+      final latitude = Utils.locationPositionToString(
+        widget.userPosition?.latitude,
+      );
+      final longitude = Utils.locationPositionToString(
+        widget.userPosition?.longitude,
+      );
       final localeName = widget.userLocation?.replaceAll('"', '\\"');
-      locationMetadata = ' -metadata location="$latitude$longitude/$localeName"';
+      locationMetadata =
+          ' -metadata location="$latitude$longitude/$localeName"';
     }
 
     final baseMetadata =
@@ -279,7 +296,9 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
     final metadata = baseMetadata + locationMetadata;
 
     // Fit the video into the active profile's output canvas.
-    final String scale = OrientationFilter.scaleFilter(Utils.getCurrentOrientation());
+    final String scale = OrientationFilter.scaleFilter(
+      Utils.getCurrentOrientation(),
+    );
 
     // Add date to the video
     final date =
@@ -338,7 +357,8 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
           Utils.logInfo('${logTag}Execution was cancelled');
         } else {
           Utils.logError(
-              '${logTag}Error editing video: Return code is ${await session.getReturnCode()}');
+            '${logTag}Error editing video: Return code is ${await session.getReturnCode()}',
+          );
           final sessionLog = await session.getLogsAsString();
           final failureStackTrace = await session.getFailStackTrace();
           Utils.logError('${logTag}Session log is: $sessionLog');
@@ -367,7 +387,8 @@ class _SavePhotoButtonState extends State<SavePhotoButton> {
       statisticsCallback: (statistics) async {
         if (statistics.getTime() > 0) {
           num tempProgressValue =
-              (statistics.getTime() / (widget.photoDurationInSeconds * 1000)) * 100;
+              (statistics.getTime() / (widget.photoDurationInSeconds * 1000)) *
+              100;
           if (tempProgressValue >= 100) {
             tempProgressValue = 99.9;
           }

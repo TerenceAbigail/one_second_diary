@@ -44,9 +44,7 @@ class Themes {
       backgroundColor: AppColors.mainColor,
       iconTheme: IconThemeData(color: Colors.white),
     ),
-    textTheme: ThemeData.dark().textTheme.apply(
-          fontFamily: 'Magic',
-        ),
+    textTheme: ThemeData.dark().textTheme.apply(fontFamily: 'Magic'),
     primaryColor: AppColors.mainColor,
     colorScheme: ThemeData.dark().colorScheme.copyWith(
       secondary: AppColors.mainColor,
@@ -68,7 +66,9 @@ class Themes {
     ),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.all(AppColors.mainColor),
-      trackColor: WidgetStateProperty.all(AppColors.dark.withValues(alpha: 0.5)),
+      trackColor: WidgetStateProperty.all(
+        AppColors.dark.withValues(alpha: 0.5),
+      ),
     ),
   );
 }
@@ -81,7 +81,8 @@ class ThemeService {
   // Dark Mode is true by default
   bool isDarkTheme() => SharedPrefsUtil.getBool(_key) ?? true;
 
-  Future<bool> _saveTheme(bool isDarkMode) => SharedPrefsUtil.putBool(_key, isDarkMode);
+  Future<bool> _saveTheme(bool isDarkMode) =>
+      SharedPrefsUtil.putBool(_key, isDarkMode);
 
   void switchTheme() {
     Get.changeThemeMode(isDarkTheme() ? ThemeMode.light : ThemeMode.dark);

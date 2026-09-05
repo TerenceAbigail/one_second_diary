@@ -20,8 +20,9 @@ import 'utils.dart';
 abstract class MediaGallery {
   static MediaGallery? _instance;
 
-  static MediaGallery get instance =>
-      _instance ??= PlatformUtils.isAndroid ? AndroidMediaGallery() : SandboxMediaGallery();
+  static MediaGallery get instance => _instance ??= PlatformUtils.isAndroid
+      ? AndroidMediaGallery()
+      : SandboxMediaGallery();
 
   /// Visible for testing. Pass `null` to restore the platform default.
   static set debugInstance(MediaGallery? gallery) => _instance = gallery;
@@ -71,7 +72,9 @@ class AndroidMediaGallery implements MediaGallery {
     if (saved) {
       _deleteQuietly(tempFilePath);
     } else {
-      Utils.logError('[MediaGallery] - MediaStore refused to save $tempFilePath');
+      Utils.logError(
+        '[MediaGallery] - MediaStore refused to save $tempFilePath',
+      );
     }
     return saved;
   }
@@ -84,7 +87,9 @@ class AndroidMediaGallery implements MediaGallery {
       }
       return true;
     } catch (e) {
-      Utils.logError('[MediaGallery] - Direct delete of $filePath failed ($e), trying MediaStore');
+      Utils.logError(
+        '[MediaGallery] - Direct delete of $filePath failed ($e), trying MediaStore',
+      );
     }
 
     try {
@@ -97,7 +102,9 @@ class AndroidMediaGallery implements MediaGallery {
       Utils.logInfo('[MediaGallery] - $filePath deleted using MediaStore');
       return true;
     } catch (e) {
-      Utils.logError('[MediaGallery] - MediaStore delete failed ($e), trying the URI method');
+      Utils.logError(
+        '[MediaGallery] - MediaStore delete failed ($e), trying the URI method',
+      );
     }
 
     // The MediaStore database sometimes has no record of a file that does
@@ -109,7 +116,9 @@ class AndroidMediaGallery implements MediaGallery {
         uriString: uri.toString(),
         forceUseMediaStore: true,
       );
-      Utils.logInfo('[MediaGallery] - $filePath deleted using the MediaStore URI method');
+      Utils.logInfo(
+        '[MediaGallery] - $filePath deleted using the MediaStore URI method',
+      );
       return deleted;
     } catch (e) {
       Utils.logError('[MediaGallery] - Could not delete $filePath: $e');
@@ -144,11 +153,14 @@ class SandboxMediaGallery implements MediaGallery {
     try {
       final io.File source = io.File(tempFilePath);
       if (!source.existsSync()) {
-        Utils.logError('[MediaGallery] - $tempFilePath does not exist, nothing to save');
+        Utils.logError(
+          '[MediaGallery] - $tempFilePath does not exist, nothing to save',
+        );
         return false;
       }
-      await io.Directory(destinationPath.substring(0, destinationPath.lastIndexOf('/')))
-          .create(recursive: true);
+      await io.Directory(
+        destinationPath.substring(0, destinationPath.lastIndexOf('/')),
+      ).create(recursive: true);
       try {
         await source.rename(destinationPath);
       } on io.FileSystemException {
@@ -158,7 +170,9 @@ class SandboxMediaGallery implements MediaGallery {
       }
       return true;
     } catch (e) {
-      Utils.logError('[MediaGallery] - Could not save $tempFilePath to $destinationPath: $e');
+      Utils.logError(
+        '[MediaGallery] - Could not save $tempFilePath to $destinationPath: $e',
+      );
       return false;
     }
   }

@@ -51,7 +51,8 @@ const Map<String, String> zh = {
   'licenses': '许可证',
   'contact': '联系方式',
   'share': '分享',
-  'shareMsg': '瞧瞧这个应用吧: https://play.google.com/store/apps/details?id=com.kylekun.one_second_diary',
+  'shareMsg':
+      '瞧瞧这个应用吧: https://play.google.com/store/apps/details?id=com.kylekun.one_second_diary',
   'thanksTo': '特别感谢',
   'foundVideos': '寻找视频集!',
   'foundVideo': '寻找视频!',
@@ -108,7 +109,8 @@ const Map<String, String> zh = {
   'reservedProfileName': '这是一个保留的个人资料名称',
   'profileOrientationRequired': '请为此配置文件选择视频方向',
   'onboardingOrientationTitle': '选择您的视频方向',
-  'onboardingOrientationDesc': '这决定了您使用默认配置文件保存的视频形状——横向（16:9）或纵向（9:16）。您以后随时可以创建另一个使用不同方向的配置文件。',
+  'onboardingOrientationDesc':
+      '这决定了您使用默认配置文件保存的视频形状——横向（16:9）或纵向（9:16）。您以后随时可以创建另一个使用不同方向的配置文件。',
   'creatingMovie': '正在处理...请稍候.\n这可能需要几分钟.',
   'doNotCloseTheApp': '请不要关闭应用程序',
   'cancelMovieCreation': '取消电影创建',
@@ -150,12 +152,14 @@ const Map<String, String> zh = {
   'migrationError':
       '迁移视频时出错。请关闭应用程序并手动将视频从Internal Storage > OneSecondDiary复制到Internal Storage > DCIM > OneSecondDiary，然后删除旧文件夹。',
   'success': '成功',
-  'migrationSuccess': '迁移成功！所有视频和电影现在都保存在Internal Storage > DCIM > OneSecondDiary中',
+  'migrationSuccess':
+      '迁移成功！所有视频和电影现在都保存在Internal Storage > DCIM > OneSecondDiary中',
   'migrationInProgress': '正在将所有视频迁移到新的应用程序文件夹中，请稍候...',
   'migrationFolderDeletionError': '迁移完成，但在删除旧文件夹时出错。请手动删除它。',
   'preferences': '偏好设置',
   'forceNativeCamera': '强制使用原生相机',
-  'forceNativeCameraDescription': '使用原生相机应用程序记录视频，而不是内置相机。这可以解决性能能力较低的设备的录制问题。这个选项可能不适用于某些设备。',
+  'forceNativeCameraDescription':
+      '使用原生相机应用程序记录视频，而不是内置相机。这可以解决性能能力较低的设备的录制问题。这个选项可能不适用于某些设备。',
   'movies': '电影',
   'myMovies': '我的电影',
   'noMoviesFound': '未找到电影',
@@ -176,13 +180,15 @@ const Map<String, String> zh = {
   'feat2v152': '改进的视频剪辑',
   'featDesc2v152': '使用新的快速剪辑按钮和改进的剪辑条更准确地选择您的时刻 🎞️',
   'feat3v152': '新的实验性文件选择器',
-  'featDesc3v152': '新的实验性文件选择器允许按日期预览和筛选您的视频，添加过去的视频时不再滚动 📅（如果您遇到任何问题，可以在首选项中禁用它）',
+  'featDesc3v152':
+      '新的实验性文件选择器允许按日期预览和筛选您的视频，添加过去的视频时不再滚动 📅（如果您遇到任何问题，可以在首选项中禁用它）',
   'feat4v152': '锁定方向',
   'featDesc4v152': '在应用中录制时，调整手机位置后点击新按钮以锁定方向，避免意外的结果 📱',
   'feat5v152': '还有更多...',
   'featDesc5v152': '您还会发现一些小的视觉改进和错误修复 🐛',
   'useFilterInExperimentalPicker': '使用日期过滤器选择视频',
-  'useFilterInExperimentalPickerDescription': '启用后，选择过去的日期将按该日期过滤视频。禁用后，将显示所有视频。仅适用于实验性文件选择器。',
+  'useFilterInExperimentalPickerDescription':
+      '启用后，选择过去的日期将按该日期过滤视频。禁用后，将显示所有视频。仅适用于实验性文件选择器。',
   'useAlternativeCalendarColors': '使用备用日历颜色',
-  'useAlternativeCalendarColorsDescription': '将日历中的绿色和红色更改为蓝色和黄色。对色盲者有用。'
+  'useAlternativeCalendarColorsDescription': '将日历中的绿色和红色更改为蓝色和黄色。对色盲者有用。',
 };

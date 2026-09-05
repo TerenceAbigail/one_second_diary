@@ -96,18 +96,12 @@ class _CustomDialogState extends State<CustomDialog> {
         if (widget.isContact) ...{
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
-            child: Text(
-              'yes'.tr,
-              style: const TextStyle(color: Colors.white),
-            ),
+            child: Text('yes'.tr, style: const TextStyle(color: Colors.white)),
             onPressed: () => zipAndSendLogs(),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: Text(
-              'no'.tr,
-              style: const TextStyle(color: Colors.white),
-            ),
+            child: Text('no'.tr, style: const TextStyle(color: Colors.white)),
             onPressed: () => Utils.launchURL(Constants.email),
           ),
         } else if (widget.sendLogs) ...{
@@ -117,38 +111,44 @@ class _CustomDialogState extends State<CustomDialog> {
                 ? const SizedBox(
                     width: 15,
                     height: 15,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
+                    child: CircularProgressIndicator(color: Colors.white),
                   )
                 : Text('reportError'.tr),
             onPressed: () => zipAndSendLogs(),
           ),
         } else ...{
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: widget.actionColor),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: widget.actionColor,
+            ),
             child: Text(
               widget.actionText!,
               style: TextStyle(
-                color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                color: ThemeService().isDarkTheme()
+                    ? Colors.white
+                    : Colors.black,
               ),
             ),
             onPressed: widget.action,
           ),
           if (widget.isDoubleAction == true)
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: widget.action2Color),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: widget.action2Color,
+              ),
               child: Text(
                 widget.action2Text!,
                 style: TextStyle(
-                  color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                  color: ThemeService().isDarkTheme()
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               onPressed: widget.action2,
             )
           else
-            Container()
-        }
+            Container(),
+        },
       ],
     );
   }

@@ -39,7 +39,10 @@ class _HeartAnimationState extends State<HeartAnimation> {
             if (state is RiveLoaded) {
               return RiveWidget(controller: state.controller);
             } else if (state is RiveFailed) {
-              return Text('Rive Error: ${state.error}', textAlign: TextAlign.center);
+              return Text(
+                'Rive Error: ${state.error}',
+                textAlign: TextAlign.center,
+              );
             }
             return const CircularProgressIndicator();
           },

@@ -32,7 +32,8 @@ class ProfileNameValidator {
     }
 
     final String lowerValue = rawValue.toLowerCase().trim();
-    if (lowerValue == 'default' || lowerValue == localizedDefaultLabel.toLowerCase()) {
+    if (lowerValue == 'default' ||
+        lowerValue == localizedDefaultLabel.toLowerCase()) {
       return ProfileNameError.reserved;
     }
 

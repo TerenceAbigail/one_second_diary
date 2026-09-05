@@ -31,7 +31,9 @@ class StorageUtils {
     try {
       await _requestPermissions();
       await AppPaths.createDirectories();
-      Utils.logInfo('[StorageUtils] - Videos directory ready at ${AppPaths.videos}');
+      Utils.logInfo(
+        '[StorageUtils] - Videos directory ready at ${AppPaths.videos}',
+      );
 
       if (PlatformUtils.isAndroid) {
         await _migrateLegacyAndroidFolders();
@@ -49,11 +51,14 @@ class StorageUtils {
       return;
     }
 
-    final AndroidDeviceInfo androidDeviceInfo = await DeviceInfoPlugin().androidInfo;
+    final AndroidDeviceInfo androidDeviceInfo =
+        await DeviceInfoPlugin().androidInfo;
     final int sdkVersion = androidDeviceInfo.version.sdkInt;
     SharedPrefsUtil.putInt('sdkVersion', sdkVersion);
 
-    final bool granted = await Utils.requestStoragePermissions(sdkVersion: sdkVersion);
+    final bool granted = await Utils.requestStoragePermissions(
+      sdkVersion: sdkVersion,
+    );
     if (!granted) {
       Utils.logError(
         '[StorageUtils] - Some storage permissions were not granted for sdk version $sdkVersion',
@@ -67,10 +72,16 @@ class StorageUtils {
     final String internalDirectoryPath = AppPaths.internal;
 
     final io.Directory oldAppFolder = io.Directory(
-      AppPaths.videos.replaceFirst('DCIM/${AppPaths.folderName}/', '${AppPaths.folderName}/'),
+      AppPaths.videos.replaceFirst(
+        'DCIM/${AppPaths.folderName}/',
+        '${AppPaths.folderName}/',
+      ),
     );
     final io.Directory oldMoviesFolder = io.Directory(
-      AppPaths.movies.replaceFirst('DCIM/${AppPaths.folderName}/Movies/', 'OSD-Movies/'),
+      AppPaths.movies.replaceFirst(
+        'DCIM/${AppPaths.folderName}/Movies/',
+        'OSD-Movies/',
+      ),
     );
 
     if (!await oldAppFolder.exists()) return;
@@ -79,21 +90,25 @@ class StorageUtils {
     final MediaGallery gallery = MediaGallery.instance;
 
     // Map all files inside old folders
-    final List<io.FileSystemEntity> oldFolderFiles =
-        await oldAppFolder.list(recursive: true).toList();
+    final List<io.FileSystemEntity> oldFolderFiles = await oldAppFolder
+        .list(recursive: true)
+        .toList();
 
     // Remove files that contain Logs in path
     oldFolderFiles.removeWhere((file) => file.path.contains('Logs'));
 
     // Avoid repeating it if the migration was already done and user forgot to delete old folder
-    final List<io.FileSystemEntity> newFolderFiles =
-        await appDirectory.list(recursive: true).toList();
+    final List<io.FileSystemEntity> newFolderFiles = await appDirectory
+        .list(recursive: true)
+        .toList();
     List<String> alreadyMigratedFiles = [];
     if (newFolderFiles.length >= oldFolderFiles.length) {
       Utils.logInfo('[StorageUtils] - Old videos folder already migrated');
       return;
     } else if (newFolderFiles.isNotEmpty) {
-      alreadyMigratedFiles = newFolderFiles.map((file) => file.path.split('/').last).toList();
+      alreadyMigratedFiles = newFolderFiles
+          .map((file) => file.path.split('/').last)
+          .toList();
       debugPrint('Already migrated files: $alreadyMigratedFiles');
     }
 
@@ -103,11 +118,7 @@ class StorageUtils {
       builder: (context) => PopScope(
         canPop: false,
         child: AlertDialog(
-          title: const Icon(
-            Icons.handyman,
-            color: AppColors.green,
-            size: 32.0,
-          ),
+          title: const Icon(Icons.handyman, color: AppColors.green, size: 32.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -115,19 +126,11 @@ class StorageUtils {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'migrationInProgress'.tr,
-                textAlign: TextAlign.center,
-              ),
+              Text('migrationInProgress'.tr, textAlign: TextAlign.center),
               const SizedBox(height: 10),
-              const CircularProgressIndicator(
-                color: AppColors.green,
-              ),
+              const CircularProgressIndicator(color: AppColors.green),
               const SizedBox(height: 10),
-              Text(
-                'doNotCloseTheApp'.tr,
-                textAlign: TextAlign.center,
-              ),
+              Text('doNotCloseTheApp'.tr, textAlign: TextAlign.center),
             ],
           ),
         ),
@@ -154,7 +157,9 @@ class StorageUtils {
 
         final List<String> pathSplitted = file.path.split('/');
         final bool isProfileVideo = file.path.contains('Profiles');
-        final String folderName = isProfileVideo ? pathSplitted[pathSplitted.length - 2] : '';
+        final String folderName = isProfileVideo
+            ? pathSplitted[pathSplitted.length - 2]
+            : '';
 
         validFiles++;
 
@@ -163,8 +168,12 @@ class StorageUtils {
           gallery.setAlbum('${AppPaths.folderName}/Profiles/$folderName');
           tempFolderPath = '$internalDirectoryPath/Profiles/$folderName';
           await io.Directory(tempFolderPath).create(recursive: true);
-          await io.Directory(AppPaths.profileVideos(folderName)).create(recursive: true);
-          debugPrint('Created profile folder ${AppPaths.profileVideos(folderName)}');
+          await io.Directory(
+            AppPaths.profileVideos(folderName),
+          ).create(recursive: true);
+          debugPrint(
+            'Created profile folder ${AppPaths.profileVideos(folderName)}',
+          );
           _registerProfile(folderName);
         } else {
           gallery.setAlbum(AppPaths.folderName);
@@ -203,7 +212,8 @@ class StorageUtils {
             gallery.setAlbum('${AppPaths.folderName}/Movies');
             final String tempFolderPath = '$internalDirectoryPath/Movies';
             await io.Directory(tempFolderPath).create(recursive: true);
-            final String copyFile = '$tempFolderPath/${file.path.split('/').last}';
+            final String copyFile =
+                '$tempFolderPath/${file.path.split('/').last}';
             await file.copy(copyFile);
             await gallery.save(
               tempFilePath: copyFile,
@@ -220,7 +230,9 @@ class StorageUtils {
           try {
             // Clean old movies folder
             await oldMoviesFolder.delete(recursive: true);
-            Utils.logWarning('[StorageUtils] - Migrated movies and deleted old folder');
+            Utils.logWarning(
+              '[StorageUtils] - Migrated movies and deleted old folder',
+            );
           } catch (_) {
             // Nothing else to do, the files are already in the new folder.
           }
@@ -229,9 +241,13 @@ class StorageUtils {
         // Clean old videos folder
         try {
           await oldAppFolder.delete(recursive: true);
-          Utils.logWarning('[StorageUtils] - Migrated videos and deleted old folder');
+          Utils.logWarning(
+            '[StorageUtils] - Migrated videos and deleted old folder',
+          );
         } catch (e) {
-          Utils.logError('[StorageUtils] - Tried to delete old videos folders but failed');
+          Utils.logError(
+            '[StorageUtils] - Tried to delete old videos folders but failed',
+          );
           Get.back();
           await showDialog(
             barrierDismissible: false,
@@ -279,7 +295,9 @@ class StorageUtils {
         );
       }
     } catch (e) {
-      Utils.logError('[StorageUtils] - Could not migrate old videos: ${e.toString()}');
+      Utils.logError(
+        '[StorageUtils] - Could not migrate old videos: ${e.toString()}',
+      );
       Get.back();
       await showDialog(
         barrierDismissible: false,
@@ -329,7 +347,9 @@ class StorageUtils {
           final int difference = today.difference(fileDate).inDays;
 
           if (difference > 7) {
-            Utils.logInfo('[StorageUtils] - Deleted old log file: ${file.path}');
+            Utils.logInfo(
+              '[StorageUtils] - Deleted old log file: ${file.path}',
+            );
             await io.File(file.path).delete();
           }
         }
@@ -342,12 +362,15 @@ class StorageUtils {
   /// The SharedPreferences key [profileName]'s orientation is stored under.
   /// Uses the same "empty string means the Default profile" convention as
   /// [AppPaths.profileVideos] and `Utils.getCurrentProfile`.
-  static String _orientationKey(String profileName) => 'orientation_$profileName';
+  static String _orientationKey(String profileName) =>
+      'orientation_$profileName';
 
   /// The orientation [profileName] was created with, defaulting to landscape
   /// for a profile that predates this field (see [VideoOrientation.parse]).
   static VideoOrientation getOrientation(String profileName) =>
-      VideoOrientation.parse(SharedPrefsUtil.getString(_orientationKey(profileName)));
+      VideoOrientation.parse(
+        SharedPrefsUtil.getString(_orientationKey(profileName)),
+      );
 
   /// Persists [orientation] for [profileName].
   ///
@@ -365,7 +388,10 @@ class StorageUtils {
   /// calling this for a second time, and silently letting it through would
   /// mean a profile's clips get encoded to two different canvases without
   /// any error to explain why.
-  static Future<void> setOrientation(String profileName, VideoOrientation orientation) {
+  static Future<void> setOrientation(
+    String profileName,
+    VideoOrientation orientation,
+  ) {
     final String key = _orientationKey(profileName);
     if (SharedPrefsUtil.containsKey(key)) {
       final String message =
@@ -392,7 +418,9 @@ class StorageUtils {
   // Create specific profile folder
   static Future<void> createSpecificProfileFolder(String profileName) async {
     try {
-      final io.Directory profileDirectory = io.Directory(AppPaths.profileVideos(profileName));
+      final io.Directory profileDirectory = io.Directory(
+        AppPaths.profileVideos(profileName),
+      );
       if (!await profileDirectory.exists()) {
         await profileDirectory.create(recursive: true);
       }
@@ -404,7 +432,9 @@ class StorageUtils {
   // Delete specific profile folder
   static Future<void> deleteSpecificProfileFolder(String profileName) async {
     try {
-      final io.Directory profileDirectory = io.Directory(AppPaths.profileVideos(profileName));
+      final io.Directory profileDirectory = io.Directory(
+        AppPaths.profileVideos(profileName),
+      );
       if (profileDirectory.existsSync()) {
         await profileDirectory.delete(recursive: true);
       }
