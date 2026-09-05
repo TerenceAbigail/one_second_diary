@@ -10,19 +10,13 @@ class AboutButton extends StatelessWidget {
 
   void showAbout(BuildContext context) {
     showAboutPage(
-      title: Text(
-        'about'.tr,
-        style: const TextStyle(color: Colors.white),
-      ),
+      title: Text('about'.tr, style: const TextStyle(color: Colors.white)),
       context: context,
       applicationVersion: 'appVersion'.tr,
       applicationLegalese: 'Copyright © Caio Pedroso, 2024',
       children: <Widget>[
         MarkdownPageListTile(
-          icon: const Icon(
-            Icons.history,
-            color: AppColors.green,
-          ),
+          icon: const Icon(Icons.history, color: AppColors.green),
           title: Text(
             'Changelog',
             style: TextStyle(
@@ -32,10 +26,7 @@ class AboutButton extends StatelessWidget {
           filename: 'CHANGELOG.md',
         ),
         MarkdownPageListTile(
-          icon: const Icon(
-            Icons.favorite,
-            color: AppColors.mainColor,
-          ),
+          icon: const Icon(Icons.favorite, color: AppColors.mainColor),
           title: Text(
             'thanksTo'.tr,
             style: TextStyle(
@@ -56,9 +47,7 @@ class AboutButton extends StatelessWidget {
       applicationIcon: const SizedBox(
         width: 100,
         height: 100,
-        child: Image(
-          image: AssetImage('assets/images/app_logo.png'),
-        ),
+        child: Image(image: AssetImage('assets/images/app_logo.png')),
       ),
     );
   }

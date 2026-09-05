@@ -97,10 +97,7 @@ class _SaveButtonState extends State<SaveButton> {
 
     return FloatingActionButton(
       backgroundColor: AppColors.green,
-      child: const Icon(
-        Icons.save,
-        color: Colors.white,
-      ),
+      child: const Icon(Icons.save, color: Colors.white),
       onPressed: () {
         // Prevents user from clicking it twice
         if (!_pressedSave) {
@@ -124,20 +121,14 @@ class _SaveButtonState extends State<SaveButton> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: Text(
-              'processingVideo'.tr,
-              textAlign: TextAlign.center,
-            ),
+            title: Text('processingVideo'.tr, textAlign: TextAlign.center),
             content: Padding(
               padding: const EdgeInsets.only(bottom: 21.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    '$value%',
-                    textAlign: TextAlign.center,
-                  ),
+                  Text('$value%', textAlign: TextAlign.center),
                   const SizedBox(height: 5),
                   LinearProgressIndicator(
                     backgroundColor: AppColors.green.withValues(alpha: 0.2),
@@ -160,7 +151,8 @@ class _SaveButtonState extends State<SaveButton> {
   String getVideoOutputPath() {
     final String videoName = DateFormatUtils.getDate(widget.determinedDate);
 
-    final selectedProfileIndex = SharedPrefsUtil.getInt('selectedProfileIndex') ?? 0;
+    final selectedProfileIndex =
+        SharedPrefsUtil.getInt('selectedProfileIndex') ?? 0;
     if (selectedProfileIndex == 0) {
       // Default profile, videos go straight into the app folder.
       return '${AppPaths.videos}$videoName.mp4';
@@ -168,7 +160,9 @@ class _SaveButtonState extends State<SaveButton> {
 
     final allProfiles = SharedPrefsUtil.getStringList('profiles');
     if (allProfiles == null || selectedProfileIndex >= allProfiles.length) {
-      Utils.logWarning('${logTag}Unknown profile index $selectedProfileIndex, using the default');
+      Utils.logWarning(
+        '${logTag}Unknown profile index $selectedProfileIndex, using the default',
+      );
       return '${AppPaths.videos}$videoName.mp4';
     }
 
@@ -178,7 +172,10 @@ class _SaveButtonState extends State<SaveButton> {
     return '${AppPaths.profileVideos(currentProfileName)}$videoName.mp4';
   }
 
-  Future<void> _editWithFFmpeg(bool isGeotaggingEnabled, BuildContext context) async {
+  Future<void> _editWithFFmpeg(
+    bool isGeotaggingEnabled,
+    BuildContext context,
+  ) async {
     // Positions to render texts for the (x, y co-ordinates)
     // According to the ffmpeg docs, the x, y positions are relative to the top-left side of the output frame.
     final String datePosY = widget.isTextDate ? 'h-th-40' : '40';
@@ -200,8 +197,10 @@ class _SaveButtonState extends State<SaveButton> {
     String parsedTextOutlineColor = '';
 
     try {
-      parsedDateColor = '0x${widget.dateColor.toARGB32().toRadixString(16).substring(2)}';
-      parsedTextOutlineColor = '0x${widget.textOutlineColor.toARGB32().toRadixString(16).substring(2)}';
+      parsedDateColor =
+          '0x${widget.dateColor.toARGB32().toRadixString(16).substring(2)}';
+      parsedTextOutlineColor =
+          '0x${widget.textOutlineColor.toARGB32().toRadixString(16).substring(2)}';
     } catch (e) {
       Utils.logError(logTag + e.toString());
       Utils.logInfo('Error parsing colors, applying default white.');
@@ -220,27 +219,30 @@ class _SaveButtonState extends State<SaveButton> {
         barrierDismissible: false,
         context: Get.context!,
         builder: (context) => CustomDialog(
-            isDoubleAction: true,
-            title: 'editQuestionTitle'.tr,
-            content: 'editQuestion'.tr,
-            actionText: 'yes'.tr,
-            actionColor: AppColors.green,
-            action: () async {
-              Utils.logInfo('${logTag}Video already exists, deleting it to perform edit.');
-              try {
-                await StorageUtils.deleteVideo(finalPath);
-              } finally {
-                Get.back();
-              }
-            },
-            action2Text: 'no'.tr,
-            action2Color: Colors.red,
-            action2: () {
-              Utils.logInfo('${logTag}User chose not to edit video.');
-              shouldContinue = false;
+          isDoubleAction: true,
+          title: 'editQuestionTitle'.tr,
+          content: 'editQuestion'.tr,
+          actionText: 'yes'.tr,
+          actionColor: AppColors.green,
+          action: () async {
+            Utils.logInfo(
+              '${logTag}Video already exists, deleting it to perform edit.',
+            );
+            try {
+              await StorageUtils.deleteVideo(finalPath);
+            } finally {
               Get.back();
-              Get.back();
-            }),
+            }
+          },
+          action2Text: 'no'.tr,
+          action2Color: Colors.red,
+          action2: () {
+            Utils.logInfo('${logTag}User chose not to edit video.');
+            shouldContinue = false;
+            Get.back();
+            Get.back();
+          },
+        ),
       );
     }
 
@@ -255,7 +257,9 @@ class _SaveButtonState extends State<SaveButton> {
 
     // If geotagging is enabled, we can allow the command to render the location text into the video
     if (isGeotaggingEnabled) {
-      final String locationTextFilePath = await Utils.writeLocationTxt(widget.userLocation);
+      final String locationTextFilePath = await Utils.writeLocationTxt(
+        widget.userLocation,
+      );
       locale =
           ', drawtext=textfile=$locationTextFilePath:fontfile=$fontPath:fontsize=$locTextSize:fontcolor=\'$parsedDateColor\':borderw=${widget.textOutlineWidth}:bordercolor=$parsedTextOutlineColor:x=$locPosX:y=$locPosY';
     }
@@ -267,14 +271,15 @@ class _SaveButtonState extends State<SaveButton> {
     if (!widget.isFromRecordingPage) {
       origin = 'gallery';
       await executeFFprobe(
-              '-v quiet -select_streams a:0 -show_entries stream=codec_type -of default=nw=1:nk=1 "$videoPath"')
-          .then((session) async {
+        '-v quiet -select_streams a:0 -show_entries stream=codec_type -of default=nw=1:nk=1 "$videoPath"',
+      ).then((session) async {
         final returnCode = await session.getReturnCode();
         if (ReturnCode.isSuccess(returnCode)) {
           final sessionLog = await session.getOutput();
           if (sessionLog == null || sessionLog.isEmpty) {
             Utils.logWarning('${logTag}Video has no audio stream, adding one.');
-            audioStream = '-f lavfi -i anullsrc=channel_layout=mono:sample_rate=48000 -shortest';
+            audioStream =
+                '-f lavfi -i anullsrc=channel_layout=mono:sample_rate=48000 -shortest';
             audioMap = '-map 2:a';
           }
         }
@@ -283,7 +288,8 @@ class _SaveButtonState extends State<SaveButton> {
 
     // If subtitles TextBox were not left empty, we can allow the command to render the subtitles into the video, otherwise we add empty subtitles to populate the streams with a subtitle stream, so that concat demuxer can work properly when creating a movie
     String subtitlesPath = '';
-    final int videoStartInMilliseconds = widget.videoStartInMilliseconds.floor();
+    final int videoStartInMilliseconds = widget.videoStartInMilliseconds
+        .floor();
     final int videoEndInMilliseconds = widget.videoEndInMilliseconds.floor();
     if (widget.subtitles?.isEmpty == false) {
       subtitlesPath = await Utils.writeSrt(
@@ -292,17 +298,24 @@ class _SaveButtonState extends State<SaveButton> {
         videoEndInMilliseconds,
       );
     } else {
-      Utils.logInfo('${logTag}Subtitles TextField was left empty. Adding empty subtitles...');
+      Utils.logInfo(
+        '${logTag}Subtitles TextField was left empty. Adding empty subtitles...',
+      );
       subtitlesPath = await Utils.writeSrt('', 0, 1);
     }
     Utils.logInfo('${logTag}Subtitles file path: $subtitlesPath');
 
     String locationMetadata = '';
     if (isGeotaggingEnabled) {
-      final latitude = Utils.locationPositionToString(widget.userPosition?.latitude);
-      final longitude = Utils.locationPositionToString(widget.userPosition?.longitude);
+      final latitude = Utils.locationPositionToString(
+        widget.userPosition?.latitude,
+      );
+      final longitude = Utils.locationPositionToString(
+        widget.userPosition?.longitude,
+      );
       final localeName = widget.userLocation?.replaceAll('"', '\\"');
-      locationMetadata = ' -metadata location="$latitude$longitude/$localeName"';
+      locationMetadata =
+          ' -metadata location="$latitude$longitude/$localeName"';
     }
 
     // Add metadata to know the version of the app it was made, profile it was saved to and the origin of the video
@@ -312,10 +325,13 @@ class _SaveButtonState extends State<SaveButton> {
     final metadata = baseMetadata + locationMetadata;
 
     // Trim video to the selected range
-    final trim = '-ss ${videoStartInMilliseconds}ms -to ${videoEndInMilliseconds}ms';
+    final trim =
+        '-ss ${videoStartInMilliseconds}ms -to ${videoEndInMilliseconds}ms';
 
     // Fit the video into the active profile's output canvas.
-    final String scale = OrientationFilter.scaleFilter(Utils.getCurrentOrientation());
+    final String scale = OrientationFilter.scaleFilter(
+      Utils.getCurrentOrientation(),
+    );
 
     // Add date to the video
     final date =
@@ -369,8 +385,9 @@ class _SaveButtonState extends State<SaveButton> {
                 }
                 Get.offAllNamed(
                   Routes.HOME,
-                  arguments:
-                      widget.isFromRecordingPage ? null : {'forcedDate': widget.determinedDate},
+                  arguments: widget.isFromRecordingPage
+                      ? null
+                      : {'forcedDate': widget.determinedDate},
                 )?.then((_) {
                   if (mounted) setState(() {});
                 });
@@ -381,7 +398,8 @@ class _SaveButtonState extends State<SaveButton> {
           Utils.logInfo('${logTag}Execution was cancelled');
         } else {
           Utils.logError(
-              '${logTag}Error editing video: Return code is ${await session.getReturnCode()}');
+            '${logTag}Error editing video: Return code is ${await session.getReturnCode()}',
+          );
           final sessionLog = await session.getLogsAsString();
           final failureStackTrace = await session.getFailStackTrace();
           Utils.logError('${logTag}Session log is: $sessionLog');
@@ -409,12 +427,14 @@ class _SaveButtonState extends State<SaveButton> {
       },
       statisticsCallback: (statistics) async {
         final totalVideoDuration =
-            (widget.videoEndInMilliseconds - widget.videoStartInMilliseconds) ~/ 1000;
+            (widget.videoEndInMilliseconds - widget.videoStartInMilliseconds) ~/
+            1000;
         // A trim shorter than a second would divide by zero below.
         if (totalVideoDuration <= 0) return;
         // Determines the currently processed percentage of the video
         if (statistics.getTime() > 0) {
-          num tempProgressValue = (statistics.getTime() ~/ totalVideoDuration) / 10;
+          num tempProgressValue =
+              (statistics.getTime() ~/ totalVideoDuration) / 10;
           // Ideally the value should not exceed 100%, but the output also considers milliseconds so we estimate to 100.
           if (tempProgressValue >= 100) {
             tempProgressValue = 99.9;

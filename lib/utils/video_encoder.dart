@@ -41,18 +41,24 @@ class VideoEncoder {
   static Future<void> init() async {
     if (_selected != null) return;
     try {
-      final session = await executeFFmpeg('-hide_banner -encoders', showInLogs: false);
+      final session = await executeFFmpeg(
+        '-hide_banner -encoders',
+        showInLogs: false,
+      );
       final String output = await session.getOutput() ?? '';
       _selected = select(output, isIOS: PlatformUtils.isIOS);
     } catch (e) {
       _selected = defaultFor(isIOS: PlatformUtils.isIOS);
-      Utils.logError('[VideoEncoder] - Could not list encoders ($e), using $_selected');
+      Utils.logError(
+        '[VideoEncoder] - Could not list encoders ($e), using $_selected',
+      );
       return;
     }
     Utils.logInfo('[VideoEncoder] - Encoding with $_selected');
   }
 
-  static String defaultFor({required bool isIOS}) => isIOS ? videoToolbox : libx264;
+  static String defaultFor({required bool isIOS}) =>
+      isIOS ? videoToolbox : libx264;
 
   static String argumentsFor(String encoder) {
     switch (encoder) {

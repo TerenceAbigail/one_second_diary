@@ -18,12 +18,14 @@ const Map<String, String> ca = {
   'movieCreatedDesc':
       'La pel·lícula s’ha desat a l’emmagatzematge dins la carpeta DCIM/OneSecondDiary/Movies',
   'movieError': 'S’ha produït un error en desar la pel·lícula!',
-  'tryAgainMsg': 'Torneu a provar-ho. Si el problema persisteix, contacteu amb el desenvolupador.',
+  'tryAgainMsg':
+      'Torneu a provar-ho. Si el problema persisteix, contacteu amb el desenvolupador.',
   'create': 'Crea',
   'days': 'dies',
   'day': 'dia',
   'totalRecordedTitle': 'Heu enregistrat:',
-  'tapBelowToGenerate': 'Premeu el botó a sota per generar\nun únic fitxer de vídeo:',
+  'tapBelowToGenerate':
+      'Premeu el botó a sota per generar\nun únic fitxer de vídeo:',
   'editQuestionTitle': 'Voleu editar el vídeo?',
   'editQuestion': 'Se suprimirà l’enregistrament previ, voleu continuar?',
   'yes': 'Sí',
@@ -43,9 +45,11 @@ const Map<String, String> ca = {
   'discardVideoTitle': 'Voleu descartar aquest vídeo?',
   'discardVideoDesc': 'Premeu «Sí» per tornar a enregistrar-lo',
   'introTitle1': 'Enregistreu 1 segon cada dia',
-  'introDesc1': 'Trieu un moment especial del dia que us agradaria recordar en el futur.',
+  'introDesc1':
+      'Trieu un moment especial del dia que us agradaria recordar en el futur.',
   'introTitle2': 'Creeu la pel·lícula de la vostra vida',
-  'introDesc2': 'Genereu una recopilació de tots els vídeos que heu enregistrat.',
+  'introDesc2':
+      'Genereu una recopilació de tots els vídeos que heu enregistrat.',
   'introTitle3': 'Sense anuncis i totalment gratuïta',
   'introDesc3':
       'Si us agrada l’aplicació, considereu donar suport al desenvolupament amb una donació.',
@@ -114,16 +118,20 @@ const Map<String, String> ca = {
       'Tots els vídeos associats amb aquest perfil també se suprimiran permanentment. Esteu segur que voleu continuar?',
   'profileNameCannotBeEmpty': 'El nom del perfil no pot estar buit',
   'reservedProfileName': 'Aquest és un nom de perfil reservat',
-  'profileOrientationRequired': 'Selecciona una orientació de vídeo per a aquest perfil',
+  'profileOrientationRequired':
+      'Selecciona una orientació de vídeo per a aquest perfil',
   'onboardingOrientationTitle': 'Selecciona la teva orientació de vídeo',
   'onboardingOrientationDesc':
       "Això defineix la forma dels vídeos que desis amb el teu perfil per defecte: horitzontal (16:9) o vertical (9:16). Sempre pots crear un altre perfil amb l'altra orientació més endavant.",
-  'creatingMovie': 'S’està processant... Espereu.\nPot trigar uns quants minuts',
+  'creatingMovie':
+      'S’està processant... Espereu.\nPot trigar uns quants minuts',
   'doNotCloseTheApp': 'No tanqueu l’aplicació',
   'cancelMovieCreation': 'Cancel·la la creació de la pel·lícula',
-  'cancelMovieDesc': 'Esteu segur que voleu cancel·lar la creació de la pel·lícula?',
+  'cancelMovieDesc':
+      'Esteu segur que voleu cancel·lar la creació de la pel·lícula?',
   'reportError': 'Informa d’un error',
-  'errorMailSubject': '[One Second Diary - v1.6.0] Informe d’error de l’aplicació',
+  'errorMailSubject':
+      '[One Second Diary - v1.6.0] Informe d’error de l’aplicació',
   'errorMailBody':
       'Si us plau, descriviu l’error que heu trobat i les necessàries passes per reproduir-lo. Gràcies!',
   'oops': 'Ups!',
@@ -132,7 +140,8 @@ const Map<String, String> ca = {
   'unsupportedPortraitMode':
       'Ara per ara els vídeos en vertical no són compatibles. Seleccioneu un altre vídeo.',
   'processingVideo': 'S’està processant el vídeo',
-  'deleteVideoWarning': 'Esteu segur que voleu suprimir aquest vídeo permanentment?',
+  'deleteVideoWarning':
+      'Esteu segur que voleu suprimir aquest vídeo permanentment?',
   'deleteVideo': 'Suprimeix el vídeo',
   'addSubtitles': 'Afegeix subtítols',
   'dateColorAndFormat': 'Color i format de la data',
@@ -147,9 +156,11 @@ const Map<String, String> ca = {
   'whatsNewDescv15':
       'Aquesta versió porta moltes característiques i millores!\n\nFeu-hi una ullada a les següents pàgines 😊',
   'feat1v15': 'Galeria',
-  'featDesc1v15': 'Afegiu vídeos de la galeria a la vostra col·lecció fàcilment 🤩',
+  'featDesc1v15':
+      'Afegiu vídeos de la galeria a la vostra col·lecció fàcilment 🤩',
   'feat2v15': 'Subtítols',
-  'featDesc2v15': 'Afegiu o editeu subtítols per incloure més detalls del vostre dia 📝',
+  'featDesc2v15':
+      'Afegiu o editeu subtítols per incloure més detalls del vostre dia 📝',
   'feat3v15': 'Geoetiquetatge',
   'featDesc3v15':
       'Afegiu geoetiquetatge manual o automàtic als vídeos per recordar on va succeir cada moment 📍',
@@ -157,15 +168,18 @@ const Map<String, String> ca = {
   'featDesc4v15':
       'Creeu múltiples perfils per desar els vostres vídeos per separat i canviar entre ells fàcilment 🤗',
   'feat5v15': 'Calendari',
-  'featDesc5v15': 'Vegeu o editeu qualsevol dels dies que heu enregistrat en un calendari 📅',
+  'featDesc5v15':
+      'Vegeu o editeu qualsevol dels dies que heu enregistrat en un calendari 📅',
   'feat6v15': 'Pel·lícules',
-  'featDesc6v15': 'Genereu pel·lícules personalitzades amb períodes i vídeos específics 🎥',
+  'featDesc6v15':
+      'Genereu pel·lícules personalitzades amb períodes i vídeos específics 🎥',
   'feat7v15': 'Notificacions',
   'featDesc7v15':
       'Configureu notificacions programades per recordar-vos que enregistreu el vostre instant especial 🔔',
   'default': 'Per defecte',
   'profileNameAlreadyExists': 'Ja existeix un perfil amb aquest nom',
-  'profileNameCannotContainSpecialChars': 'El nom del perfil no pot contenir\ncaràcters especials',
+  'profileNameCannotContainSpecialChars':
+      'El nom del perfil no pot contenir\ncaràcters especials',
   'subtitlesSaved': 'S’han desat els subtítols!',
   'error': 'Error',
   'migrationError':
@@ -199,7 +213,8 @@ const Map<String, String> ca = {
   'whatsNewDescv152':
       'La versió 1.5.2 porta diverses correccions i millores!\n\nFeu-hi una ullada a les següents pàgines 😊',
   'feat1v152': 'Processament de vídeo més ràpid',
-  'featDesc1v152': 'El procés d’edició de vídeos llargs ara és molt més ràpid 🚀',
+  'featDesc1v152':
+      'El procés d’edició de vídeos llargs ara és molt més ràpid 🚀',
   'feat2v152': 'Millora en la retallada dels vídeos',
   'featDesc2v152':
       'Trieu l’instant d’una forma més precisa amb els nous ràpids botons de tall i una barra de retall millorada 🎞️',
@@ -210,8 +225,10 @@ const Map<String, String> ca = {
   'featDesc4v152':
       'Quan enregistreu dins l’aplicació, premeu el botó després de posicionar el telèfon per bloquejar l’orientació i prevenir resultats inesperats 📱',
   'feat5v152': 'I més...',
-  'featDesc5v152': 'També trobareu algunes petites millores visuals i correccions d’errors 🐛',
-  'useFilterInExperimentalPicker': 'Fes servir el filtre de data per seleccionar vídeos',
+  'featDesc5v152':
+      'També trobareu algunes petites millores visuals i correccions d’errors 🐛',
+  'useFilterInExperimentalPicker':
+      'Fes servir el filtre de data per seleccionar vídeos',
   'useFilterInExperimentalPickerDescription':
       'Si està activat, en seleccionar vídeos amb dates passades filtrarà els vídeos amb aquella data. Si està desactivat, es mostraran tots els vídeos. Només funciona amb el selector de fitxers experimental.',
   'useAlternativeCalendarColors': 'Fes servir colors del calendari alternatius',

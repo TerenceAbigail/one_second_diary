@@ -13,26 +13,14 @@ import '../controllers/video_count_controller.dart';
 class HomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put<StorageController>(
-      StorageController(),
-      permanent: true,
-    );
-    Get.put<LanguageController>(
-      LanguageController(),
-      permanent: true,
-    );
-    Get.put<DailyEntryController>(
-      DailyEntryController(),
-      permanent: true,
-    );
+    Get.put<StorageController>(StorageController(), permanent: true);
+    Get.put<LanguageController>(LanguageController(), permanent: true);
+    Get.put<DailyEntryController>(DailyEntryController(), permanent: true);
     Get.put<BottomAppBarIndexController>(
       BottomAppBarIndexController(),
       permanent: true,
     );
-    Get.put<VideoCountController>(
-      VideoCountController(),
-      permanent: true,
-    );
+    Get.put<VideoCountController>(VideoCountController(), permanent: true);
     Get.put<RecordingSettingsController>(
       RecordingSettingsController(),
       permanent: true,

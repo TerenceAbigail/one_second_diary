@@ -44,12 +44,11 @@ class _SelectVideoFromStorageState extends State<SelectVideoFromStorage> {
   @override
   Widget build(BuildContext context) {
     // Count all true in isSelected and return quantity
-    final int totalSelected = isSelected?.where((element) => element).length ?? 0;
+    final int totalSelected =
+        isSelected?.where((element) => element).length ?? 0;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           'selectVideos'.tr,
           style: const TextStyle(color: Colors.white),
@@ -96,20 +95,13 @@ class _SelectVideoFromStorageState extends State<SelectVideoFromStorage> {
         ],
       ),
       body: allVideos == null
-          ? const Center(
-              child: Icon(
-                Icons.hourglass_bottom,
-                size: 32.0,
-              ),
-            )
+          ? const Center(child: Icon(Icons.hourglass_bottom, size: 32.0))
           : Column(
               children: [
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Text(
-                    '${'totalSelected'.tr}$totalSelected',
-                  ),
+                  child: Text('${'totalSelected'.tr}$totalSelected'),
                 ),
                 Expanded(
                   child: GridView.builder(
@@ -117,17 +109,22 @@ class _SelectVideoFromStorageState extends State<SelectVideoFromStorage> {
                     scrollCacheExtent: const ScrollCacheExtent.pixels(99999),
                     shrinkWrap: true,
                     controller: scrollController,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.12,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1.12,
+                        ),
                     itemCount: allVideos!.length,
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
                           Text(
                             DateFormatUtils.parseDateStringAccordingLocale(
-                              allVideos![index].split('/').last.split('.mp4').first,
+                              allVideos![index]
+                                  .split('/')
+                                  .last
+                                  .split('.mp4')
+                                  .first,
                             ),
                             key: globalKeys![index],
                           ),
@@ -136,9 +133,11 @@ class _SelectVideoFromStorageState extends State<SelectVideoFromStorage> {
                               setState(() {
                                 isSelected![index] = !isSelected![index];
                               });
-                              if (isSelected![index] && index != allVideos!.length - 1) {
+                              if (isSelected![index] &&
+                                  index != allVideos!.length - 1) {
                                 scrollController.position.ensureVisible(
-                                  globalKeys![index + 1].currentContext!.findRenderObject()!,
+                                  globalKeys![index + 1].currentContext!
+                                      .findRenderObject()!,
                                   duration: const Duration(milliseconds: 750),
                                 );
                               }
@@ -147,7 +146,9 @@ class _SelectVideoFromStorageState extends State<SelectVideoFromStorage> {
                               margin: const EdgeInsets.all(15.0),
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: isSelected![index] ? AppColors.green : Colors.white,
+                                  color: isSelected![index]
+                                      ? AppColors.green
+                                      : Colors.white,
                                   width: isSelected![index] ? 4 : 1,
                                 ),
                                 borderRadius: BorderRadius.circular(5),
@@ -155,7 +156,8 @@ class _SelectVideoFromStorageState extends State<SelectVideoFromStorage> {
                               child: LazyFutureBuilder(
                                 future: () => getThumbnail(allVideos![index]),
                                 builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
                                     return const Center(
                                       child: SizedBox(
                                         height: 30,
@@ -169,9 +171,7 @@ class _SelectVideoFromStorageState extends State<SelectVideoFromStorage> {
                                   }
 
                                   if (snapshot.hasError) {
-                                    return Text(
-                                      '${snapshot.error}',
-                                    );
+                                    return Text('${snapshot.error}');
                                   }
                                   return Image.memory(
                                     snapshot.data as Uint8List,
@@ -193,7 +193,7 @@ class _SelectVideoFromStorageState extends State<SelectVideoFromStorage> {
                       customSelectedVideosIsSelected: isSelected,
                     ),
                   ),
-                }
+                },
               ],
             ),
     );

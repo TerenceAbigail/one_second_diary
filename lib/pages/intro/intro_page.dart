@@ -74,16 +74,8 @@ class IntroPage extends StatelessWidget {
       showSkipButton: true,
       dotsFlex: 0,
       nextFlex: 0,
-      skip: Text(
-        'skip'.tr,
-        style: const TextStyle(
-          color: Colors.black,
-        ),
-      ),
-      next: const Icon(
-        Icons.arrow_forward,
-        color: Colors.black,
-      ),
+      skip: Text('skip'.tr, style: const TextStyle(color: Colors.black)),
+      next: const Icon(Icons.arrow_forward, color: Colors.black),
       done: Text(
         'done'.tr,
         style: const TextStyle(

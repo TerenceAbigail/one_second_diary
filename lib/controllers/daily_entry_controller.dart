@@ -35,7 +35,7 @@ class DailyEntryController extends GetxController {
     }
 
     // Remove the existing notification and schedule it again if there is a daily entry
-    if(dailyEntry.value)
+    if (dailyEntry.value)
       notificationService.rescheduleNotification(DateTime.now());
   }
 }

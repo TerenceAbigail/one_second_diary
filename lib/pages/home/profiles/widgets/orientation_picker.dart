@@ -30,17 +30,16 @@ class OrientationPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color textColor = ThemeService().isDarkTheme() ? Colors.white : Colors.black;
+    final Color textColor = ThemeService().isDarkTheme()
+        ? Colors.white
+        : Colors.black;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Align(
           alignment: Alignment.centerLeft,
-          child: Text(
-            'orientation'.tr,
-            style: TextStyle(color: textColor),
-          ),
+          child: Text('orientation'.tr, style: TextStyle(color: textColor)),
         ),
         RadioGroup<VideoOrientation>(
           groupValue: selectedOrientation,
@@ -50,18 +49,12 @@ class OrientationPicker extends StatelessWidget {
               RadioListTile<VideoOrientation>(
                 activeColor: AppColors.green,
                 value: VideoOrientation.landscape,
-                title: Text(
-                  'landscape'.tr,
-                  style: TextStyle(color: textColor),
-                ),
+                title: Text('landscape'.tr, style: TextStyle(color: textColor)),
               ),
               RadioListTile<VideoOrientation>(
                 activeColor: AppColors.green,
                 value: VideoOrientation.portrait,
-                title: Text(
-                  'portrait'.tr,
-                  style: TextStyle(color: textColor),
-                ),
+                title: Text('portrait'.tr, style: TextStyle(color: textColor)),
               ),
             ],
           ),

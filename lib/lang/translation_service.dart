@@ -13,10 +13,7 @@ import 'ru.dart';
 import 'zh.dart';
 
 class LanguageModel {
-  LanguageModel(
-    this.language,
-    this.symbol,
-  );
+  LanguageModel(this.language, this.symbol);
 
   String language;
   String symbol;
@@ -40,15 +37,15 @@ class TranslationService extends Translations {
 
   @override
   Map<String, Map<String, String>> get keys => {
-        'de': de,
-        'en': en,
-        'es': es,
-        'id': id,
-        'pt': pt,
-        'zh': zh,
-        'fr': fr,
-        'ru': ru,
-        'cs': cs,
-        'ca': ca,
-      };
+    'de': de,
+    'en': en,
+    'es': es,
+    'id': id,
+    'pt': pt,
+    'zh': zh,
+    'fr': fr,
+    'ru': ru,
+    'cs': cs,
+    'ca': ca,
+  };
 }

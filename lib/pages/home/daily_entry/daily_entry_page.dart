@@ -17,20 +17,14 @@ class DailyEntryPage extends GetView<DailyEntryController> {
   Widget _dailyComplete() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        EmojiWidget(complete: true),
-        EditDailyButton(),
-      ],
+      children: [EmojiWidget(complete: true), EditDailyButton()],
     );
   }
 
   Widget _dailyIncomplete() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        EmojiWidget(complete: false),
-        RecordDailyButton(),
-      ],
+      children: [EmojiWidget(complete: false), RecordDailyButton()],
     );
   }
 }

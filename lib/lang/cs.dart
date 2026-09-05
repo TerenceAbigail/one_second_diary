@@ -12,16 +12,19 @@ const Map<String, String> cs = {
   'createMovie': 'Vytvoření videa',
   'settings': 'Nastavení',
   'movieErrorTitle': 'Video nebylo vytvořeno!',
-  'movieInsufficientVideos': 'Abyste mohli vytvořit film, musíte mít 2 nebo více nahraných videí',
+  'movieInsufficientVideos':
+      'Abyste mohli vytvořit film, musíte mít 2 nebo více nahraných videí',
   'movieCreatedTitle': 'Video vytvořeno!',
   'movieCreatedDesc': 'Film uložený do složky DCIM/OneSecondDiary/Movies',
   'movieError': 'Chyba při ukládání filmu!',
-  'tryAgainMsg': 'Zkuste to prosím znovu. Pokud problém přetrvává, obraťte se na vývojáře.',
+  'tryAgainMsg':
+      'Zkuste to prosím znovu. Pokud problém přetrvává, obraťte se na vývojáře.',
   'create': 'Vytvořit',
   'days': 'dny',
   'day': 'den',
   'totalRecordedTitle': 'Nahráli jste:',
-  'tapBelowToGenerate': 'Klepnutím na tlačítko níže vygenerujete\n jeden videosoubor:',
+  'tapBelowToGenerate':
+      'Klepnutím na tlačítko níže vygenerujete\n jeden videosoubor:',
   'editQuestionTitle': 'Editovat video?',
   'editQuestion': 'Vaše předchozí nahrávka bude smazána, chcete pokračovat?',
   'yes': 'Ano',
@@ -113,8 +116,10 @@ const Map<String, String> cs = {
   'reservedProfileName': 'Toto je vyhrazený název profilu',
   'profileOrientationRequired': 'Vyberte orientaci videa pro tento profil',
   'onboardingOrientationTitle': 'Vyberte orientaci videa',
-  'onboardingOrientationDesc': 'Toto určuje tvar videí uložených ve vašem výchozím profilu — na šířku (16:9) nebo na výšku (9:16). Později můžete vždy vytvořit další profil s opačnou orientací.',
-  'creatingMovie': 'Zpracování... Počkejte prosím.\nTo může trvat několik minut.',
+  'onboardingOrientationDesc':
+      'Toto určuje tvar videí uložených ve vašem výchozím profilu — na šířku (16:9) nebo na výšku (9:16). Později můžete vždy vytvořit další profil s opačnou orientací.',
+  'creatingMovie':
+      'Zpracování... Počkejte prosím.\nTo může trvat několik minut.',
   'doNotCloseTheApp': 'Nezavírejte aplikaci.',
   'cancelMovieCreation': 'Zrušit vytvoření filmu',
   'cancelMovieDesc': 'Opravdu chcete zrušit vytvoření filmu?',
@@ -156,13 +161,15 @@ const Map<String, String> cs = {
   'feat5v15': 'Kalendář',
   'featDesc5v15': 'Zobrazení a úprava zaznamenaných dnů v kalendáři 📅',
   'feat6v15': 'Videa',
-  'featDesc6v15': 'Generujte vlastní filmy s vybranými obdobími nebo konkrétními videi 🎥',
+  'featDesc6v15':
+      'Generujte vlastní filmy s vybranými obdobími nebo konkrétními videi 🎥',
   'feat7v15': 'Upozornění',
   'featDesc7v15':
       'Nastavte si naplánovaná denní oznámení, která vám připomenou, že máte zaznamenat svůj zvláštní okamžik 🔔',
   'default': 'Výchozí',
   'profileNameAlreadyExists': 'Název profilu již existuje',
-  'profileNameCannotContainSpecialChars': 'Název profilu nesmí obsahovat\nspeciální znaky',
+  'profileNameCannotContainSpecialChars':
+      'Název profilu nesmí obsahovat\nspeciální znaky',
   'subtitlesSaved': 'Titulky uloženy!',
   'error': 'Chyba',
   'migrationError':
@@ -170,7 +177,8 @@ const Map<String, String> cs = {
   'success': 'Úspěch',
   'migrationSuccess':
       'Migrace úspěšná! Všechna videa a filmy jsou nyní uloženy v interním úložišti > DCIM > OneSecondDiary',
-  'migrationInProgress': 'Migrace všech videí do nové složky aplikace, počkejte prosím...',
+  'migrationInProgress':
+      'Migrace všech videí do nové složky aplikace, počkejte prosím...',
   'migrationFolderDeletionError':
       'Migrace byla dokončena, ale při odstraňování starých složek došlo k chybě. Smažte je ručně.',
   'preferences': 'Možnosti',
@@ -206,11 +214,12 @@ const Map<String, String> cs = {
   'featDesc4v152':
       'Při nahrávání v aplikaci klepněte po nastavení telefonu na nové tlačítko, abyste zamkli orientaci a předešli neočekávaným výsledkům 📱',
   'feat5v152': 'A mnohem více...',
-  'featDesc5v152': 'Najdete zde také některá drobná vizuální vylepšení a opravy chyb 🐛',
+  'featDesc5v152':
+      'Najdete zde také některá drobná vizuální vylepšení a opravy chyb 🐛',
   'useFilterInExperimentalPicker': 'Použijte filtr datumu pro výběr videí',
   'useFilterInExperimentalPickerDescription':
       'Pokud je aktivní, výběr minulých dat filtruje videa podle toho data. Pokud je deaktivováno, zobrazí se všechna videa. Funguje pouze s experimentálním výběrem souborů.',
   'useAlternativeCalendarColors': 'Použijte alternativní barvy kalendáře',
   'useAlternativeCalendarColorsDescription':
-      'Změní zelenou a červenou v kalendáři na modrou a žlutou. Užitečné pro barvoslepé.'
+      'Změní zelenou a červenou v kalendáři na modrou a žlutou. Užitečné pro barvoslepé.',
 };

@@ -23,7 +23,8 @@ class _SwitchNotificationsComponentState
   void initState() {
     super.initState();
     isNotificationSwitchToggled = notificationService.isNotificationActivated();
-    isPersistentSwitchToggled = notificationService.isPersistentNotificationActivated();
+    isPersistentSwitchToggled = notificationService
+        .isPersistentNotificationActivated();
 
     // Sets the default values for scheduled time
     scheduledTimeOfDay = notificationService.getScheduledTime();
@@ -58,9 +59,9 @@ class _SwitchNotificationsComponentState
                       await notificationService.turnOnNotifications();
 
                       await notificationService.scheduleNotification(
-                          scheduledTimeOfDay.hour,
-                          scheduledTimeOfDay.minute,
-                          DateTime.now()
+                        scheduledTimeOfDay.hour,
+                        scheduledTimeOfDay.minute,
+                        DateTime.now(),
                       );
                     } else {
                       await notificationService.turnOffNotifications();
@@ -68,7 +69,8 @@ class _SwitchNotificationsComponentState
 
                     /// Update switch value
                     setState(() {
-                      isNotificationSwitchToggled = !isNotificationSwitchToggled;
+                      isNotificationSwitchToggled =
+                          !isNotificationSwitchToggled;
                     });
                   },
                   activeTrackColor: AppColors.mainColor.withValues(alpha: 0.4),
@@ -139,22 +141,26 @@ class _SwitchNotificationsComponentState
               });
             }
 
-            notificationService.setScheduledTime(newTimeOfDay.hour,
-                newTimeOfDay.minute);
+            notificationService.setScheduledTime(
+              newTimeOfDay.hour,
+              newTimeOfDay.minute,
+            );
 
             setState(() {
               scheduledTimeOfDay = newTimeOfDay;
             });
 
             await notificationService.scheduleNotification(
-                scheduledTimeOfDay.hour,
-                scheduledTimeOfDay.minute,
-                DateTime.now()
+              scheduledTimeOfDay.hour,
+              scheduledTimeOfDay.minute,
+              DateTime.now(),
             );
           },
           child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15.0,
+              vertical: 10.0,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -196,18 +202,19 @@ class _SwitchNotificationsComponentState
                   }
 
                   /// Schedule notification if switch in ON
-                  if(isNotificationSwitchToggled && !isNotificationSwitchToggled){
+                  if (isNotificationSwitchToggled &&
+                      !isNotificationSwitchToggled) {
                     await notificationService.turnOnNotifications();
                     setState(() {
                       isNotificationSwitchToggled = true;
                     });
                   }
 
-                  if(isNotificationSwitchToggled){
+                  if (isNotificationSwitchToggled) {
                     await notificationService.scheduleNotification(
-                        scheduledTimeOfDay.hour,
-                        scheduledTimeOfDay.minute,
-                        DateTime.now()
+                      scheduledTimeOfDay.hour,
+                      scheduledTimeOfDay.minute,
+                      DateTime.now(),
                     );
                   }
 

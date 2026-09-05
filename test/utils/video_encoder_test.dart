@@ -43,7 +43,13 @@ void main() {
 
       expect(
         encoders,
-        containsAll(<String>['libx264', 'libx265', 'h264_videotoolbox', 'aac', 'mov_text']),
+        containsAll(<String>[
+          'libx264',
+          'libx265',
+          'h264_videotoolbox',
+          'aac',
+          'mov_text',
+        ]),
       );
       expect(encoders, isNot(contains('=')));
       expect(encoders, isNot(contains('Video')));
@@ -86,10 +92,13 @@ void main() {
       );
     });
 
-    test('falls back to the platform default when the probe returns nothing', () {
-      expect(VideoEncoder.select('', isIOS: true), VideoEncoder.videoToolbox);
-      expect(VideoEncoder.select('', isIOS: false), VideoEncoder.libx264);
-    });
+    test(
+      'falls back to the platform default when the probe returns nothing',
+      () {
+        expect(VideoEncoder.select('', isIOS: true), VideoEncoder.videoToolbox);
+        expect(VideoEncoder.select('', isIOS: false), VideoEncoder.libx264);
+      },
+    );
   });
 
   group('argumentsFor', () {
@@ -100,16 +109,21 @@ void main() {
       );
     });
 
-    test('VideoToolbox uses a bitrate target and allows a software fallback', () {
-      final String args = VideoEncoder.argumentsFor(VideoEncoder.videoToolbox);
+    test(
+      'VideoToolbox uses a bitrate target and allows a software fallback',
+      () {
+        final String args = VideoEncoder.argumentsFor(
+          VideoEncoder.videoToolbox,
+        );
 
-      expect(args, contains('-c:v h264_videotoolbox'));
-      expect(args, contains('-b:v ${VideoEncoder.targetBitrateKbps}k'));
-      // VideoToolbox has no CRF mode, passing one makes ffmpeg fail.
-      expect(args, isNot(contains('-crf')));
-      expect(args, isNot(contains('-preset')));
-      expect(args, contains('-allow_sw 1'));
-    });
+        expect(args, contains('-c:v h264_videotoolbox'));
+        expect(args, contains('-b:v ${VideoEncoder.targetBitrateKbps}k'));
+        // VideoToolbox has no CRF mode, passing one makes ffmpeg fail.
+        expect(args, isNot(contains('-crf')));
+        expect(args, isNot(contains('-preset')));
+        expect(args, contains('-allow_sw 1'));
+      },
+    );
 
     test('MediaCodec uses a bitrate target and no CRF either', () {
       final String args = VideoEncoder.argumentsFor(VideoEncoder.mediaCodec);

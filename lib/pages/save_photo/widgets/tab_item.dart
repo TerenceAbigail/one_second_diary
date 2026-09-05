@@ -21,15 +21,9 @@ class TabItem extends StatelessWidget {
         Container(
           width: 20,
           height: 20,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
           child: Center(
-            child: Text(
-              id,
-              style: const TextStyle(color: Colors.white),
-            ),
+            child: Text(id, style: const TextStyle(color: Colors.white)),
           ),
         ),
         const SizedBox(width: 6),

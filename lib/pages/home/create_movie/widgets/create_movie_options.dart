@@ -37,7 +37,9 @@ class _CreateMovieOptionsState extends State<CreateMovieOptions> {
     super.initState();
     Future.delayed(const Duration(milliseconds: 200), () {
       setState(() {
-        selectedVideos = Utils.getSelectedVideosFromStorage(_exportPeriodGroupValue);
+        selectedVideos = Utils.getSelectedVideosFromStorage(
+          _exportPeriodGroupValue,
+        );
       });
     });
   }
@@ -69,9 +71,7 @@ class _CreateMovieOptionsState extends State<CreateMovieOptions> {
       },
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: const IconThemeData(
-            color: Colors.white,
-          ),
+          iconTheme: const IconThemeData(color: Colors.white),
           title: Text(
             'createMovie'.tr,
             style: TextStyle(
@@ -122,8 +122,9 @@ class _CreateMovieOptionsState extends State<CreateMovieOptions> {
                                 elevation: 16,
                                 borderRadius: BorderRadius.circular(12),
                                 isExpanded: true,
-                                dropdownColor:
-                                    ThemeService().isDarkTheme() ? AppColors.dark : AppColors.light,
+                                dropdownColor: ThemeService().isDarkTheme()
+                                    ? AppColors.dark
+                                    : AppColors.light,
                                 decoration: InputDecoration(
                                   enabledBorder: dropdownBorder,
                                   focusedBorder: dropdownBorder,
@@ -165,28 +166,34 @@ class _CreateMovieOptionsState extends State<CreateMovieOptions> {
                                     selectedVideos = null;
                                   });
                                   // Update values
-                                  Future.delayed(const Duration(milliseconds: 100), () {
-                                    setState(() {
-                                      selectedVideos = Utils.getSelectedVideosFromStorage(
-                                        _exportPeriodGroupValue,
-                                      );
-                                    });
-                                  });
+                                  Future.delayed(
+                                    const Duration(milliseconds: 100),
+                                    () {
+                                      setState(() {
+                                        selectedVideos =
+                                            Utils.getSelectedVideosFromStorage(
+                                              _exportPeriodGroupValue,
+                                            );
+                                      });
+                                    },
+                                  );
                                 },
-                                items: _exportPeriods.map<DropdownMenuItem<ExportDateRange>>(
-                                  (ExportDateRange value) {
-                                    return DropdownMenuItem<ExportDateRange>(
-                                      value: value,
-                                      child: Text(value.localizationLabel.tr),
-                                    );
-                                  },
-                                ).toList(),
+                                items: _exportPeriods
+                                    .map<DropdownMenuItem<ExportDateRange>>((
+                                      ExportDateRange value,
+                                    ) {
+                                      return DropdownMenuItem<ExportDateRange>(
+                                        value: value,
+                                        child: Text(value.localizationLabel.tr),
+                                      );
+                                    })
+                                    .toList(),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
 
@@ -194,7 +201,8 @@ class _CreateMovieOptionsState extends State<CreateMovieOptions> {
 
                 const Spacer(),
 
-                if (selectedVideos != null && _exportPeriodGroupValue != ExportDateRange.custom)
+                if (selectedVideos != null &&
+                    _exportPeriodGroupValue != ExportDateRange.custom)
                   Text(
                     '${'clipsFound'.tr}: ${getClipsFound()}',
                     style: TextStyle(
@@ -202,12 +210,10 @@ class _CreateMovieOptionsState extends State<CreateMovieOptions> {
                     ),
                   )
                 else if (_exportPeriodGroupValue != ExportDateRange.custom)
-                  const Icon(
-                    Icons.hourglass_bottom,
-                    size: 32.0,
-                  ),
+                  const Icon(Icons.hourglass_bottom, size: 32.0),
                 const Spacer(),
-                if (selectedVideos != null && _exportPeriodGroupValue != ExportDateRange.custom)
+                if (selectedVideos != null &&
+                    _exportPeriodGroupValue != ExportDateRange.custom)
                   Column(
                     children: [
                       Text(
@@ -220,7 +226,7 @@ class _CreateMovieOptionsState extends State<CreateMovieOptions> {
                       const SizedBox(height: 20.0),
                       CreateMovieButton(
                         selectedExportDateRange: _exportPeriodGroupValue,
-                      )
+                      ),
                     ],
                   )
                 else

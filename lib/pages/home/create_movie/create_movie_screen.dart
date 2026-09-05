@@ -22,9 +22,7 @@ class CreateMoviePage extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               VideoCountCard(),
             ],
           ),
@@ -78,11 +76,8 @@ class _CreateMovieOptionsButton extends StatelessWidget {
         const Positioned(
           top: 0.0,
           left: 0.0,
-          child: Icon(
-            Icons.add_a_photo,
-            size: 18.0,
-          ),
-        )
+          child: Icon(Icons.add_a_photo, size: 18.0),
+        ),
       ],
     );
   }
@@ -123,11 +118,8 @@ class _ViewMoviesButton extends StatelessWidget {
         const Positioned(
           top: 0.0,
           left: 0.0,
-          child: Icon(
-            Icons.collections,
-            size: 18.0,
-          ),
-        )
+          child: Icon(Icons.collections, size: 18.0),
+        ),
       ],
     );
   }

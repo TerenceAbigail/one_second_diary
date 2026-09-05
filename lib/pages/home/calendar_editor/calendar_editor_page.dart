@@ -4,7 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
+    show CalendarCarousel;
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
@@ -87,9 +88,12 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
 
   void setGalleryAlbum() {
     final currentProfile = Utils.getCurrentProfile();
-    final bool isDefault = currentProfile.isEmpty || currentProfile == 'Default';
+    final bool isDefault =
+        currentProfile.isEmpty || currentProfile == 'Default';
     MediaGallery.instance.setAlbum(
-      isDefault ? AppPaths.folderName : '${AppPaths.folderName}/Profiles/$currentProfile',
+      isDefault
+          ? AppPaths.folderName
+          : '${AppPaths.folderName}/Profiles/$currentProfile',
     );
   }
 
@@ -110,7 +114,11 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
       final srtFileContent = await File(srtFilePath).readAsString();
       subtitles = srtFileContent.isEmpty
           ? ''
-          : srtFileContent.trim().split('00:00:00,000 --> 00:00:').last.substring(6);
+          : srtFileContent
+                .trim()
+                .split('00:00:00,000 --> 00:00:')
+                .last
+                .substring(6);
     } else {
       subtitles = '';
     }
@@ -153,7 +161,8 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
   /// Initializes the video playback for the selected date
   Future<void> initializeVideoPlayback(String video) async {
     if (lastSelectedDate != _selectedDate) {
-      lastSelectedDate = _selectedDate; // update immediately to prevent multiple triggers
+      lastSelectedDate =
+          _selectedDate; // update immediately to prevent multiple triggers
       final autoPlay = SharedPrefsUtil.getBool('calendarAutoPlay') ?? true;
       final autoSound = SharedPrefsUtil.getBool('calendarAutoSound') ?? true;
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -182,7 +191,8 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
   }
 
   bool shouldIgnoreExperimentalFilter() {
-    final useFilter = SharedPrefsUtil.getBool('useFilterInExperimentalPicker') ?? false;
+    final useFilter =
+        SharedPrefsUtil.getBool('useFilterInExperimentalPicker') ?? false;
     if (!useFilter) return true;
     if (_selectedDate.day == DateTime.now().day &&
         _selectedDate.month == DateTime.now().month &&
@@ -194,21 +204,16 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
 
   /// Picks video from gallery
   Future<void> selectVideoFromGallery() async {
-    final isExperimentalPicker = SharedPrefsUtil.getBool('useExperimentalPicker') ?? true;
+    final isExperimentalPicker =
+        SharedPrefsUtil.getBool('useExperimentalPicker') ?? true;
 
     if (isExperimentalPicker) {
       final bool shouldIgnoreFilter = shouldIgnoreExperimentalFilter();
       final FilterOptionGroup filterOptionGroup = FilterOptionGroup(
         containsPathModified: true,
-        createTimeCond: DateTimeCond(
-          min: _selectedDate,
-          max: DateTime.now(),
-        ),
+        createTimeCond: DateTimeCond(min: _selectedDate, max: DateTime.now()),
         orders: [
-          const OrderOption(
-            type: OrderOptionType.createDate,
-            asc: true,
-          ),
+          const OrderOption(type: OrderOptionType.createDate, asc: true),
         ],
       );
 
@@ -237,33 +242,31 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
           SpecialItem<AssetPathEntity>(
             position: SpecialItemPosition.prepend,
             builder: (context, path, length) {
-             return Center(
-               child: Text(
-                 shouldIgnoreFilter
-                     ? 'Latest\nvideos'
-                     : 'From\n${_selectedDate.toString().substring(0, 10).split('-').reversed.join('-')}\nonwards',
-                 textAlign: TextAlign.center,
-                 style: const TextStyle(
-                   color: Colors.white,
-                   fontSize: 14.0,
-                   fontWeight: FontWeight.bold,
-                 ),
-               ),
-             );
+              return Center(
+                child: Text(
+                  shouldIgnoreFilter
+                      ? 'Latest\nvideos'
+                      : 'From\n${_selectedDate.toString().substring(0, 10).split('-').reversed.join('-')}\nonwards',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
             },
           ),
         ],
       );
 
-      final List<AssetEntity>? result = await AssetPicker.pickAssetsWithDelegate<
-        AssetEntity,
-        AssetPathEntity,
-        DefaultAssetPickerProvider,
-        _AutoSelectAssetPickerBuilderDelegate
-      >(
-        context,
-        delegate: delegate,
-      );
+      final List<AssetEntity>? result =
+          await AssetPicker.pickAssetsWithDelegate<
+            AssetEntity,
+            AssetPathEntity,
+            DefaultAssetPickerProvider,
+            _AutoSelectAssetPickerBuilderDelegate
+          >(context, delegate: delegate);
 
       if (result?.isEmpty == false) {
         final File? file = await result?.first.loadFile();
@@ -299,21 +302,16 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
 
   /// Picks photo from gallery
   Future<void> selectPhotoFromGallery() async {
-    final isExperimentalPicker = SharedPrefsUtil.getBool('useExperimentalPicker') ?? true;
+    final isExperimentalPicker =
+        SharedPrefsUtil.getBool('useExperimentalPicker') ?? true;
 
     if (isExperimentalPicker) {
       final bool shouldIgnoreFilter = shouldIgnoreExperimentalFilter();
       final FilterOptionGroup filterOptionGroup = FilterOptionGroup(
         containsPathModified: true,
-        createTimeCond: DateTimeCond(
-          min: _selectedDate,
-          max: DateTime.now(),
-        ),
+        createTimeCond: DateTimeCond(min: _selectedDate, max: DateTime.now()),
         orders: [
-          const OrderOption(
-            type: OrderOptionType.createDate,
-            asc: true,
-          ),
+          const OrderOption(type: OrderOptionType.createDate, asc: true),
         ],
       );
 
@@ -360,24 +358,20 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
         ],
       );
 
-      final List<AssetEntity>? result = await AssetPicker.pickAssetsWithDelegate<
-          AssetEntity,
-          AssetPathEntity,
-          DefaultAssetPickerProvider,
-          _AutoSelectAssetPickerBuilderDelegate>(
-        context,
-        delegate: delegate,
-      );
+      final List<AssetEntity>? result =
+          await AssetPicker.pickAssetsWithDelegate<
+            AssetEntity,
+            AssetPathEntity,
+            DefaultAssetPickerProvider,
+            _AutoSelectAssetPickerBuilderDelegate
+          >(context, delegate: delegate);
 
       if (result?.isEmpty == false) {
         final File? file = await result?.first.loadFile();
         if (file != null) {
           Get.toNamed(
             Routes.SAVE_PHOTO,
-            arguments: {
-              'photoPath': file.path,
-              'currentDate': _selectedDate,
-            },
+            arguments: {'photoPath': file.path, 'currentDate': _selectedDate},
           );
         }
       }
@@ -389,10 +383,7 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
       if (rawFile != null) {
         Get.toNamed(
           Routes.SAVE_PHOTO,
-          arguments: {
-            'photoPath': rawFile.path,
-            'currentDate': _selectedDate,
-          },
+          arguments: {'photoPath': rawFile.path, 'currentDate': _selectedDate},
         );
       }
     }
@@ -402,34 +393,29 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        title: Text(
-          'discardVideoTitle'.tr,
-        ),
-        content: Text(
-          'deleteVideoWarning'.tr,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text('discardVideoTitle'.tr),
+        content: Text('deleteVideoWarning'.tr),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(
-              foregroundColor: ThemeService().isDarkTheme() ? AppColors.light : AppColors.dark,
+              foregroundColor: ThemeService().isDarkTheme()
+                  ? AppColors.light
+                  : AppColors.dark,
             ),
-            child: Text(
-              'no'.tr,
-              style: const TextStyle(color: Colors.white),
-            ),
+            child: Text('no'.tr, style: const TextStyle(color: Colors.white)),
           ),
           TextButton(
             onPressed: () async {
               // Delete current video from storage
               await StorageUtils.deleteVideo(currentVideo);
 
-              Utils.logInfo('[CALENDAR] - Deleted video from $_currentDateStr: $currentVideo');
+              Utils.logInfo(
+                '[CALENDAR] - Deleted video from $_currentDateStr: $currentVideo',
+              );
 
               // Reduce the video count recorded by the app
               _videoCountController.reduceVideoCount();
@@ -447,14 +433,9 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
 
               Navigator.pop(context);
             },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-            ),
-            child: Text(
-              'yes'.tr,
-              style: const TextStyle(color: Colors.white),
-            ),
-          )
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text('yes'.tr, style: const TextStyle(color: Colors.white)),
+          ),
         ],
       ),
     );
@@ -464,11 +445,7 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
   Widget build(BuildContext context) {
     return allVideos == null
         ? Center(
-            child: Icon(
-              Icons.hourglass_bottom,
-              size: 32.0,
-              color: mainColor,
-            ),
+            child: Icon(Icons.hourglass_bottom, size: 32.0, color: mainColor),
           )
         : Column(
             children: [
@@ -481,51 +458,52 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                     await _controller?.pause();
                     await _changeSelectedDate(date);
                   },
-                  customDayBuilder: (
-                    bool isSelectable,
-                    int index,
-                    bool isSelectedDay,
-                    bool isToday,
-                    bool isPrevMonthDay,
-                    TextStyle textStyle,
-                    bool isNextMonthDay,
-                    bool isThisMonthDay,
-                    DateTime date,
-                  ) {
-                    if (allVideos!.isNotEmpty) {
-                      // Get the first recorded video date to not render days before that with day color
-                      final firstRecVideoDate = DateTime.parse(
-                        allVideos!.first.split('/').last.split('.').first,
-                      );
-                      final hasVideo = allVideos!.any(
-                        (a) => a.contains(
-                          DateFormatUtils.getDate(
-                            date,
-                            allowCheckFormattingDayFirst: false,
-                          ),
-                        ),
-                      );
-                      // Do not colorize days before first recording date or future dates
-                      if (DateTime.now().compareTo(date) != -1 &&
-                          firstRecVideoDate.compareTo(date) != 1) {
-                        return Center(
-                          child: Text(
-                            date.day.toString(),
-                            style: TextStyle(
-                              color: getDayColor(hasVideo),
-                              fontWeight: useCalendarAlternativeColors
-                                  ? FontWeight.w900
-                                  : FontWeight.normal,
-                              fontFamily: 'Magic',
+                  customDayBuilder:
+                      (
+                        bool isSelectable,
+                        int index,
+                        bool isSelectedDay,
+                        bool isToday,
+                        bool isPrevMonthDay,
+                        TextStyle textStyle,
+                        bool isNextMonthDay,
+                        bool isThisMonthDay,
+                        DateTime date,
+                      ) {
+                        if (allVideos!.isNotEmpty) {
+                          // Get the first recorded video date to not render days before that with day color
+                          final firstRecVideoDate = DateTime.parse(
+                            allVideos!.first.split('/').last.split('.').first,
+                          );
+                          final hasVideo = allVideos!.any(
+                            (a) => a.contains(
+                              DateFormatUtils.getDate(
+                                date,
+                                allowCheckFormattingDayFirst: false,
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
+                          );
+                          // Do not colorize days before first recording date or future dates
+                          if (DateTime.now().compareTo(date) != -1 &&
+                              firstRecVideoDate.compareTo(date) != 1) {
+                            return Center(
+                              child: Text(
+                                date.day.toString(),
+                                style: TextStyle(
+                                  color: getDayColor(hasVideo),
+                                  fontWeight: useCalendarAlternativeColors
+                                      ? FontWeight.w900
+                                      : FontWeight.normal,
+                                  fontFamily: 'Magic',
+                                ),
+                              ),
+                            );
+                          } else {
+                            return null;
+                          }
+                        }
                         return null;
-                      }
-                    }
-                    return null;
-                  },
+                      },
                   selectedDayBorderColor: mainColor,
                   selectedDayButtonColor: Colors.transparent,
                   weekendTextStyle: TextStyle(
@@ -539,16 +517,16 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                     fontFamily: 'Magic',
                     color: mainColor,
                   ),
-                  inactiveDaysTextStyle: const TextStyle(
-                    fontFamily: 'Magic',
-                  ),
+                  inactiveDaysTextStyle: const TextStyle(fontFamily: 'Magic'),
                   weekdayTextStyle: TextStyle(
                     fontFamily: 'Magic',
                     color: mainColor,
                     fontWeight: FontWeight.w900,
                   ),
                   weekFormat: false,
-                  iconColor: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                  iconColor: ThemeService().isDarkTheme()
+                      ? Colors.white
+                      : Colors.black,
                   headerTextStyle: TextStyle(
                     fontFamily: 'Magic',
                     fontSize: 20.0,
@@ -587,7 +565,9 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                           Flexible(
                             flex: 5,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0,
+                              ),
                               // Capped so a portrait profile's taller-than-wide
                               // preview can't push the delete/subtitle buttons
                               // below it off-screen — see
@@ -606,7 +586,10 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                                     // orientation, not the loaded video's own
                                     // aspect ratio, so there's no layout shift
                                     // while it's still initializing.
-                                    aspectRatio: OrientationFilter.aspectRatioFor(_previewOrientation),
+                                    aspectRatio:
+                                        OrientationFilter.aspectRatioFor(
+                                          _previewOrientation,
+                                        ),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(color: mainColor),
@@ -624,9 +607,12 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                                             ),
                                           ),
                                           FutureBuilder(
-                                            future: initializeVideoPlayback(currentVideo),
+                                            future: initializeVideoPlayback(
+                                              currentVideo,
+                                            ),
                                             builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
                                                 return const SizedBox.shrink();
                                               }
 
@@ -637,27 +623,34 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                                               }
 
                                               // Not sure if it works but if the videoController fails we try to restart the page
-                                              if (_controller?.value.hasError == true) {
-                                                WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                  _controller?.dispose();
-                                                });
-                                                Get.offAllNamed(Routes.HOME)
-                                                    ?.then((_) => setState(() {}));
+                                              if (_controller?.value.hasError ==
+                                                  true) {
+                                                WidgetsBinding.instance
+                                                    .addPostFrameCallback((_) {
+                                                      _controller?.dispose();
+                                                    });
+                                                Get.offAllNamed(
+                                                  Routes.HOME,
+                                                )?.then((_) => setState(() {}));
                                               }
 
                                               // VideoPlayer
                                               if (_controller != null &&
-                                                  _controller!.value.isInitialized) {
+                                                  _controller!
+                                                      .value
+                                                      .isInitialized) {
                                                 return Align(
                                                   alignment: Alignment.center,
                                                   child: Stack(
                                                     fit: StackFit.passthrough,
                                                     children: [
                                                       Align(
-                                                        alignment: Alignment.center,
+                                                        alignment:
+                                                            Alignment.center,
                                                         child: ClipRect(
                                                           child: VideoPlayer(
-                                                            key: _videoPlayerKey,
+                                                            key:
+                                                                _videoPlayerKey,
                                                             _controller!,
                                                           ),
                                                         ),
@@ -698,9 +691,10 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                                       forcePause: true,
                                     );
                                     // Avoid '!_debugLocked': is not true.
-                                    WidgetsBinding.instance.addPostFrameCallback((_) async {
-                                      await deleteVideoDialog();
-                                    });
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) async {
+                                          await deleteVideoDialog();
+                                        });
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(4.0),
@@ -730,19 +724,20 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                                       );
                                     } catch (e) {}
                                     // Avoid route not being pushed: '!_debugLocked': is not true.
-                                    WidgetsBinding.instance.addPostFrameCallback((_) async {
-                                      final bool edited = await Get.to(
-                                        VideoSubtitlesEditorPage(
-                                          videoPath: currentVideo,
-                                          subtitles: subtitles ?? '',
-                                        ),
-                                      );
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) async {
+                                          final bool edited = await Get.to(
+                                            VideoSubtitlesEditorPage(
+                                              videoPath: currentVideo,
+                                              subtitles: subtitles ?? '',
+                                            ),
+                                          );
 
-                                      // Update UI
-                                      if (edited) {
-                                        await getSubtitlesForSelectedDate();
-                                      }
-                                    });
+                                          // Update UI
+                                          if (edited) {
+                                            await getSubtitlesForSelectedDate();
+                                          }
+                                        });
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(4.0),
@@ -766,12 +761,13 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text('noVideoRecorded'.tr),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
+                          const SizedBox(height: 10.0),
                           if (!_selectedDate.isAfter(DateTime.now()))
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                                vertical: 2.0,
+                              ),
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.green,
@@ -781,7 +777,8 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                                 ),
                                 onPressed: () async {
                                   Utils.logInfo(
-                                      '[CALENDAR] add video button pressed for date $_currentSelectedDateStr');
+                                    '[CALENDAR] add video button pressed for date $_currentSelectedDateStr',
+                                  );
                                   await selectVideoFromGallery();
                                 },
                                 child: Padding(
@@ -789,16 +786,17 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                                   child: Text(
                                     'addVideo'.tr,
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                    ),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
                             ),
                           if (!_selectedDate.isAfter(DateTime.now()))
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                                vertical: 2.0,
+                              ),
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.green,
@@ -808,7 +806,8 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                                 ),
                                 onPressed: () async {
                                   Utils.logInfo(
-                                      '[CALENDAR] add photo as video button pressed for date $_currentSelectedDateStr');
+                                    '[CALENDAR] add photo as video button pressed for date $_currentSelectedDateStr',
+                                  );
                                   await selectPhotoFromGallery();
                                 },
                                 child: Padding(
@@ -816,9 +815,7 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
                                   child: Text(
                                     'addPhotoAsVideo'.tr,
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                    ),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
@@ -834,17 +831,12 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
   Future<void> _changeSelectedDate(DateTime date) async {
     setState(() {
       _selectedDate = date;
-      _currentSelectedDateStr = DateFormatUtils.getDate(
-        date,
-      );
+      _currentSelectedDateStr = DateFormatUtils.getDate(date);
     });
 
     final currentVideoExists = allVideos!.any(
       (a) => a.contains(
-        DateFormatUtils.getDate(
-          date,
-          allowCheckFormattingDayFirst: false,
-        ),
+        DateFormatUtils.getDate(date, allowCheckFormattingDayFirst: false),
       ),
     );
     if (currentVideoExists) {
@@ -852,10 +844,7 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
         wasDateRecorded = true;
         currentVideo = allVideos!.firstWhere(
           (a) => a.contains(
-            DateFormatUtils.getDate(
-              date,
-              allowCheckFormattingDayFirst: false,
-            ),
+            DateFormatUtils.getDate(date, allowCheckFormattingDayFirst: false),
           ),
         );
       });
@@ -871,7 +860,9 @@ class _CalendarEditorPageState extends State<CalendarEditorPage> {
     if (hasVideo) {
       return useCalendarAlternativeColors ? Colors.blue : AppColors.green;
     }
-    return useCalendarAlternativeColors ? AppColors.yellow : AppColors.mainColor;
+    return useCalendarAlternativeColors
+        ? AppColors.yellow
+        : AppColors.mainColor;
   }
 }
 
@@ -986,14 +977,15 @@ class _ControlsState extends State<Controls> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 }
 
-class _AutoSelectAssetPickerBuilderDelegate extends DefaultAssetPickerBuilderDelegate<DefaultAssetPickerProvider> {
+class _AutoSelectAssetPickerBuilderDelegate
+    extends DefaultAssetPickerBuilderDelegate<DefaultAssetPickerProvider> {
   _AutoSelectAssetPickerBuilderDelegate({
     required super.provider,
     required super.initialPermission,
@@ -1009,7 +1001,7 @@ class _AutoSelectAssetPickerBuilderDelegate extends DefaultAssetPickerBuilderDel
   ) async {
     final List<AssetEntity> current;
     final int effectiveIndex;
-    
+
     if (index == null) {
       current = provider.selectedAssets;
       effectiveIndex = current.indexOf(currentAsset);
@@ -1017,7 +1009,7 @@ class _AutoSelectAssetPickerBuilderDelegate extends DefaultAssetPickerBuilderDel
       current = provider.currentAssets;
       effectiveIndex = index;
     }
-    
+
     if (current.isEmpty) {
       return;
     }
@@ -1031,19 +1023,22 @@ class _AutoSelectAssetPickerBuilderDelegate extends DefaultAssetPickerBuilderDel
       provider.selectAsset(currentAsset);
     }
 
-    final viewerDelegate = DefaultAssetPickerViewerBuilderDelegate<
-        AssetPickerViewerProvider<AssetEntity>, DefaultAssetPickerProvider>(
-      currentIndex: effectiveIndex,
-      previewAssets: current,
-      provider: AssetPickerViewerProvider<AssetEntity>(
-        provider.selectedAssets,
-        maxAssets: provider.maxAssets,
-      ),
-      themeData: theme,
-      selectedAssets: provider.selectedAssets,
-      selectorProvider: provider,
-      maxAssets: provider.maxAssets,
-    );
+    final viewerDelegate =
+        DefaultAssetPickerViewerBuilderDelegate<
+          AssetPickerViewerProvider<AssetEntity>,
+          DefaultAssetPickerProvider
+        >(
+          currentIndex: effectiveIndex,
+          previewAssets: current,
+          provider: AssetPickerViewerProvider<AssetEntity>(
+            provider.selectedAssets,
+            maxAssets: provider.maxAssets,
+          ),
+          themeData: theme,
+          selectedAssets: provider.selectedAssets,
+          selectorProvider: provider,
+          maxAssets: provider.maxAssets,
+        );
 
     // Swipe auto-selection
     viewerDelegate.pageStreamController.stream.listen((pageIndex) {
@@ -1055,16 +1050,17 @@ class _AutoSelectAssetPickerBuilderDelegate extends DefaultAssetPickerBuilderDel
       }
     });
 
-    final result = await AssetPickerViewer.pushToViewerWithDelegate<
-        AssetEntity,
-        AssetPathEntity,
-        AssetPickerViewerProvider<AssetEntity>,
-        DefaultAssetPickerViewerBuilderDelegate<AssetPickerViewerProvider<AssetEntity>, DefaultAssetPickerProvider>
-    >(
-      context,
-      delegate: viewerDelegate,
-    );
-    
+    final result =
+        await AssetPickerViewer.pushToViewerWithDelegate<
+          AssetEntity,
+          AssetPathEntity,
+          AssetPickerViewerProvider<AssetEntity>,
+          DefaultAssetPickerViewerBuilderDelegate<
+            AssetPickerViewerProvider<AssetEntity>,
+            DefaultAssetPickerProvider
+          >
+        >(context, delegate: viewerDelegate);
+
     if (result != null) {
       Navigator.maybeOf(context)?.maybePop(result);
     } else {

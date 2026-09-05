@@ -12,18 +12,23 @@ const Map<String, String> fr = {
   'createMovie': 'Créer un film',
   'settings': 'Paramètres',
   'movieErrorTitle': 'Film non créé !',
-  'movieInsufficientVideos': 'Vous devez avoir au moins 2 vidéos enregistrées pour créer un film.',
+  'movieInsufficientVideos':
+      'Vous devez avoir au moins 2 vidéos enregistrées pour créer un film.',
   'movieCreatedTitle': 'Film créé !',
-  'movieCreatedDesc': 'Film sauvegardé dans le dossier DCIM/OneSecondDiary/Movies.',
+  'movieCreatedDesc':
+      'Film sauvegardé dans le dossier DCIM/OneSecondDiary/Movies.',
   'movieError': 'Erreur lors de la sauvegarde du film !',
-  'tryAgainMsg': 'Veuillez réessayer. Si le problème persiste, contactez le développeur.',
+  'tryAgainMsg':
+      'Veuillez réessayer. Si le problème persiste, contactez le développeur.',
   'create': 'Créer',
   'days': 'jours',
   'day': 'jour',
   'totalRecordedTitle': 'Vous avez enregistré :',
-  'tapBelowToGenerate': 'Appuyez sur le bouton ci-dessous pour\ngénérer un seul fichier vidéo :',
+  'tapBelowToGenerate':
+      'Appuyez sur le bouton ci-dessous pour\ngénérer un seul fichier vidéo :',
   'editQuestionTitle': 'Editer la vidéo ?',
-  'editQuestion': 'Votre enregistrement précédent sera supprimé, voulez-vous continuer ?',
+  'editQuestion':
+      'Votre enregistrement précédent sera supprimé, voulez-vous continuer ?',
   'yes': 'Oui',
   'no': 'Non',
   'edit': 'Modifier',
@@ -65,7 +70,8 @@ const Map<String, String> fr = {
   'usePersistentNotifications': 'Notifications persistantes',
   'test': 'Test',
   'notificationTitle': 'Hé !',
-  'notificationBody': "N'oubliez pas d'enregistrer une seconde de votre journée. 👀",
+  'notificationBody':
+      "N'oubliez pas d'enregistrer une seconde de votre journée. 👀",
   'recordingSettings': "Paramètres d'enregistrement",
   'seconds': 'Secondes: ',
   'timer': 'Minuteur : ',
@@ -113,11 +119,13 @@ const Map<String, String> fr = {
       'Toutes les vidéos associées à ce profil seront également supprimées en permanence. Êtes-vous sûr de continuer?',
   'profileNameCannotBeEmpty': 'Le nom du profil ne peut pas être vide',
   'reservedProfileName': 'Ceci est un nom de profil réservé',
-  'profileOrientationRequired': 'Sélectionnez une orientation vidéo pour ce profil',
+  'profileOrientationRequired':
+      'Sélectionnez une orientation vidéo pour ce profil',
   'onboardingOrientationTitle': 'Choisissez votre orientation vidéo',
   'onboardingOrientationDesc':
       "Cela détermine la forme des vidéos enregistrées avec votre profil par défaut — paysage (16:9) ou portrait (9:16). Vous pourrez toujours créer un autre profil avec l'autre orientation plus tard.",
-  'creatingMovie': 'Traitement... Veuillez patienter.\nCela peut prendre quelques minutes.',
+  'creatingMovie':
+      'Traitement... Veuillez patienter.\nCela peut prendre quelques minutes.',
   'doNotCloseTheApp': 'Ne fermez pas l\'application',
   'cancelMovieCreation': 'Annuler la création du film',
   'cancelMovieDesc': 'Voulez-vous vraiment annuler la création du film ?',
@@ -134,7 +142,8 @@ const Map<String, String> fr = {
   'dateColorAndFormat': 'Couleur et format de date',
   'locationServicesDisabled':
       'Les services de localisation sont désactivés sur votre appareil. Veuillez les activer et réessayer.',
-  'locationPermissionDenied': 'Les autorisations de localisation ont été refusées.',
+  'locationPermissionDenied':
+      'Les autorisations de localisation ont été refusées.',
   'locationPermissionPermanentlyDenied':
       'Les autorisations de localisation sont refusées de manière permanente. Veuillez les activer manuellement dans les paramètres de votre appareil.',
   'locationServiceError':
@@ -143,7 +152,8 @@ const Map<String, String> fr = {
   'whatsNewDescv15':
       'Cette version a apporté de nombreuses nouvelles fonctionnalités et améliorations!\n\nJetez un coup d\'œil aux prochaines pages 😊',
   'feat1v15': 'Galerie',
-  'featDesc1v15': 'Ajouter facilement des vidéos de la galerie à votre collection 🤩',
+  'featDesc1v15':
+      'Ajouter facilement des vidéos de la galerie à votre collection 🤩',
   'feat2v15': 'Sous-titres',
   'featDesc2v15':
       'Ajouter ou modifier des sous-titres pour inclure plus de détails sur votre journée 📝',
@@ -154,7 +164,8 @@ const Map<String, String> fr = {
   'featDesc4v15':
       'Créez plusieurs profils pour enregistrer vos vidéos séparément et basculer facilement entre eux 🤗',
   'feat5v15': 'Calendrier',
-  'featDesc5v15': 'Afficher et modifier tous les jours enregistrés dans un calendrier 📅',
+  'featDesc5v15':
+      'Afficher et modifier tous les jours enregistrés dans un calendrier 📅',
   'feat6v15': 'Films',
   'featDesc6v15':
       'Générer des films personnalisés avec des périodes sélectionnées ou des vidéos spécifiques 🎥',
@@ -198,7 +209,8 @@ const Map<String, String> fr = {
   'whatsNewDescv152':
       'La version 1.5.2 a apporté plusieurs corrections et améliorations!\n\nDécouvrez-le dans les pages suivantes 😊',
   'feat1v152': 'Traitement vidéo plus rapide',
-  'featDesc1v152': 'L\'édition de grandes vidéos est maintenant beaucoup plus rapide 🚀',
+  'featDesc1v152':
+      'L\'édition de grandes vidéos est maintenant beaucoup plus rapide 🚀',
   'feat2v152': 'Amélioration de la découpe vidéo',
   'featDesc2v152':
       'Choisissez votre moment plus précisément avec les nouveaux boutons de découpe rapide et une barre de découpe améliorée 🎞️',
@@ -211,10 +223,12 @@ const Map<String, String> fr = {
   'feat5v152': 'Et plus encore...',
   'featDesc5v152':
       'Vous trouverez également quelques petites améliorations visuelles et corrections de bugs 🐛',
-  'useFilterInExperimentalPicker': 'Utilisez le filtre de date pour choisir des vidéos',
+  'useFilterInExperimentalPicker':
+      'Utilisez le filtre de date pour choisir des vidéos',
   'useFilterInExperimentalPickerDescription':
       'Lorsqu\'il est activé, sélectionner des dates passées filtrera les vidéos par cette date. Lorsqu\'il est désactivé, toutes les vidéos seront affichées. Fonctionne uniquement avec le sélecteur de fichiers expérimental.',
-  'useAlternativeCalendarColors': 'Utilisez des couleurs de calendrier alternatives',
+  'useAlternativeCalendarColors':
+      'Utilisez des couleurs de calendrier alternatives',
   'useAlternativeCalendarColorsDescription':
-      'Change le vert et le rouge dans le calendrier en bleu et jaune. Utile pour les personnes daltoniennes.'
+      'Change le vert et le rouge dans le calendrier en bleu et jaune. Utile pour les personnes daltoniennes.',
 };

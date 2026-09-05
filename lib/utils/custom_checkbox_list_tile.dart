@@ -34,17 +34,16 @@ class CustomCheckboxListTile extends StatelessWidget {
         padding: padding,
         child: Row(
           children: [
-            Expanded(
-              child: title,
-            ),
+            Expanded(child: title),
             Align(
               alignment: Alignment.bottomCenter,
               child: Transform.scale(
                 scale: checkboxSize ?? 1.4,
                 child: Checkbox(
                   checkColor: Colors.white,
-                  fillColor:
-                      WidgetStatePropertyAll(isChecked == true ? AppColors.green : Colors.white),
+                  fillColor: WidgetStatePropertyAll(
+                    isChecked == true ? AppColors.green : Colors.white,
+                  ),
                   value: isChecked,
                   onChanged: onChanged,
                 ),

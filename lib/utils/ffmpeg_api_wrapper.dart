@@ -16,7 +16,8 @@ import 'utils.dart';
 // Re-exported so that the ffmpeg-kit package name appears in this file only.
 // Swapping the GPL flavour for the LGPL one, which is what makes an App Store
 // build possible, then comes down to editing the imports above. See docs/ios.md.
-export 'package:ffmpeg_kit_flutter_new/ffmpeg_kit_config.dart' show FFmpegKitConfig;
+export 'package:ffmpeg_kit_flutter_new/ffmpeg_kit_config.dart'
+    show FFmpegKitConfig;
 export 'package:ffmpeg_kit_flutter_new/ffmpeg_session.dart' show FFmpegSession;
 export 'package:ffmpeg_kit_flutter_new/log.dart' show Log;
 export 'package:ffmpeg_kit_flutter_new/return_code.dart' show ReturnCode;
@@ -59,11 +60,16 @@ Future<FFmpegSession> executeAsyncFFmpeg(
   void Function(Statistics)? statisticsCallback,
 }) async {
   return await FFmpegKit.executeAsync(
-      command, completeCallback, logCallback, statisticsCallback);
+    command,
+    completeCallback,
+    logCallback,
+    statisticsCallback,
+  );
 }
 
 Future<FFprobeSession> executeFFprobeWithArguments(
-    List<String> arguments) async {
+  List<String> arguments,
+) async {
   return await FFprobeKit.executeWithArguments(arguments);
 }
 
@@ -115,7 +121,9 @@ Future<void> setFontconfigConfigurationPath(String path) async {
 }
 
 Future<void> setFontDirectory(
-    String fontDirectory, Map<String, String> fontNameMap) async {
+  String fontDirectory,
+  Map<String, String> fontNameMap,
+) async {
   return await FFmpegKitConfig.setFontDirectory(fontDirectory, fontNameMap);
 }
 
@@ -136,9 +144,13 @@ Future<String?> registerNewFFmpegPipe() async {
 }
 
 Future<void> setEnvironmentVariable(
-    String variableName, String variableValue) async {
+  String variableName,
+  String variableValue,
+) async {
   return await FFmpegKitConfig.setEnvironmentVariable(
-      variableName, variableValue);
+    variableName,
+    variableValue,
+  );
 }
 
 Future<List<FFmpegSession>> listFFmpegSessions() async {

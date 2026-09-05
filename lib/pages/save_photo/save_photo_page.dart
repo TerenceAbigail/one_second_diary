@@ -31,7 +31,8 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
 
   late String _tempPhotoPath;
 
-  final TextEditingController customLocationTextController = TextEditingController();
+  final TextEditingController customLocationTextController =
+      TextEditingController();
   final TextEditingController subtitlesTextController = TextEditingController();
 
   late Color pickerColor;
@@ -44,9 +45,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
   late String _dateWrittenValueForVideoEdit;
 
   List<String> _dateFormatsForVideoEdit = [
-    DateFormatUtils.getToday(
-      allowCheckFormattingDayFirst: true,
-    ),
+    DateFormatUtils.getToday(allowCheckFormattingDayFirst: true),
     DateFormatUtils.getWrittenToday(lang: Get.locale!.languageCode),
   ];
 
@@ -54,7 +53,8 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
 
   String? _currentAddress;
   Position? _currentPosition;
-  bool isGeotaggingEnabled = SharedPrefsUtil.getBool('enableGeotagging') ?? false;
+  bool isGeotaggingEnabled =
+      SharedPrefsUtil.getBool('enableGeotagging') ?? false;
   String? _subtitles;
   int photoDurationInSeconds = 1;
   bool _isLocationProcessing = false;
@@ -79,10 +79,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
         ? _dateFinalFormatValueForVideoEdit = dateCommonValue
         : _dateFinalFormatValueForVideoEdit = _dateWrittenValueForVideoEdit;
 
-    _dateFormatsForVideoEdit = [
-      dateCommonValue,
-      _dateWrittenValueForVideoEdit,
-    ];
+    _dateFormatsForVideoEdit = [dateCommonValue, _dateWrittenValueForVideoEdit];
   }
 
   Color parseColorString(String colorString) {
@@ -116,36 +113,24 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       toggleGeotaggingStatus();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'locationServicesDisabled'.tr,
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('locationServicesDisabled'.tr)));
       return false;
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'locationPermissionDenied'.tr,
-            ),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('locationPermissionDenied'.tr)));
         return false;
       }
     }
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'locationPermissionPermanentlyDenied'.tr,
-          ),
-        ),
+        SnackBar(content: Text('locationPermissionPermanentlyDenied'.tr)),
       );
       return false;
     }
@@ -155,10 +140,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
   Future<void> setGeotagging() async {
     Utils.logInfo('[Geolocation] - Getting location...');
     await _getCurrentPosition().then(
-      (_) => SharedPrefsUtil.putBool(
-        'enableGeotagging',
-        isGeotaggingEnabled,
-      ),
+      (_) => SharedPrefsUtil.putBool('enableGeotagging', isGeotaggingEnabled),
     );
   }
 
@@ -169,26 +151,24 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
       _isLocationProcessing = true;
     });
     await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.medium,
-        timeLimit: Duration(seconds: 20),
-      ),
-    ).then((Position position) async {
-      setState(() => _currentPosition = position);
-      await _getAddressFromLatLng(_currentPosition!);
-    }).catchError((e) {
-      Utils.logError('[Geolocation] - Failed to get location: $e');
-      if (isGeotaggingEnabled) {
-        toggleGeotaggingStatus();
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'locationServiceError'.tr,
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.medium,
+            timeLimit: Duration(seconds: 20),
           ),
-        ),
-      );
-    });
+        )
+        .then((Position position) async {
+          setState(() => _currentPosition = position);
+          await _getAddressFromLatLng(_currentPosition!);
+        })
+        .catchError((e) {
+          Utils.logError('[Geolocation] - Failed to get location: $e');
+          if (isGeotaggingEnabled) {
+            toggleGeotaggingStatus();
+          }
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('locationServiceError'.tr)));
+        });
 
     setState(() {
       _isLocationProcessing = false;
@@ -231,15 +211,13 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
           setState(() {
             _isLocationProcessing = false;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'locationServiceError'.tr,
-              ),
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('locationServiceError'.tr)));
         } else {
-          Utils.logError('[Geolocation] - Failed to decode location (attempt $attempts): $e');
+          Utils.logError(
+            '[Geolocation] - Failed to decode location (attempt $attempts): $e',
+          );
           await Future.delayed(const Duration(seconds: 1));
         }
       }
@@ -265,9 +243,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
           TextButton(
             child: Text(
               'done'.tr,
-              style: const TextStyle(
-                color: AppColors.green,
-              ),
+              style: const TextStyle(color: AppColors.green),
             ),
             onPressed: () {
               setState(() => currentColor = pickerColor);
@@ -287,7 +263,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
 
   @override
   void initState() {
-    pickerColor = parseColorString(_recordingSettingsController.dateColor.value);
+    pickerColor = parseColorString(
+      _recordingSettingsController.dateColor.value,
+    );
     currentColor = pickerColor;
     _tempPhotoPath = routeArguments['photoPath'];
     isTextDate = _recordingSettingsController.dateFormatId.value == 1;
@@ -300,12 +278,10 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
 
   @override
   void dispose() {
-     customLocationTextController.dispose();
-     subtitlesTextController.dispose();
+    customLocationTextController.dispose();
+    subtitlesTextController.dispose();
     super.dispose();
   }
-
-
 
   Color invert(Color color) {
     final r = 255 - (color.r * 255.0).round().clamp(0, 255);
@@ -316,7 +292,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
   }
 
   Widget _dailyPhotoViewer() {
-    final VideoOrientation orientation = StorageUtils.getOrientation(selectedProfileName);
+    final VideoOrientation orientation = StorageUtils.getOrientation(
+      selectedProfileName,
+    );
     return ColoredBox(
       color: AppColors.dark,
       // Capped so a portrait profile's taller-than-wide preview can't push
@@ -326,7 +304,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
       child: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * Constants.previewMaxHeightFraction,
+            maxHeight:
+                MediaQuery.of(context).size.height *
+                Constants.previewMaxHeightFraction,
           ),
           child: AspectRatio(
             // Derived from the selected profile's orientation — same
@@ -343,19 +323,25 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                   // video, so the preview should show the same framing
                   // rather than letterboxing it. Landscape still pads
                   // (contain), matching that encode path.
-                  fit: orientation == VideoOrientation.portrait ? BoxFit.cover : BoxFit.contain,
+                  fit: orientation == VideoOrientation.portrait
+                      ? BoxFit.cover
+                      : BoxFit.contain,
                   width: double.infinity,
                   height: double.infinity,
                 ),
 
                 Align(
-                  alignment: isTextDate ? Alignment.bottomLeft : Alignment.topRight,
+                  alignment: isTextDate
+                      ? Alignment.bottomLeft
+                      : Alignment.topRight,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Stack(
                       children: [
                         Text(
-                          isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                          isTextDate
+                              ? _dateFormatsForVideoEdit.last
+                              : _dateFormatsForVideoEdit.first,
                           style: TextStyle(
                             fontSize: MediaQuery.of(context).size.width * 0.03,
                             foreground: Paint()
@@ -365,7 +351,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                           ),
                         ),
                         Text(
-                          isTextDate ? _dateFormatsForVideoEdit.last : _dateFormatsForVideoEdit.first,
+                          isTextDate
+                              ? _dateFormatsForVideoEdit.last
+                              : _dateFormatsForVideoEdit.first,
                           style: TextStyle(
                             fontSize: MediaQuery.of(context).size.width * 0.03,
                             color: currentColor,
@@ -385,10 +373,12 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                         children: [
                           Text(
                             customLocationTextController.text.isEmpty
-                                ? _currentAddress ?? customLocationTextController.text
+                                ? _currentAddress ??
+                                      customLocationTextController.text
                                 : customLocationTextController.text,
                             style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.032,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.032,
                               foreground: Paint()
                                 ..style = PaintingStyle.stroke
                                 ..strokeWidth = textOutlineStrokeWidth
@@ -397,10 +387,12 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                           ),
                           Text(
                             customLocationTextController.text.isEmpty
-                                ? _currentAddress ?? customLocationTextController.text
+                                ? _currentAddress ??
+                                      customLocationTextController.text
                                 : customLocationTextController.text,
                             style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.032,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.032,
                               color: currentColor,
                             ),
                           ),
@@ -446,14 +438,19 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                     },
                     borderRadius: BorderRadius.circular(15.0),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                        vertical: 6.0,
+                      ),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppColors.green
                             : (isDarkTheme ? AppColors.dark : Colors.grey[300]),
                         borderRadius: BorderRadius.circular(15.0),
                         border: Border.all(
-                          color: isSelected ? AppColors.green : Colors.transparent,
+                          color: isSelected
+                              ? AppColors.green
+                              : Colors.transparent,
                         ),
                       ),
                       child: Text(
@@ -462,7 +459,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                           color: isSelected
                               ? Colors.white
                               : (isDarkTheme ? Colors.white : Colors.black),
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                           fontSize: 13.0,
                         ),
                       ),
@@ -482,9 +481,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           'savePhoto'.tr,
           style: const TextStyle(color: Colors.white),
@@ -494,9 +491,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
         visible: !_isLocationProcessing,
         replacement: const FloatingActionButton(
           onPressed: null,
-          child: CircularProgressIndicator(
-            color: Colors.white,
-          ),
+          child: CircularProgressIndicator(color: Colors.white),
           backgroundColor: AppColors.green,
         ),
         child: SavePhotoButton(
@@ -521,9 +516,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
           _dailyPhotoViewer(),
           const SizedBox(height: 8),
           _durationSelectionButtons(),
-          Expanded(
-            child: videoProperties(),
-          ),
+          Expanded(child: videoProperties()),
         ],
       ),
     );
@@ -547,7 +540,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
-                  selectedProfileName.isEmpty ? 'default'.tr : selectedProfileName,
+                  selectedProfileName.isEmpty
+                      ? 'default'.tr
+                      : selectedProfileName,
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.height * 0.019,
                   ),
@@ -558,7 +553,10 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                 child: TextButton(
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(
-                        AppColors.dark.withValues(alpha: isDarkTheme ? 1.0 : 0.55)),
+                      AppColors.dark.withValues(
+                        alpha: isDarkTheme ? 1.0 : 0.55,
+                      ),
+                    ),
                     shape: WidgetStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40),
@@ -615,10 +613,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                       ),
                       width: MediaQuery.of(context).size.width * 0.09,
                       height: MediaQuery.of(context).size.width * 0.09,
-                      child: Icon(
-                        Icons.edit,
-                        color: invert(currentColor),
-                      ),
+                      child: Icon(Icons.edit, color: invert(currentColor)),
                     ),
                     const SizedBox(height: 5.0),
                   ],
@@ -628,27 +623,29 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                 child: RadioGroup<String>.builder(
                   direction: Axis.vertical,
                   horizontalAlignment: MainAxisAlignment.start,
-                  groupValue: _recordingSettingsController.dateFormatId.value == 0
+                  groupValue:
+                      _recordingSettingsController.dateFormatId.value == 0
                       ? _dateFormatsForVideoEdit.first
                       : _dateFormatsForVideoEdit.last,
                   fillColor: AppColors.yellow,
                   onChanged: (value) => setState(() {
                     _dateFinalFormatValueForVideoEdit = value!;
                     // Place date in the bottom if it is text format
-                    _dateFinalFormatValueForVideoEdit == _dateFormatsForVideoEdit.first
+                    _dateFinalFormatValueForVideoEdit ==
+                            _dateFormatsForVideoEdit.first
                         ? isTextDate = false
                         : isTextDate = true;
 
                     // Save the date format in shared preferences
                     _recordingSettingsController.setDateFormat(
-                        _dateFinalFormatValueForVideoEdit == _dateFormatsForVideoEdit.first
-                            ? 0
-                            : 1);
+                      _dateFinalFormatValueForVideoEdit ==
+                              _dateFormatsForVideoEdit.first
+                          ? 0
+                          : 1,
+                    );
                   }),
                   items: _dateFormatsForVideoEdit,
-                  itemBuilder: (item) => RadioButtonBuilder(
-                    item,
-                  ),
+                  itemBuilder: (item) => RadioButtonBuilder(item),
                 ),
               ),
               const SizedBox(width: 10),
@@ -682,7 +679,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                     setState(() {});
                   }
                 },
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.04,
+                ),
                 title: Text(
                   'enableGeotagging'.tr,
                   style: TextStyle(
@@ -691,7 +690,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.04,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -703,7 +704,8 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                         child: Text(
                           'setCustomLocation'.tr,
                           style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.height * 0.019,
+                            fontSize:
+                                MediaQuery.of(context).size.height * 0.019,
                           ),
                         ),
                       ),
@@ -762,15 +764,17 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                   decoration: InputDecoration(
                     fillColor: AppColors.dark,
                     hintText: 'enterSubtitles'.tr,
-                    hintStyle: const TextStyle(
-                      color: Colors.white,
-                    ),
+                    hintStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: isDarkTheme ? Colors.white : Colors.black),
+                      borderSide: BorderSide(
+                        color: isDarkTheme ? Colors.white : Colors.black,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: isDarkTheme ? Colors.white : Colors.black),
+                      borderSide: BorderSide(
+                        color: isDarkTheme ? Colors.white : Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -795,7 +799,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
               labelPadding: const EdgeInsets.all(10),
               indicator: UnderlineTabIndicator(
                 borderSide: BorderSide(
-                  color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                  color: ThemeService().isDarkTheme()
+                      ? Colors.white
+                      : Colors.black,
                   width: 4,
                 ), // Indicator height
                 // insets: EdgeInsets.only(left: 60, right: 40), // Indicator width
@@ -849,9 +855,7 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'subtitles'.tr,
-              ),
+              Text('subtitles'.tr),
               TextButton(
                 onPressed: () {
                   // _subtitles is saved in onTapOutside whenever user taps out dialog, this
@@ -867,18 +871,13 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                 ),
                 child: Text(
                   'save'.tr,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15.0,
-                  ),
+                  style: const TextStyle(color: Colors.white, fontSize: 15.0),
                 ),
               ),
             ],
           ),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -895,7 +894,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
                 filled: true,
                 fillColor: AppColors.dark,
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: isDarkTheme ? Colors.white : Colors.black),
+                  borderSide: BorderSide(
+                    color: isDarkTheme ? Colors.white : Colors.black,
+                  ),
                 ),
                 focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: AppColors.green),
@@ -915,14 +916,8 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Center(
-          child: Text(
-            'setCustomLocation'.tr.split('(').first,
-          ),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        title: Center(child: Text('setCustomLocation'.tr.split('(').first)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -931,13 +926,13 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
               controller: customLocationTextController,
               textCapitalization: TextCapitalization.sentences,
               style: TextStyle(
-                color: ThemeService().isDarkTheme() ? Colors.white : Colors.black,
+                color: ThemeService().isDarkTheme()
+                    ? Colors.white
+                    : Colors.black,
               ),
               decoration: InputDecoration(
                 hintText: 'enterLocation'.tr,
-                hintStyle: const TextStyle(
-                  color: Colors.white,
-                ),
+                hintStyle: const TextStyle(color: Colors.white),
                 filled: true,
                 fillColor: AppColors.dark,
                 border: const OutlineInputBorder(
@@ -954,15 +949,14 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
         actions: [
           TextButton(
             onPressed: () async {
-              if (!isGeotaggingEnabled && customLocationTextController.text.isNotEmpty) {
+              if (!isGeotaggingEnabled &&
+                  customLocationTextController.text.isNotEmpty) {
                 toggleGeotaggingStatus();
               }
               Navigator.pop(context);
               setState(() {});
             },
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.green,
-            ),
+            style: TextButton.styleFrom(foregroundColor: AppColors.green),
             child: Text('ok'.tr),
           ),
           TextButton(
@@ -971,11 +965,9 @@ class _SavePhotoPageState extends State<SavePhotoPage> {
               customLocationTextController.clear();
               setState(() {});
             },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-            ),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: Text('reset'.tr),
-          )
+          ),
         ],
       ),
     );

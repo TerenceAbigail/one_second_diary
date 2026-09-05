@@ -23,23 +23,11 @@ class NewFeaturesV152 extends StatelessWidget {
           color: AppColors.mainColor,
         );
       case 1:
-        return const Icon(
-          Icons.speed,
-          size: 100,
-          color: Colors.green,
-        );
+        return const Icon(Icons.speed, size: 100, color: Colors.green);
       case 2:
-        return const Icon(
-          Icons.cut,
-          size: 100,
-          color: Colors.orange,
-        );
+        return const Icon(Icons.cut, size: 100, color: Colors.orange);
       case 3:
-        return const Icon(
-          Icons.file_open,
-          size: 100,
-          color: Colors.blue,
-        );
+        return const Icon(Icons.file_open, size: 100, color: Colors.blue);
       case 4:
         return const Icon(
           Icons.screen_lock_landscape,
@@ -47,17 +35,9 @@ class NewFeaturesV152 extends StatelessWidget {
           color: Colors.red,
         );
       case 5:
-        return const Icon(
-          Icons.handyman,
-          size: 100,
-          color: Colors.teal,
-        );
+        return const Icon(Icons.handyman, size: 100, color: Colors.teal);
       default:
-        return const Icon(
-          Icons.history,
-          size: 100,
-          color: Colors.black,
-        );
+        return const Icon(Icons.history, size: 100, color: Colors.black);
     }
   }
 
@@ -121,16 +101,8 @@ class NewFeaturesV152 extends StatelessWidget {
       showSkipButton: false,
       dotsFlex: 0,
       nextFlex: 0,
-      skip: Text(
-        'skip'.tr,
-        style: const TextStyle(
-          color: Colors.black,
-        ),
-      ),
-      next: const Icon(
-        Icons.arrow_forward,
-        color: Colors.black,
-      ),
+      skip: Text('skip'.tr, style: const TextStyle(color: Colors.black)),
+      next: const Icon(Icons.arrow_forward, color: Colors.black),
       done: Text(
         'done'.tr,
         style: const TextStyle(
