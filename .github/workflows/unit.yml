@@ -16,9 +16,10 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: "3.44.0"
+        flutter-version: "3.47.0"
         channel: 'stable'
-    - run: flutter pub get
+    - name: Get dependencies (fail if pubspec.lock is out of date)
+      run: flutter pub get --enforce-lockfile
     - name: Verify formatting
       run: dart format --output=none --set-exit-if-changed .
     - run: flutter analyze
